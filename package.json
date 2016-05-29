@@ -1,0 +1,11 @@
+{
+  "name": "pcs-player",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Tootle",
+  "license": "Apache License 2.0"
+}
