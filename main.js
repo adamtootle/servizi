@@ -8,6 +8,30 @@ const BrowserWindow = electron.BrowserWindow;
 const globalShortcut = electron.globalShortcut;
 const Tray = electron.Tray;
 const Menu = electron.Menu;
+const MenuItem = electron.MenuItem;
+const ipcMain = electron.ipcMain;
+const config = require('./config');
+
+const NeDB = require('nedb');
+const database = new NeDB({
+  filename: app.getAppPath() + '/database',
+  autoload: true,
+});
+
+ipcMain.on('login', (event, arg) => {
+  electron.shell.openExternal(authorization_uri);
+});
+
+const oauth2 = require('simple-oauth2')({
+  clientID: config.oauthClientId,
+  clientSecret: config.oauthClientSecret,
+  site: 'https://api.planningcenteronline.com',
+});
+
+const authorization_uri = oauth2.authCode.authorizeURL({
+  redirect_uri: 'playr://oauth/callback',
+  scope: 'services',
+});
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -36,12 +60,12 @@ function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 280,
     height: 460,
-    frame: false,
-    movable: false,
-    resizable: false,
+    // frame: false,
+    // movable: false,
+    // resizable: false,
     minimizable: false,
     maximizable: false,
-    show: false
+    show: false,
   });
 
   // and load the index.html of the app.
@@ -70,7 +94,7 @@ function createMainWindow() {
 let statusBarIcon = null;
 
 function setupStatusBarIcon() {
-  statusBarIcon = new Tray('images/status-bar-icon.png');
+  statusBarIcon = new Tray(app.getAppPath() + '/images/status-bar-icon.png');
   const contextMenu = Menu.buildFromTemplate([
     {label: 'Item1', type: 'radio'},
     {label: 'Item2', type: 'radio'},
@@ -80,10 +104,45 @@ function setupStatusBarIcon() {
   statusBarIcon.setToolTip('This is my application.');
   // appIcon.setContextMenu(contextMenu);
   statusBarIcon.on('click', didClickStatusBarIcon);
+  statusBarIcon.on('right-click', () => {
+    const menu = new Menu();
+    menu.append(new MenuItem({label: 'Quit', click() { app.quit(); }}));
+    statusBarIcon.popUpContextMenu(menu);
+  });
 }
 
 app.on('ready', createMainWindow);
 app.on('ready', setupStatusBarIcon);
+app.on('open-url', (ev, url) => {
+  const code = url.split('code=')[1];
+  let token;
+  const tokenConfig = {
+    code: code,
+    redirect_uri: 'playr://oauth/callback'
+  };
+  // Callbacks
+  // Save the access token
+  oauth2.authCode.getToken(tokenConfig, (error, result) => {
+    let message;
+    if (error) {
+      console.log('Access Token Error', error.message);
+      message = error.message;
+    } else {
+      // token = oauth2.accessToken.create(result);
+      message = oauth2.accessToken.create(result);
+      // electron.dialog.showMessageBox(mainWindow, {
+      //   type: 'info',
+      //   message: JSON.stringify(result),
+      //   buttons: ['ok'],
+      // });
+      database.insert({
+        key: 'oauth_token',
+        value: result,
+      });
+      mainWindow.webContents.send('login', result);
+    }
+  });
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
