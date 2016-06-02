@@ -3,7 +3,6 @@
 const electron = require('electron');
 // Module to control application life.
 const app = electron.app;
-// Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 const globalShortcut = electron.globalShortcut;
 const Tray = electron.Tray;
@@ -11,27 +10,25 @@ const Menu = electron.Menu;
 const MenuItem = electron.MenuItem;
 const ipcMain = electron.ipcMain;
 const config = require('./config');
-
-const NeDB = require('nedb');
-const database = new NeDB({
-  filename: app.getAppPath() + '/database',
-  autoload: true,
-});
+const database = require('./lib/database');
+const auth = require('./lib/auth');
+const PCApi = require('./pc-api');
+const api = new PCApi();
 
 ipcMain.on('login', (event, arg) => {
-  electron.shell.openExternal(authorization_uri);
+  electron.shell.openExternal(auth.authorizationUrl);
 });
 
-const oauth2 = require('simple-oauth2')({
-  clientID: config.oauthClientId,
-  clientSecret: config.oauthClientSecret,
-  site: 'https://api.planningcenteronline.com',
-});
-
-const authorization_uri = oauth2.authCode.authorizeURL({
-  redirect_uri: 'playr://oauth/callback',
-  scope: 'services',
-});
+// api.services.get()
+//   .then((services) => {
+//     console.log('promise');
+//     console.log(services);
+//   })
+//   .done((err) => {
+//     console.log('err');
+//     console.log(err);
+//   });
+// api.plans.getFuturePlans();
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -60,9 +57,9 @@ function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 280,
     height: 460,
-    // frame: false,
-    // movable: false,
-    // resizable: false,
+    frame: false,
+    movable: false,
+    resizable: false,
     minimizable: false,
     maximizable: false,
     show: false,
@@ -109,6 +106,14 @@ function setupStatusBarIcon() {
     menu.append(new MenuItem({label: 'Quit', click() { app.quit(); }}));
     statusBarIcon.popUpContextMenu(menu);
   });
+  console.log(statusBarIcon.getBounds());
+  mainWindow.setBounds({
+    x: statusBarIcon.getBounds().x,
+    y: statusBarIcon.getBounds().y,
+    width: mainWindow.getBounds().width,
+    height: mainWindow.getBounds().height
+  });
+  mainWindow.show();
 }
 
 app.on('ready', createMainWindow);
@@ -122,22 +127,16 @@ app.on('open-url', (ev, url) => {
   };
   // Callbacks
   // Save the access token
-  oauth2.authCode.getToken(tokenConfig, (error, result) => {
+  auth.oauthClient.authCode.getToken(tokenConfig, (error, result) => {
     let message;
     if (error) {
       console.log('Access Token Error', error.message);
       message = error.message;
     } else {
-      // token = oauth2.accessToken.create(result);
-      message = oauth2.accessToken.create(result);
-      // electron.dialog.showMessageBox(mainWindow, {
-      //   type: 'info',
-      //   message: JSON.stringify(result),
-      //   buttons: ['ok'],
-      // });
+      message = auth.oauthClient.accessToken.create(result);
       database.insert({
         key: 'oauth_token',
-        value: result,
+        value: { token: result, redirect_uri: url },
       });
       mainWindow.webContents.send('login', result);
     }
@@ -159,12 +158,4 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   }
-});
-
-app.on('browser-window-focus', (event) => {
-  
-});
-
-app.on('browser-window-blur', () => {
-
 });
