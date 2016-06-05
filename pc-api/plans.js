@@ -4,24 +4,25 @@ const services = require('./services');
 
 function Plans() {
   this.getFuturePlans = () => {
+    const deferred = Q.defer();
     services.getServiceTypes()
-      .done((serviceTypes) => {
+      .then((serviceTypes) => {
         const promises = serviceTypes.map((serviceType) => {
           return this.getFuturePlansForServiceType(serviceType);
         });
-        Q.all(promises)
-          .then((results) => {
-            console.log(results);
-            const res = results.reduce((prev, current) => {
-              if (prev === undefined) {
-                return current;
-              }
-
-              return prev.concat(current);
-            });
-            console.log(res);
-          });
+        return Q.all(promises)
+      })
+      .then((results) => {
+        const res = results.reduce((prev, current) => {
+          if (prev === undefined) { return current; }
+          return prev.concat(current);
+        })
+        deferred.resolve(res);
+      })
+      .catch((err) => {
+        deferred.reject(err);
       });
+    return deferred.promise;
   };
 
   this.getFuturePlansForServiceType = (serviceType) => {
@@ -30,7 +31,9 @@ function Plans() {
       .then((res) => {
         deferred.resolve(res.data);
       })
-      .done();
+      .catch((err) => {
+        deferred.reject(err);
+      });
     return deferred.promise;
   };
 }

@@ -8,26 +8,28 @@ function HTTP() {
     const deferred = Q.defer();
     auth.getToken()
       .then((oauthToken) => {
-        request({
+        return request({
           uri,
           headers: {
             Authorization: `Bearer ${oauthToken.token.access_token}`,
           },
           json: true,
-        })
-        .then((res) => {
-          deferred.resolve(res);
-        }, (err) => {
-          if (err.statusCode === 401) {
-            auth.refreshToken()
-              .done(() => {
-                this.get(uri)
-                  .done((body) => {
-                    deferred.resolve(body);
-                  });
-              });
-          }
         });
+      })
+      .then((res) => {
+        deferred.resolve(res);
+      })
+      .catch((err) => {
+        if (err.statusCode === 401) {
+          auth.refreshToken()
+            .then(() => this.get(uri))
+            .then((res) => {
+              deferred.resolve(res);
+            })
+            .catch((err2) => {
+              deferred.reject(err2);
+            });
+        }
       });
     return deferred.promise;
   };

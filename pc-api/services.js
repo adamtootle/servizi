@@ -8,7 +8,9 @@ function Services() {
       .then((res) => {
         deferred.resolve(res.data);
       })
-      .done();
+      .catch((err) => {
+        deferred.reject(err);
+      });
     return deferred.promise;
   };
 }
