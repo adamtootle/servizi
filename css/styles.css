@@ -1,0 +1,63 @@
+body {
+  background: #D8D8D8;
+  font-family: Roboto, sans-serif;
+  color: #2e2e2e;
+}
+
+.help-text {
+  font-size: 13px;
+}
+
+.label {
+  font-size: 16px;
+}
+
+#app-wrapper {
+  position: relative;
+}
+
+#login {
+  padding-top: 60px;
+}
+
+.login-button {
+  box-shadow: none !important;
+}
+
+.loading-indicator-wrapper {
+  text-align: center;
+  margin-top: 140px;
+}
+
+#navbar {
+  background: #66954C;
+  font-size: 20px;
+  height: 54px;
+  line-height: 54px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.example-enter {
+  position: absolute;
+  left: 100%;
+  top: 54px;
+  transition: left .3s;
+  width: 100%;
+}
+
+.example-enter.example-enter-active {
+  left: 0px;
+}
+
+.example-leave {
+  position: absolute;
+  transition: right .3s;
+  right: 0px;
+  top: 54px;
+  width: 100%;
+}
+
+.example-leave.example-leave-active {
+  right: 100%;
+}

@@ -11,16 +11,7 @@ function Plans() {
         const promises = res.map((schedule) => {
           return getFuturePlansForSchedule(schedule);
         });
-        return  Q.all(promises);
-      })
-      .then((res) => {
-        const promises = [];
-        forEach(res, (resObject) => {
-          promises.push(resObject.data.map((shortPlan) => {
-            return this.getPlan(resObject.schedule, shortPlan.id);
-          }));
-        })
-        return  Q.all(promises);
+        deferred.resolve(Q.all(promises));
       });
     // services.getServiceTypes()
     //   .then((serviceTypes) => {
@@ -39,18 +30,6 @@ function Plans() {
     //   .catch((err) => {
     //     deferred.reject(err);
     //   });
-    return deferred.promise;
-  };
-
-  this.getPlan = (schedule, planId) => {
-    const deferred = Q.defer();
-    http.get('https://api.planningcenteronline.com/services/v2/me/schedules')
-      .then((res) => {
-        deferred.resolve(res.data);
-      })
-      .catch((err) => {
-        deferred.reject(err);
-      });
     return deferred.promise;
   };
 
@@ -84,12 +63,49 @@ function Plans() {
 
   function getFuturePlansForSchedule(schedule) {
     const deferred = Q.defer();
-    http.get(`https://api.planningcenteronline.com/services/v2/service_types/${schedule.relationships.service_type.data.id}/plans?filter=futureschedules`)
+    http.get(`https://api.planningcenteronline.com/services/v2/service_types/${schedule.relationships.service_type.data.id}/plans?filter=future`)
       .then((res) => {
-        deferred.resolve({
-          schedule: schedule,
-          data: res.data,
+        const promises = res.data.map((plan) => {
+          return Q.fcall(() => {
+            return getPlanItems(schedule, plan)
+              .then(() => {
+                return getPlanAttachments(schedule, plan);
+              });
+          });
         });
+        return Q.all(promises);
+      })
+      .then((plans) => {
+        deferred.resolve({
+          schedule,
+          plans: plans,
+        });
+      })
+      .catch((err) => {
+        deferred.reject(err);
+      });
+    return deferred.promise;
+  }
+
+  function getPlanItems(schedule, plan) {
+    const deferred = Q.defer();
+    http.get(`https://api.planningcenteronline.com/services/v2/service_types/${schedule.relationships.service_type.data.id}/plans/${plan.id}/items`)
+      .then((res) => {
+        plan.items = res.data;
+        deferred.resolve(plan);
+      })
+      .catch((err) => {
+        deferred.reject(err);
+      });
+    return deferred.promise;
+  }
+
+  function getPlanAttachments(schedule, plan) {
+    const deferred = Q.defer();
+    http.get(`https://api.planningcenteronline.com/services/v2/service_types/${schedule.relationships.service_type.data.id}/plans/${plan.id}/attachments`)
+      .then((res) => {
+        plan.attachments = res.data;
+        deferred.resolve(plan);
       })
       .catch((err) => {
         deferred.reject(err);

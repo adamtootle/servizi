@@ -3,6 +3,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
 import { ipcRenderer } from 'electron';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import IconButton from 'material-ui/IconButton';
+import FontAwesome from 'react-fontawesome';
 
 const theme = {
   palette: {
@@ -14,10 +17,15 @@ const theme = {
 class AppWrapper extends Component {
   static propTypes = {
     children: PropTypes.array,
+    location: PropTypes.object,
   };
 
   static contextTypes = {
     router: PropTypes.object,
+  };
+
+  static childContextTypes = {
+    playr: PropTypes.object,
   };
 
   static defaultProps = {};
@@ -29,6 +37,33 @@ class AppWrapper extends Component {
       showLoader: true,
       showLogin: false,
       showApp: false,
+      title: 'Playr',
+      path: [],
+      showBackButton: false,
+    };
+  }
+
+  getChildContext() {
+    return {
+      playr: {
+        setTitle: (title) => {
+          this.setState({
+            title,
+          });
+        },
+        navigation: {
+          showBackButton: () => {
+            this.setState({
+              showBackButton: true,
+            });
+          },
+          hideBackButton: () => {
+            this.setState({
+              showBackButton: false,
+            });
+          },
+        },
+      },
     };
   }
 
@@ -54,8 +89,11 @@ class AppWrapper extends Component {
     console.log('handleLoginResults');
   };
 
+  handleClickBackButton = () => {
+    this.context.router.goBack();
+  };
+
   render() {
-    console.log(this.props.children);
     if (this.state.showLoader) {
       return (
         <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
@@ -69,7 +107,29 @@ class AppWrapper extends Component {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
         <div id="app-wrapper">
-          {this.props.children}
+          <div id="navbar">
+            {(() => {
+              if (this.state.showBackButton) {
+                return (
+                  <IconButton
+                    iconClassName="fa fa-angle-left"
+                    onClick={this.handleClickBackButton}
+                  />
+                );
+              }
+            })()}
+            {this.state.title}
+          </div>
+          <ReactCSSTransitionGroup
+            component="div"
+            transitionName="example"
+            transitionEnterTimeout={30000}
+            transitionLeaveTimeout={30000}
+          >
+            {React.cloneElement(this.props.children, {
+              key: this.props.location.pathname,
+            })}
+          </ReactCSSTransitionGroup>
         </div>
       </MuiThemeProvider>
     );
