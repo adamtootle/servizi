@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
-import LoginView from './LoginView';
 import { ipcRenderer } from 'electron';
 
 const theme = {
@@ -13,7 +12,13 @@ const theme = {
 };
 
 class AppWrapper extends Component {
-  static propTypes = {};
+  static propTypes = {
+    children: PropTypes.array,
+  };
+
+  static contextTypes = {
+    router: PropTypes.object,
+  };
 
   static defaultProps = {};
 
@@ -30,29 +35,27 @@ class AppWrapper extends Component {
   componentDidMount() {
     ipcRenderer.on('validateAuth', this.handleValidateAuthResponse);
     ipcRenderer.send('validateAuth');
+    ipcRenderer.on('didLogin', this.handleLoginResults);
   }
 
   handleValidateAuthResponse = (ev, valid) => {
-    console.log(valid);
     if (valid) {
-      this.setState({
-        showLoader: false,
-        showLogin: false,
-        showApp: true,
-      });
+      this.context.router.replace('/plans');
     } else {
-      this.setState({
-        showLoader: false,
-        showLogin: true,
-        showApp: false,
-      });
+      this.context.router.replace('/login');
     }
-    setTimeout(() => {
-      console.log(this.state);
-    }, 10);
+
+    this.setState({
+      showLoader: false,
+    });
+  };
+
+  handleLoginResults = () => {
+    console.log('handleLoginResults');
   };
 
   render() {
+    console.log(this.props.children);
     if (this.state.showLoader) {
       return (
         <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
@@ -66,13 +69,7 @@ class AppWrapper extends Component {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
         <div id="app-wrapper">
-          {(() => {
-            if (this.state.showApp) {
-              return <div />;
-            }
-
-            return <LoginView />;
-          })()}
+          {this.props.children}
         </div>
       </MuiThemeProvider>
     );

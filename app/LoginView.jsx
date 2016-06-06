@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import { ipcRenderer } from 'electron';
 import RaisedButton from 'material-ui/RaisedButton';
 
-class AppWrapper extends Component {
+class LoginView extends Component {
   static propTypes = {};
   static defaultProps = {};
+
+  componentDidMount() {
+    console.log('LoginView componentDidMount');
+  }
 
   handleWebLogin = () => {
     ipcRenderer.send('doWebLogin');
@@ -30,4 +34,4 @@ class AppWrapper extends Component {
   }
 }
 
-export default AppWrapper;
+export default LoginView;

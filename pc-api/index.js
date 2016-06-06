@@ -1,16 +1,26 @@
+const Q = require('q');
+const http = require('./http');
 const services = require('./services');
 const plans = require('./plans');
 
-module.exports = function() {
+function PCApi() {
+  this.reloadMe = () => {
+    const deferred = Q.defer();
+    http.get('https://api.planningcenteronline.com/services/v2/me')
+      .then((res) => {
+        this.currentUser = res;
+        deferred.resolve(res.data);
+      })
+      .catch((err) => {
+        deferred.reject(err);
+      });
+    return deferred.promise;
+  };
   this.services = services;
   this.plans = plans;
-};
+}
 
-
-
-
-
-
+module.exports = new PCApi();
 
 // const PCAApi = require('./pc-api');
 // const api = new PCAApi();

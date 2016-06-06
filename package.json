@@ -14,11 +14,13 @@
   "author": "Adam Tootle",
   "license": "Apache License 2.0",
   "dependencies": {
-    "react": "^15.1.0",
-    "react-dom": "^15.1.0",
+    "lodash": "^4.13.1",
     "material-ui": "^0.15.0",
     "nedb": "^1.8.0",
     "q": "^1.4.1",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "react-router": "^2.4.1",
     "react-tap-event-plugin": "^1.0.0",
     "request-promise": "^3.0.0",
     "simple-oauth2": "^0.7.0"
