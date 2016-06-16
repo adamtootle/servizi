@@ -1,5 +1,5 @@
 body {
-  background: #D8D8D8;
+  background: #E7E7E5;
   font-family: Roboto, sans-serif;
   color: #2e2e2e;
 }
@@ -13,6 +13,10 @@ body {
 }
 
 #app-wrapper {
+  position: relative;
+}
+
+#app-wrapper-inner {
   position: relative;
 }
 
@@ -38,7 +42,30 @@ body {
   text-align: center;
 }
 
-.example-enter {
+.navbar-back-button {
+  position: absolute !important;
+  left: 0px !important;
+  top: 3px !important;
+}
+
+.navbar-back-button span {
+  color: #ffffff !important;
+  font-size: 18px !important;
+}
+
+/*
+ * player controls
+ */
+
+#player-controls {
+  background: #D8D8D8;
+  
+}
+
+/*
+ * navigation animations
+ */
+.transition-push-enter {
   position: absolute;
   left: 100%;
   top: 54px;
@@ -46,11 +73,11 @@ body {
   width: 100%;
 }
 
-.example-enter.example-enter-active {
+.transition-push-enter.transition-push-enter-active {
   left: 0px;
 }
 
-.example-leave {
+.transition-push-leave {
   position: absolute;
   transition: right .3s;
   right: 0px;
@@ -58,6 +85,30 @@ body {
   width: 100%;
 }
 
-.example-leave.example-leave-active {
+.transition-push-leave.transition-push-leave-active {
   right: 100%;
+}
+
+.transition-pop-enter {
+  position: absolute;
+  right: 100%;
+  top: 54px;
+  transition: right .3s;
+  width: 100%;
+}
+
+.transition-pop-enter.transition-pop-enter-active {
+  right: 0px;
+}
+
+.transition-pop-leave {
+  position: absolute;
+  transition: left .3s;
+  left: 0px;
+  top: 54px;
+  width: 100%;
+}
+
+.transition-pop-leave.transition-pop-leave-active {
+  left: 100%;
 }

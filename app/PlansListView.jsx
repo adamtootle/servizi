@@ -31,11 +31,11 @@ class PlansListView extends Component {
     this.setState({
       schedules,
     });
+    this.context.playr.schedules = schedules;
   };
 
   handlePlanClick = (plan) => {
     this.context.router.push(`/plans/${plan.id}`);
-    this.context.playr.navigation.showBackButton();
   };
 
   render() {
@@ -43,7 +43,7 @@ class PlansListView extends Component {
       <div>
         <List>
           {this.state.schedules.map((schedule) => {
-            console.log(schedule);
+            // console.log(schedule);
             return (
               <div>
                 {schedule.plans.map((plan) => {

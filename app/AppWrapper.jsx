@@ -39,31 +39,22 @@ class AppWrapper extends Component {
       showApp: false,
       title: 'Playr',
       path: [],
-      showBackButton: false,
+      pathDepth: 1,
+      transitionDirection: 'push',
+    };
+
+    this.playrContext = {
+      setTitle: (title) => {
+        this.setState({
+          title,
+        });
+      },
     };
   }
 
   getChildContext() {
     return {
-      playr: {
-        setTitle: (title) => {
-          this.setState({
-            title,
-          });
-        },
-        navigation: {
-          showBackButton: () => {
-            this.setState({
-              showBackButton: true,
-            });
-          },
-          hideBackButton: () => {
-            this.setState({
-              showBackButton: false,
-            });
-          },
-        },
-      },
+      playr: this.playrContext,
     };
   }
 
@@ -71,6 +62,23 @@ class AppWrapper extends Component {
     ipcRenderer.on('validateAuth', this.handleValidateAuthResponse);
     ipcRenderer.send('validateAuth');
     ipcRenderer.on('didLogin', this.handleLoginResults);
+  }
+
+  componentWillReceiveProps(props) {
+    const newPathDepth = props.location.pathname.split('/').length - 1;
+    let transitionDirection;
+    if (newPathDepth > this.state.pathDepth) {
+      transitionDirection = 'push';
+    } else {
+      transitionDirection = 'pop';
+    }
+    this.setState({
+      pathDepth: newPathDepth,
+      transitionDirection,
+      player: {
+        timestamp: '',
+      },
+    });
   }
 
   handleValidateAuthResponse = (ev, valid) => {
@@ -109,26 +117,38 @@ class AppWrapper extends Component {
         <div id="app-wrapper">
           <div id="navbar">
             {(() => {
-              if (this.state.showBackButton) {
+              if (this.state.pathDepth > 1) {
                 return (
                   <IconButton
-                    iconClassName="fa fa-angle-left"
+                    iconClassName="fa fa-chevron-left"
                     onClick={this.handleClickBackButton}
+                    className="navbar-back-button"
                   />
                 );
               }
+
+              return <span />;
             })()}
             {this.state.title}
           </div>
+          <div id="player-controls">
+            <div id="player-progress-indicator">
+            </div>
+            <div id="player-timestamp">
+              {this.state.player.timestamp}
+            </div>
+          </div>
           <ReactCSSTransitionGroup
             component="div"
-            transitionName="example"
-            transitionEnterTimeout={30000}
-            transitionLeaveTimeout={30000}
+            transitionName={`transition-${this.state.transitionDirection}`}
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}
           >
-            {React.cloneElement(this.props.children, {
-              key: this.props.location.pathname,
-            })}
+            <div id="app-wrapper-inner">
+              {React.cloneElement(this.props.children, {
+                key: this.props.location.pathname,
+              })}
+            </div>
           </ReactCSSTransitionGroup>
         </div>
       </MuiThemeProvider>
