@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "electron .",
-    "build-mac": "electron-packager . 'PCS Player' --platform=darwin --arch=all --version=1.2.0 --extend-info=Info.plist --overwrite --prune",
+    "build-mac": "electron-packager . 'PCS Player' --platform=darwin --arch=all --version=1.4.9 --extend-info=Info.plist --overwrite --prune",
     "webpack-server": "webpack-dev-server --config webpack.server.js",
     "babel-watch": "babel src --watch --out-dir lib",
     "dev-server": "NODE_ENV=production concurrently 'npm run babel-watch' 'npm run webpack-server'"
@@ -14,18 +14,17 @@
   "author": "Adam Tootle",
   "license": "Apache License 2.0",
   "dependencies": {
+    "bluebird": "^3.4.1",
     "lodash": "^4.13.1",
     "material-ui": "^0.15.0",
     "nedb": "^1.8.0",
-    "q": "^1.4.1",
     "react": "^15.1.0",
     "react-addons-css-transition-group": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-fontawesome": "^1.1.0",
     "react-router": "^2.4.1",
     "react-tap-event-plugin": "^1.0.0",
-    "request-promise": "^3.0.0",
-    "simple-oauth2": "^0.7.0"
+    "simple-oauth2": "^1.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",

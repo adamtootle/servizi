@@ -20,6 +20,54 @@
   </head>
   <body>
     <div id="app"></div>
+    <script>
+      const P = require('bluebird');
+      const auth = require('./lib/auth');
+      var pcoWrapper = require('./lib/pco-wrapper');
+      pcoWrapper.on('ready', (err, res) => {
+        if (!err) {
+          window.pco = res;
+          window.renderApp();
+        }
+      });
+      window.validateAuth = function validateAuth(event, args) {
+        const promise = new P((resolve, reject) => {
+          auth.getStoredToken()
+          .then(window.pco.reloadMe)
+          .then((me) => {
+            if (me) {
+              resolve(true);
+            }
+          })
+          .catch((err) => {
+            resolve(false);
+          });
+        });
+        return promise;
+        // const deferred = Q.defer();
+        // auth.getToken()
+        //   .then(window.pco)
+        //   .catch((err) => {
+        //     deferred.reject(err);
+        //   })
+        //   .done((res) => {
+        //     deferred.resolve(true);
+        //   });
+        // return deferred.promise;
+      };
+      /*window.pco.reloadMe()
+        .then(function(res){
+          console.log('reloadMe succeess');
+          console.log(res);
+        }, function(err){
+          console.log('errrrr');
+          console.log(err);
+      });*/
+
+      document.addEventListener("DOMContentLoaded", function() {
+        pcoWrapper.refreshAuth();
+      });
+    </script>
     <script src="http://localhost:8080/webpack-dev-server.js"></script>
     <script src="http://localhost:8080/bundle.js"></script>
   </body>

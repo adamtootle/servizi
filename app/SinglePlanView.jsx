@@ -1,11 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { ipcRenderer } from 'electron';
-import RaisedButton from 'material-ui/RaisedButton';
 import { List, ListItem } from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
-import find from 'lodash/find';
-import forEach from 'lodash/foreach';
+import { forEach, find } from 'lodash';
+import CircularProgress from 'material-ui/CircularProgress';
 
 class SinglePlanView extends Component {
   static propTypes = {
@@ -22,6 +19,9 @@ class SinglePlanView extends Component {
 
     this.state = {
       schedules: [],
+      plan: null,
+      planItems: null,
+      planAttachments: null,
     };
   }
 
@@ -35,8 +35,20 @@ class SinglePlanView extends Component {
         plan = matchingPlan;
       }
     });
-    console.log('plan');
-    console.log(plan);
+    setTimeout(() => {
+      this.setState({
+        plan,
+      });
+    }, 0);
+
+    Promise.all(plan.items.map((item) => window.pco.plans.getPlanItem(item)))
+    .then((planItems) => {
+      this.setState({
+        planItems,
+      });
+      console.log('items');
+      console.log(planItems);
+    });
   }
 
   handleGetSchedulesResponse = (ev, schedules) => {
@@ -45,14 +57,48 @@ class SinglePlanView extends Component {
     });
   };
 
-  handlePlanClick = (plan) => {
+  handleItemClick = (plan, index) => {
     console.log(plan);
+    console.log(this.state.planItems[index]);
   };
 
   render() {
+    if (this.state.planItems === null || this.state.planAttachments === null) {
+      return (
+        <div className="loading-indicator-wrapper" style={{ marginTop: '100px' }}>
+          <CircularProgress />
+        </div>
+      );
+    }
+
     return (
       <List>
         <Subheader>Items</Subheader>
+        {(() => {
+          if (this.state.plan !== null) {
+            return this.state.plan.items.map((item, index) => {
+              if (this.state.planItems === null) {
+                return (
+                  <ListItem disabled>
+                    {item.attributes.title} (loading...)
+                  </ListItem>
+                );
+              }
+
+              return (
+                <ListItem
+                  onClick={() => {
+                    this.handleItemClick(item, index);
+                  }}
+                >
+                  {item.attributes.title}
+                </ListItem>
+              );
+            });
+          }
+
+          return '';
+        })()}
       </List>
     );
   }

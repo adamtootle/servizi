@@ -5,11 +5,9 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 injectTapEventPlugin();
 
-const render = () => {
+window.renderApp = function renderApp() {
   ReactDOM.render(
     React.createElement(Routes),
     document.getElementById('app')
   );
 };
-
-render();

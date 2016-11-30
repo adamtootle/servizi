@@ -6,10 +6,6 @@ class LoginView extends Component {
   static propTypes = {};
   static defaultProps = {};
 
-  componentDidMount() {
-    console.log('LoginView componentDidMount');
-  }
-
   handleWebLogin = () => {
     ipcRenderer.send('doWebLogin');
   };

@@ -1,10 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Link } from 'react-router';
-import { ipcRenderer } from 'electron';
-import RaisedButton from 'material-ui/RaisedButton';
 import { List, ListItem } from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
 
 class PlansListView extends Component {
   static propTypes = {};
@@ -23,16 +18,16 @@ class PlansListView extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.on('getSchedules', this.handleGetSchedulesResponse);
-    ipcRenderer.send('getSchedules');
+    window.pco.plans.getFuturePlans()
+      .then((schedules) => {
+        console.log(schedules[0].plans);
+        console.log(schedules[0].schedule);
+        this.setState({
+          schedules: schedules[0].schedules,
+        });
+        // this.context.playr.plans = plans;
+      });
   }
-
-  handleGetSchedulesResponse = (ev, schedules) => {
-    this.setState({
-      schedules,
-    });
-    this.context.playr.schedules = schedules;
-  };
 
   handlePlanClick = (plan) => {
     this.context.router.push(`/plans/${plan.id}`);
@@ -43,21 +38,15 @@ class PlansListView extends Component {
       <div>
         <List>
           {this.state.schedules.map((schedule) => {
-            // console.log(schedule);
+            console.log(schedule);
             return (
-              <div>
-                {schedule.plans.map((plan) => {
-                  return (
-                    <ListItem
-                      primaryText={plan.attributes.short_dates}
-                      secondaryText={schedule.schedule.attributes.service_type_name}
-                      onClick={() => {
-                        this.handlePlanClick(plan);
-                      }}
-                    />
-                  );
-                })}
-              </div>
+              <ListItem
+                primaryText={plan.attributes.short_dates}
+                secondaryText={schedule.schedule.attributes.service_type_name}
+                onClick={() => {
+                  this.handlePlanClick(plan);
+                }}
+              />
             );
           })}
         </List>

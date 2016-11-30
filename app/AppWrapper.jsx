@@ -59,9 +59,7 @@ class AppWrapper extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.on('validateAuth', this.handleValidateAuthResponse);
-    ipcRenderer.send('validateAuth');
-    ipcRenderer.on('didLogin', this.handleLoginResults);
+    window.validateAuth().then(this.handleValidateAuthResponse);
   }
 
   componentWillReceiveProps(props) {
@@ -81,7 +79,7 @@ class AppWrapper extends Component {
     });
   }
 
-  handleValidateAuthResponse = (ev, valid) => {
+  handleValidateAuthResponse = (valid) => {
     if (valid) {
       this.context.router.replace('/plans');
     } else {
