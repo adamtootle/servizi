@@ -81,7 +81,7 @@ class AppWrapper extends Component {
 
   handleValidateAuthResponse = (valid) => {
     if (valid) {
-      this.context.router.replace('/plans');
+      this.context.router.replace('/schedules');
     } else {
       this.context.router.replace('/login');
     }
