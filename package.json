@@ -15,15 +15,18 @@
   "license": "Apache License 2.0",
   "dependencies": {
     "bluebird": "^3.4.1",
+    "json-loader": "^0.5.4",
     "lodash": "^4.13.1",
     "material-ui": "^0.16.4",
     "nedb": "^1.8.0",
-    "react": "^15.1.0",
+    "pco": "https://github.com/adamtootle/pco.js",
+    "react": "^15.4.0",
     "react-addons-css-transition-group": "^15.1.0",
-    "react-dom": "^15.1.0",
+    "react-dom": "^15.4.0",
     "react-fontawesome": "^1.1.0",
     "react-router": "^2.4.1",
     "react-tap-event-plugin": "2.0.1",
+    "request-promise": "^4.1.1",
     "simple-oauth2": "^1.0.1"
   },
   "devDependencies": {

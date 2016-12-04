@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
 
@@ -13,13 +14,18 @@ module.exports = {
 
   resolve: {
     extensions: ['', '.jsx', '.js'],
+    fallback: [path.join(__dirname, 'node_modules')],
+  },
+
+  resolveLoader: {
+    fallback: [path.join(__dirname, 'node_modules')],
   },
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': '"production"',
+        NODE_ENV: '"production"',
       },
     }),
   ],
@@ -35,6 +41,11 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
+      },
+      {
+        test: /\.json?$/,
+        // exclude: /node_modules/,
+        loader: 'json',
       },
     ],
   },

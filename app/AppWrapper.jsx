@@ -2,10 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
-import { ipcRenderer } from 'electron';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import IconButton from 'material-ui/IconButton';
-import FontAwesome from 'react-fontawesome';
 
 const theme = {
   palette: {

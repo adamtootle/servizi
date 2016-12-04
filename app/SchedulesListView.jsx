@@ -18,7 +18,7 @@ class SchedulesListView extends Component {
   }
 
   componentDidMount() {
-    window.pco.schedules.getSchedules()
+    window.apiClient.schedules.getSchedules()
       .then((res) => {
         this.setState({
           schedules: res.data,
