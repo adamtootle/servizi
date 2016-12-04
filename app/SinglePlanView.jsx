@@ -1,7 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { List, ListItem } from 'material-ui/List';
+import { List, ListItem, makeSelectable } from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import CircularProgress from 'material-ui/CircularProgress';
+import { filter } from 'lodash';
+import S from 'string';
+
+const SelectableList = makeSelectable(List);
 
 class SinglePlanView extends Component {
   static propTypes = {
@@ -21,36 +25,24 @@ class SinglePlanView extends Component {
 
     this.state = {
       plan: null,
+      planItems: null,
       planAttachments: null,
+      selectedItemIndex: -1,
+      selectedAttachmentIndex: -1,
     };
   }
 
   componentDidMount() {
-    console.log(this.props.params);
-    const planRoute = `/service_types/${this.props.params.service_type_id}/plans/${this.props.params.plan_id}`;
-    const planAttachmentsRoute = `/service_types/${this.props.params.service_type_id}/plans/${this.props.params.plan_id}/all_attachments`;
-    // console.log(this.context.playr.schedules);
-    // let plan;
-    // forEach(this.context.playr.schedules, (object) => {
-    //   const matchingPlan = find(object.plans, { id: this.props.params.plan_id });
-    //   if (matchingPlan !== null) {
-    //     plan = matchingPlan;
-    //   }
-    // });
-    // setTimeout(() => {
-    //   this.setState({
-    //     plan,
-    //   });
-    // }, 0);
-    //
-    // Promise.all(plan.items.map((item) => window.pco.plans.getPlanItem(item)))
-    // .then((planItems) => {
-    //   this.setState({
-    //     planItems,
-    //   });
-    //   console.log('items');
-    //   console.log(planItems);
-    // });
+    window.apiClient.plans.getPlan({ serviceTypeId: this.props.params.service_type_id, planId: this.props.params.plan_id })
+          .then(window.apiClient.plans.getPlanItems)
+          .then(window.apiClient.plans.getPlanAttachments)
+          .then((res) => {
+            this.setState({
+              plan: res.plan,
+              planItems: res.planItems,
+              planAttachments: res.planAttachments,
+            });
+          });
   }
 
   handleGetSchedulesResponse = (ev, schedules) => {
@@ -59,13 +51,16 @@ class SinglePlanView extends Component {
     });
   };
 
-  handleItemClick = (plan, index) => {
-    console.log(plan);
-    console.log(this.state.planItems[index]);
+  handleItemClick = (attachment, itemIndex, attachmentIndex) => {
+    console.log(attachment.attributes.url);
+    this.setState({
+      selectedItemIndex: itemIndex,
+      selectedAttachmentIndex: attachmentIndex,
+    });
   };
 
   render() {
-    if (this.state.planItems === null || this.state.planAttachments === null) {
+    if (this.state.planItems === null || this.state.planAttachments === null || this.state.planAttachments === null) {
       return (
         <div className="loading-indicator-wrapper" style={{ marginTop: '100px' }}>
           <CircularProgress />
@@ -73,35 +68,47 @@ class SinglePlanView extends Component {
       );
     }
 
+    const songItems = filter(this.state.planItems.data, (item) => {
+      return item.attributes.item_type === 'song';
+    });
+
     return (
-      <List>
-        <Subheader>Items</Subheader>
+      <SelectableList>
         {(() => {
           if (this.state.plan !== null) {
-            return this.state.plan.items.map((item, index) => {
-              if (this.state.planItems === null) {
-                return (
-                  <ListItem disabled>
-                    {item.attributes.title} (loading...)
-                  </ListItem>
-                );
-              }
+            return songItems.map((item, itemIndex) => {
+              const songId = item.relationships.song.data.id;
+              const itemAttachments = filter(this.state.planAttachments.data, (attachment) => {
+                return attachment.relationships.attachable.data.id === songId;
+              });
 
               return (
-                <ListItem
-                  onClick={() => {
-                    this.handleItemClick(item, index);
-                  }}
-                >
-                  {item.attributes.title}
-                </ListItem>
+                <div>
+                  <Subheader>{item.attributes.title}</Subheader>
+                  {itemAttachments.map((attachment, attachmentIndex) => {
+                    const itemIsSelected = itemIndex === this.state.selectedItemIndex && attachmentIndex === this.state.selectedAttachmentIndex;
+                    const style = {
+                      backgroundColor: itemIsSelected ? 'rgba(0, 0, 0, 0.05)' : '',
+                    };
+                    return (
+                      <ListItem
+                        onClick={() => {
+                          this.handleItemClick(attachment, itemIndex, attachmentIndex);
+                        }}
+                        style={style}
+                      >
+                        {S(attachment.attributes.filename).truncate(50).toString()}
+                      </ListItem>
+                    );
+                  })}
+                </div>
               );
             });
           }
 
           return '';
         })()}
-      </List>
+      </SelectableList>
     );
   }
 }

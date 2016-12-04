@@ -5,17 +5,6 @@
     <title>Hello World!</title>
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/font-awesome.css" />
-    <style>
-      html, body {
-        padding: 0px;
-        margin: 0px;
-        height: 100%;
-      }
-
-      body {
-        overflow: hidden;
-      }
-    </style>
   </head>
   <body>
     <div id="app"></div>
@@ -33,18 +22,11 @@
         const promise = new P((resolve, reject) => {
           auth.getStoredToken()
               .then((token) => {
+                if (token !== null) {
+                  window.apiClient.http.accessToken = token.token.access_token;
+                }
                 resolve(token !== null);
               });
-          // auth.getStoredToken()
-          // .then(window.apiClient.reloadMe)
-          // .then((me) => {
-          //   if (me) {
-          //     resolve(true);
-          //   }
-          // })
-          // .catch((err) => {
-          //   resolve(false);
-          // });
         });
         return promise;
       };
