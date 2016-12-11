@@ -64,15 +64,6 @@ body {
 }
 
 /*
- * player controls
- */
-
-#player-controls {
-  background: #D8D8D8;
-
-}
-
-/*
  * navigation animations
  */
 .transition-push-enter {
@@ -121,4 +112,41 @@ body {
 
 .transition-pop-leave.transition-pop-leave-active {
   left: 100%;
+}
+
+/*
+ * Player Controls
+ */
+
+#player-container {
+  position: relative;
+  height: 50px;
+  background: #D8D8D8;
+}
+
+#player-progress-bar {
+  background-color: #C8C8C8;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+}
+
+#player-controls {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+}
+
+#player-timestamp {
+  color: #ffffff;
+  font-size: 13px;
+  position: absolute;
+  left: 7px;
+  bottom: 4px;
+}
+
+#player-buttons {
+  text-align: center;
 }

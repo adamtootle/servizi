@@ -127,13 +127,6 @@ class AppWrapper extends Component {
             })()}
             {this.state.title}
           </div>
-          <div id="player-controls">
-            <div id="player-progress-indicator">
-            </div>
-            <div id="player-timestamp">
-              {this.state.player.timestamp}
-            </div>
-          </div>
           <ReactCSSTransitionGroup
             component="div"
             transitionName={`transition-${this.state.transitionDirection}`}
