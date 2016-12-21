@@ -119,8 +119,15 @@ body {
  */
 
 #player-container {
+  position: fixed;
+  z-index: 2;
+  width: 100%;
+  border-bottom: 1px solid #B4B4B4;
+}
+
+#player-container-inner {
   position: relative;
-  height: 50px;
+  height: 60px;
   background: #D8D8D8;
 }
 
@@ -149,4 +156,10 @@ body {
 
 #player-buttons {
   text-align: center;
+  height: 100%;
+  padding-top: 7px;
+}
+
+#player-container + #plan-items-container {
+  padding-top: 60px !important;
 }

@@ -21,12 +21,6 @@ const app = electron.app;
 ipcEvents.setupListeners();
 appEvents.setupListeners();
 
-// api.plans.getFuturePlans()
-//   .then((futurePlans) => {
-//     console.log('futurePlans');
-//     console.log(futurePlans);
-//   });
-
 if (app.dock !== undefined) {
   app.dock.hide();
 }
