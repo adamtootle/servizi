@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/font-awesome.css" />
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app-wrapper"></div>
     <script>
       const P = require('bluebird');
       const auth = require('./lib/auth');
@@ -19,7 +19,7 @@
         }
       });
       window.validateAuth = function validateAuth(event, args) {
-        const promise = new P((resolve, reject) => {
+        return new P((resolve, reject) => {
           auth.getStoredToken()
               .then((token) => {
                 if (token !== null) {
@@ -28,7 +28,6 @@
                 resolve(token !== null);
               });
         });
-        return promise;
       };
 
       document.addEventListener("DOMContentLoaded", function() {

@@ -7,6 +7,7 @@
 const electron = require('electron');
 const appEvents = require('./lib/app-events');
 const ipcEvents = require('./lib/ipc-events');
+const settings = require('./lib/settings');
 
 //
 // vars
@@ -21,6 +22,6 @@ const app = electron.app;
 ipcEvents.setupListeners();
 appEvents.setupListeners();
 
-if (app.dock !== undefined) {
+if (!settings.getStoredSettings().fullPlayerUI && app.dock !== undefined) {
   app.dock.hide();
 }

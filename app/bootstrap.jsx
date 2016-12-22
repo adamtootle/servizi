@@ -8,6 +8,6 @@ injectTapEventPlugin();
 window.renderApp = function renderApp() {
   ReactDOM.render(
     React.createElement(Routes),
-    document.getElementById('app')
+    document.getElementById('app-wrapper')
   );
 };

@@ -18,13 +18,8 @@ body {
   font-size: 16px;
 }
 
-#app-wrapper {
+#app {
   position: relative;
-}
-
-#app-wrapper-inner {
-  position: relative;
-  padding-top: 54px;
 }
 
 #login {
@@ -50,17 +45,38 @@ body {
   position: fixed;
   width: 100%;
   z-index: 10;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
 }
 
-.navbar-back-button {
+#navbar-back-button {
   position: absolute !important;
   left: 0px !important;
   top: 3px !important;
 }
 
-.navbar-back-button span {
+#navbar-back-button svg {
   color: #ffffff !important;
-  font-size: 18px !important;
+  height: 34px !important;
+  width: 34px !important;
+  position: relative;
+  top: -5px;
+  left: -5px;
+}
+
+#navbar-settings-button {
+  position: absolute !important;
+  right: 0px !important;
+  top: 3px !important;
+}
+
+#navbar-settings-button svg {
+  color: #ffffff !important;
+  /*height: 34px !important;
+  width: 34px !important;
+  position: relative;
+  top: -5px;
+  left: -5px;*/
 }
 
 /*
@@ -162,4 +178,12 @@ body {
 
 #player-container + #plan-items-container {
   padding-top: 60px !important;
+}
+
+/*
+ * Settings
+ */
+
+#settings-container {
+  padding: 20px 30px;
 }

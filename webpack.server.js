@@ -25,7 +25,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: '"production"',
+        // NODE_ENV: '"production"',
       },
     }),
   ],
@@ -46,6 +46,10 @@ module.exports = {
         test: /\.json?$/,
         // exclude: /node_modules/,
         loader: 'json',
+      },
+      {
+        test: [/node_modules[\\\/](?:electron-settings|key-path-helpers)[\\\/]lib[\\\/](?:.+).js/],
+        loaders: ['babel-loader']
       },
     ],
   },

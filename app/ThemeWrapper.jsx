@@ -3,7 +3,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import IconButton from 'material-ui/IconButton';
+import settings from '../lib/settings';
 
 const theme = {
   palette: {
@@ -12,7 +12,7 @@ const theme = {
   },
 };
 
-class AppWrapper extends Component {
+class ThemeWrapper extends Component {
   static propTypes = {
     children: PropTypes.array,
     location: PropTypes.object,
@@ -79,7 +79,11 @@ class AppWrapper extends Component {
 
   handleValidateAuthResponse = (valid) => {
     if (valid) {
-      this.context.router.replace('/schedules');
+      if (settings.getStoredSettings().fullPlayerUI) {
+        this.context.router.replace('/full/schedules');
+      } else {
+        this.context.router.replace('/mini/schedules');
+      }
     } else {
       this.context.router.replace('/login');
     }
@@ -97,6 +101,10 @@ class AppWrapper extends Component {
     this.context.router.goBack();
   };
 
+  handleClickSettingsButton = () => {
+    this.context.router.push('/app/settings');
+  }
+
   render() {
     if (this.state.showLoader) {
       return (
@@ -110,39 +118,12 @@ class AppWrapper extends Component {
 
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-        <div id="app-wrapper">
-          <div id="navbar">
-            {(() => {
-              if (this.state.pathDepth > 1) {
-                return (
-                  <IconButton
-                    iconClassName="fa fa-chevron-left"
-                    onClick={this.handleClickBackButton}
-                    className="navbar-back-button"
-                  />
-                );
-              }
-
-              return <span />;
-            })()}
-            {this.state.title}
-          </div>
-          <ReactCSSTransitionGroup
-            component="div"
-            transitionName={`transition-${this.state.transitionDirection}`}
-            transitionEnterTimeout={300}
-            transitionLeaveTimeout={300}
-          >
-            <div id="app-wrapper-inner">
-              {React.cloneElement(this.props.children, {
-                key: this.props.location.pathname,
-              })}
-            </div>
-          </ReactCSSTransitionGroup>
-        </div>
+        {React.cloneElement(this.props.children, {
+          key: this.props.location.pathname,
+        })}
       </MuiThemeProvider>
     );
   }
 }
 
-export default AppWrapper;
+export default ThemeWrapper;

@@ -7,6 +7,7 @@ class SchedulesListView extends Component {
   static contextTypes = {
     router: PropTypes.object,
     playr: PropTypes.object,
+    uiRoutePrefix: PropTypes.string,
   };
 
   constructor(args) {
@@ -30,7 +31,7 @@ class SchedulesListView extends Component {
   handlePlanClick = (schedule) => {
     const serviceType = schedule.relationships.service_type;
     const plan = schedule.relationships.plan;
-    const route = `/service_types/${serviceType.data.id}/plans/${plan.data.id}`;
+    const route = `/${this.context.uiRoutePrefix}/service_types/${serviceType.data.id}/plans/${plan.data.id}`;
     this.context.router.push(route);
   };
 
