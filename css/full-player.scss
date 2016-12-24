@@ -20,6 +20,15 @@
   #plan-items-container {
     padding-top: 0px !important;
   }
+
+  #video-player {
+    position: relative;
+    background: #000000;
+
+    div {
+      width: 100% !important;
+    }
+  }
 }
 
 #side-menu {

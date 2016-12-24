@@ -29,7 +29,9 @@ class SinglePlanView extends Component {
       planItems: null,
       planAttachments: null,
       selectedAttachment: null,
+      selectedVideoAttachment: null,
       playAudio: false,
+
     };
   }
 
@@ -83,10 +85,16 @@ class SinglePlanView extends Component {
   };
 
   handleClickAttachment = (selectedAttachment) => {
-    if (selectedAttachment.attributes.pco_type === 'AttachmentS3') {
+    const attachmentType = selectedAttachment.attributes.pco_type;
+    if (attachmentType === 'AttachmentS3') {
       this.context.player.emit(keys.PlayAttachmentKey, selectedAttachment);
-    } else {
-      console.log(selectedAttachment);
+      this.setState({
+        selectedVideoAttachment: null,
+      });
+    } else if (attachmentType === 'AttachmentVimeo' || attachmentType === 'AttachmentYoutube') {
+      this.setState({
+        selectedVideoAttachment: selectedAttachment,
+      });
     }
     this.setState({
       selectedAttachment,
@@ -146,9 +154,11 @@ class SinglePlanView extends Component {
         {(() => {
           //http://vimeo.com/63300324
           // console.log(this.state.selectedAttachment);
-          if (this.state.selectedAttachment !== null && this.state.selectedAttachment.attributes.pco_type === 'AttachmentVimeo') {
+          if (this.state.selectedVideoAttachment !== null) {
             return (
-              <VideoPlayer />
+              <VideoPlayer
+                selectedVideoAttachment={this.state.selectedVideoAttachment}
+              />
             );
           }
 

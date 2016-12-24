@@ -12,7 +12,6 @@ class PlayerControls extends Component {
     selectedAttachment: PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     }),
-    playAudio: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -20,8 +19,6 @@ class PlayerControls extends Component {
   };
 
   static defaultProps = {
-    songItems: [],
-    planAttachments: [],
     playAudio: false,
   };
 
@@ -31,7 +28,6 @@ class PlayerControls extends Component {
     this.selectedAttachmentId = -1;
 
     this.state = {
-      selectedAttachment: null,
       selectedAttachmentUrl: null,
       playerTotalSeconds: 0,
       playerCurrentTime: 0,
@@ -159,7 +155,7 @@ class PlayerControls extends Component {
                 }}
               >
                 {(() => {
-                  if (this.props.playAudio) {
+                  if (this.state.playAudio) {
                     return <ActionPauseIcon />;
                   }
 
