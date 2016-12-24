@@ -90,7 +90,11 @@ class PlayerControls extends Component {
           id="player-container-inner"
           onClick={(ev) => {
             const elementRect = this.playerContainer.getBoundingClientRect();
-            this.audioPlayer.seekTo((ev.clientX - elementRect.left) / this.playerContainer.clientWidth);
+            const newProgress = (ev.clientX - elementRect.left) / this.playerContainer.clientWidth;
+            this.setState({
+              playerCurrentTime: newProgress * this.state.playerTotalSeconds,
+            });
+            this.audioPlayer.seekTo(newProgress);
           }}
         >
           <div
@@ -190,7 +194,7 @@ class PlayerControls extends Component {
             // console.log('onReady');
           }}
           onProgress={(progress) => {
-            if (this.state.playerTotalSeconds > 0) {
+            if (this.state.playerTotalSeconds > 0 && progress.played !== undefined) {
               this.setState({
                 playerCurrentTime: Math.floor(this.state.playerTotalSeconds * progress.played),
               });
