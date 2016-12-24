@@ -6,7 +6,7 @@ class SchedulesListView extends Component {
   static defaultProps = {};
   static contextTypes = {
     router: PropTypes.object,
-    playr: PropTypes.object,
+    player: PropTypes.object,
     uiRoutePrefix: PropTypes.string,
   };
 
@@ -24,14 +24,13 @@ class SchedulesListView extends Component {
         this.setState({
           schedules: res.data,
         });
-        // this.context.playr.plans = plans;
       });
   }
 
   handlePlanClick = (schedule) => {
     const serviceType = schedule.relationships.service_type;
     const plan = schedule.relationships.plan;
-    const route = `/${this.context.uiRoutePrefix}/service_types/${serviceType.data.id}/plans/${plan.data.id}`;
+    const route = `/service_types/${serviceType.data.id}/plans/${plan.data.id}`;
     this.context.router.push(route);
   };
 
@@ -45,6 +44,7 @@ class SchedulesListView extends Component {
             const teamName = schedule.attributes.team_name;
             return (
               <ListItem
+                key={schedule.id}
                 primaryText={schedule.attributes.dates}
                 secondaryText={`${serviceTypeName} - ${teamPositionName} (${teamName})`}
                 onClick={() => {

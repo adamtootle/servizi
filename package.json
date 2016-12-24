@@ -17,6 +17,7 @@
     "bluebird": "^3.4.1",
     "electron": "^1.4.13",
     "electron-settings": "^2.2.2",
+    "eventemitter3": "^2.0.2",
     "json-loader": "^0.5.4",
     "lodash": "^4.13.1",
     "material-ui": "^0.16.4",
@@ -46,6 +47,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "concurrently": "^2.1.0",
+    "css-loader": "^0.26.1",
     "electron-packager": "^7.0.2",
     "eslint": "^3.11.1",
     "eslint-config-airbnb": "^13.0.0",
@@ -53,6 +55,9 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.7.1",
     "expose-loader": "^0.7.1",
+    "node-sass": "^4.1.1",
+    "sass-loader": "^4.1.1",
+    "style-loader": "^0.13.1",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
   }

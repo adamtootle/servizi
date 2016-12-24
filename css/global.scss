@@ -1,5 +1,4 @@
 html, body {
-  padding: 0px;
   margin: 0px;
   height: 100%;
 }
@@ -10,16 +9,16 @@ body {
   color: #2e2e2e;
 }
 
+#app {
+  position: relative;
+}
+
 .help-text {
   font-size: 13px;
 }
 
 .label {
   font-size: 16px;
-}
-
-#app {
-  position: relative;
 }
 
 #login {
@@ -138,7 +137,6 @@ body {
   position: fixed;
   z-index: 2;
   width: 100%;
-  border-bottom: 1px solid #B4B4B4;
 }
 
 #player-container-inner {

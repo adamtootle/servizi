@@ -7,7 +7,7 @@ class SettingsView extends Component {
   static defaultProps = {};
   static contextTypes = {
     router: PropTypes.object,
-    playr: PropTypes.object,
+    player: PropTypes.object,
   };
 
   constructor(args) {

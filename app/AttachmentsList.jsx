@@ -13,15 +13,25 @@ class AttachmentsList extends Component {
       data: PropTypes.array,
     }),
     selectedAttachment: PropTypes.shape({
-      id: PropTypes.number,
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     }),
-    onSelectAttachment: PropTypes.function,
+    onSelectAttachment: PropTypes.func,
+  };
+
+  static contextTypes = {
+    player: PropTypes.object,
   };
 
   static defaultProps = {
     songItems: [],
     planAttachments: [],
   };
+
+  adjustedAttachmentName(name) {
+    let adjustedName = name;
+    //Great, Great God-A.mp3
+    return S(adjustedName).truncate(50).toString().replace(/(.mp3|.wav)*/gi, '');
+  }
 
   render() {
     return (
@@ -33,7 +43,7 @@ class AttachmentsList extends Component {
           });
 
           return (
-            <div>
+            <div key={item.id}>
               <Subheader
                 style={{
                   backgroundColor: '#B4B4B4',
@@ -51,6 +61,7 @@ class AttachmentsList extends Component {
                 };
                 return (
                   <ListItem
+                    key={attachment.id}
                     ref={(ref) => {
                       this[`attachment${attachment.id}ListItem`] = ref;
                     }}
@@ -59,7 +70,7 @@ class AttachmentsList extends Component {
                     }}
                     style={style}
                   >
-                    {S(attachment.attributes.filename).truncate(50).toString()}
+                    {this.adjustedAttachmentName(attachment.attributes.filename)}
                   </ListItem>
                 );
               })}

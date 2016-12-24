@@ -1,0 +1,32 @@
+
+#app.full-player {
+  padding-left: 220px;
+
+  .single-plan-view {
+    position: relative;
+  }
+
+  #player-container {
+    left: 0px;
+    bottom: 0px;
+    // padding-left: 220px;
+    // box-sizing: border-box;
+
+    #player-container-inner {
+      border-top: 1px solid #B4B4B4;
+    }
+  }
+
+  #plan-items-container {
+    padding-top: 0px !important;
+  }
+}
+
+#side-menu {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 220px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+}

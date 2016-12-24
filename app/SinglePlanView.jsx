@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
 import { filter, findIndex } from 'lodash';
-import { ipcRenderer } from 'electron';
 import PlayerControls from './PlayerControls';
 import AttachmentsList from './AttachmentsList';
+import VideoPlayer from './VideoPlayer';
+import keys from '../lib/keys';
+import settings from '../lib/settings';
 
 class SinglePlanView extends Component {
   static propTypes = {
@@ -15,7 +17,7 @@ class SinglePlanView extends Component {
   static defaultProps = {};
   static contextTypes = {
     router: PropTypes.object,
-    playr: PropTypes.object,
+    player: PropTypes.object,
     uiRoutePrefix: PropTypes.string,
   };
 
@@ -40,7 +42,15 @@ class SinglePlanView extends Component {
     .then(window.apiClient.plans.getPlanAttachments)
     .then((res) => {
       const planAttachments = res.planAttachments;
-      const newData = filter(planAttachments.data, attachment => attachment.attributes.pco_type === 'AttachmentS3');
+      let newData = planAttachments.data;
+
+      if (!settings.getStoredSettings().fullPlayerUI) {
+        filter(planAttachments.data, attachment => attachment.attributes.pco_type === 'AttachmentS3');
+      }
+
+      if (this.context.uiRoutePrefix === 'full') {
+        newData = planAttachments.data;
+      }
       planAttachments.data = newData;
       this.setState({
         plan: res.plan,
@@ -49,15 +59,11 @@ class SinglePlanView extends Component {
       });
     });
 
-    ipcRenderer.on('MediaPlayPause', () => {
-      this.handleClickPlayPause();
-    });
-
-    ipcRenderer.on('MediaPreviousTrack', () => {
+    this.context.player.on(keys.PlayPreviousAttachmentKey, () => {
       this.handleClickPreviousTrack();
     });
 
-    ipcRenderer.on('MediaNextTrack', () => {
+    this.context.player.on(keys.PlayNextAttachmentKey, () => {
       this.handleClickNextTrack();
     });
   }
@@ -77,9 +83,13 @@ class SinglePlanView extends Component {
   };
 
   handleClickAttachment = (selectedAttachment) => {
+    if (selectedAttachment.attributes.pco_type === 'AttachmentS3') {
+      this.context.player.emit(keys.PlayAttachmentKey, selectedAttachment);
+    } else {
+      console.log(selectedAttachment);
+    }
     this.setState({
       selectedAttachment,
-      playAudio: true,
     });
   };
 
@@ -120,14 +130,30 @@ class SinglePlanView extends Component {
     const songItems = filter(this.state.planItems.data, item => item.attributes.item_type === 'song');
 
     return (
-      <div>
-        <PlayerControls
-          playAudio={this.state.playAudio}
-          selectedAttachment={this.state.selectedAttachment}
-          onClickPlayPause={this.handleClickPlayPause}
-          onClickPreviousTrack={this.handleClickPreviousTrack}
-          onClickNextTrack={this.handleClickNextTrack}
-        />
+      <div className="single-plan-view">
+        {(() => {
+          if (this.context.uiRoutePrefix === 'mini') {
+            return (
+              <PlayerControls
+                playAudio={this.state.playAudio}
+                selectedAttachment={this.state.selectedAttachment}
+              />
+            );
+          }
+
+          return null;
+        })()}
+        {(() => {
+          //http://vimeo.com/63300324
+          // console.log(this.state.selectedAttachment);
+          if (this.state.selectedAttachment !== null && this.state.selectedAttachment.attributes.pco_type === 'AttachmentVimeo') {
+            return (
+              <VideoPlayer />
+            );
+          }
+
+          return null;
+        })()}
         <AttachmentsList
           songItems={songItems}
           planAttachments={this.state.planAttachments}

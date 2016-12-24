@@ -51,6 +51,10 @@ module.exports = {
         test: [/node_modules[\\\/](?:electron-settings|key-path-helpers)[\\\/]lib[\\\/](?:.+).js/],
         loaders: ['babel-loader']
       },
+      {
+        test: /\.scss$/,
+        loaders: ['style-loader', 'css-loader', 'sass-loader'],
+      },
     ],
   },
 

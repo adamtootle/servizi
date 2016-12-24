@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-class SideMenu extends Component {
+class VideoPlayer extends Component {
   render() {
     return (
       <div>
-      menu here
+      VideoPlayer
       </div>
     );
   }
 }
 
-export default SideMenu;
+export default VideoPlayer;

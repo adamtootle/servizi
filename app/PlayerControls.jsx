@@ -5,16 +5,18 @@ import ActionPlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import ActionPauseIcon from 'material-ui/svg-icons/av/pause';
 import ActionPreviousIcon from 'material-ui/svg-icons/av/skip-previous';
 import ActionNextIcon from 'material-ui/svg-icons/av/skip-next';
+import keys from '../lib/keys';
 
 class PlayerControls extends Component {
   static propTypes = {
     selectedAttachment: PropTypes.shape({
-      id: PropTypes.number,
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     }),
-    onClickPlayPause: PropTypes.function,
-    onClickPreviousTrack: PropTypes.function,
-    onClickNextTrack: PropTypes.function,
     playAudio: PropTypes.bool,
+  };
+
+  static contextTypes = {
+    player: PropTypes.object,
   };
 
   static defaultProps = {
@@ -26,10 +28,14 @@ class PlayerControls extends Component {
   constructor(args) {
     super(args);
 
+    this.selectedAttachmentId = -1;
+
     this.state = {
+      selectedAttachment: null,
       selectedAttachmentUrl: null,
       playerTotalSeconds: 0,
       playerCurrentTime: 0,
+      playAudio: false,
     };
   }
 
@@ -37,10 +43,16 @@ class PlayerControls extends Component {
     this.loadSelectedAttachment();
   }
 
-  componentWillReceiveProps(props, newProps) {
-    setTimeout(() => {
-      this.loadSelectedAttachment();
-    }, 0);
+  componentWillReceiveProps(props) {
+    this.setState({
+      playAudio: props.playAudio,
+    });
+    if (props.selectedAttachment !== null && this.selectedAttachmentId !== props.selectedAttachment.id) {
+      this.selectedAttachmentId = props.selectedAttachment.id;
+      setTimeout(() => {
+        this.loadSelectedAttachment();
+      }, 0);
+    }
   }
 
   loadSelectedAttachment() {
@@ -48,10 +60,18 @@ class PlayerControls extends Component {
       return;
     }
 
+    this.setState({
+      selectedAttachmentUrl: null,
+      playAudio: false,
+      playerTotalSeconds: 0,
+      playerCurrentTime: 0,
+    });
+
     window.apiClient.attachments.getAttachmentStreamUrl(this.props.selectedAttachment)
       .then((res) => {
         this.setState({
           selectedAttachmentUrl: res.data.attributes.attachment_url,
+          playAudio: true,
         });
       });
   }
@@ -73,7 +93,8 @@ class PlayerControls extends Component {
           }}
           id="player-container-inner"
           onClick={(ev) => {
-            this.audioPlayer.seekTo(ev.clientX / this.playerContainer.clientWidth);
+            const elementRect = this.playerContainer.getBoundingClientRect();
+            this.audioPlayer.seekTo((ev.clientX - elementRect.left) / this.playerContainer.clientWidth);
           }}
         >
           <div
@@ -122,7 +143,7 @@ class PlayerControls extends Component {
                 onClick={(ev) => {
                   ev.preventDefault();
                   ev.stopPropagation();
-                  this.props.onClickPreviousTrack();
+                  this.context.player.emit(keys.PlayPreviousAttachmentKey);
                 }}
               >
                 <ActionPreviousIcon />
@@ -134,7 +155,7 @@ class PlayerControls extends Component {
                 onClick={(ev) => {
                   ev.preventDefault();
                   ev.stopPropagation();
-                  this.props.onClickPlayPause();
+                  this.context.player.emit(keys.PlayPauseAttachmentKey);
                 }}
               >
                 {(() => {
@@ -152,7 +173,7 @@ class PlayerControls extends Component {
                 onClick={(ev) => {
                   ev.preventDefault();
                   ev.stopPropagation();
-                  this.props.onClickNextTrack();
+                  this.context.player.emit(keys.PlayNextAttachmentKey);
                 }}
               >
                 <ActionNextIcon />
@@ -165,8 +186,8 @@ class PlayerControls extends Component {
             this.audioPlayer = ref;
           }}
           url={this.state.selectedAttachmentUrl}
-          progressFrequency="500"
-          playing={this.props.playAudio}
+          progressFrequency={500}
+          playing={this.state.playAudio}
           width="100%"
           height="0px"
           onReady={() => {
@@ -175,7 +196,7 @@ class PlayerControls extends Component {
           onProgress={(progress) => {
             if (this.state.playerTotalSeconds > 0) {
               this.setState({
-                playerCurrentTime: this.state.playerTotalSeconds * progress.played,
+                playerCurrentTime: Math.floor(this.state.playerTotalSeconds * progress.played),
               });
             }
           }}
