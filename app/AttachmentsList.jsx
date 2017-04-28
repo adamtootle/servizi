@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import Subheader from 'material-ui/Subheader';
-import { List, ListItem, makeSelectable } from 'material-ui/List';
+import { ListItem } from 'material-ui/List';
 import { filter } from 'lodash';
 import S from 'string';
-
-const SelectableList = makeSelectable(List);
+import SelectableList from './SelectableList';
 
 class AttachmentsList extends Component {
   static propTypes = {
@@ -27,13 +26,16 @@ class AttachmentsList extends Component {
     planAttachments: [],
   };
 
+  componentDidMount() {
+    console.log(this.props);
+  }
+
   adjustedAttachmentName(name) {
-    let adjustedName = name;
-    //Great, Great God-A.mp3
-    return S(adjustedName).truncate(50).toString().replace(/(.mp3|.wav)*/gi, '');
+    return S(name).truncate(50).toString().replace(/(.mp3|.wav)*/gi, '');
   }
 
   render() {
+    let attachmentIndex = -1;
     return (
       <SelectableList id="plan-items-container">
         {this.props.songItems.map((item) => {
@@ -54,6 +56,7 @@ class AttachmentsList extends Component {
                 {item.attributes.title}
               </Subheader>
               {itemAttachments.map((attachment) => {
+                attachmentIndex++;
                 const itemIsSelected = this.props.selectedAttachment !== null && this.props.selectedAttachment.id === attachment.id;
                 const style = {
                   backgroundColor: itemIsSelected ? 'rgba(0, 0, 0, 0.05)' : '',
@@ -62,6 +65,7 @@ class AttachmentsList extends Component {
                 return (
                   <ListItem
                     key={attachment.id}
+                    value={attachmentIndex}
                     ref={(ref) => {
                       this[`attachment${attachment.id}ListItem`] = ref;
                     }}

@@ -139,31 +139,23 @@ class SinglePlanView extends Component {
 
     return (
       <div className="single-plan-view">
-        {(() => {
-          if (this.context.uiRoutePrefix === 'mini') {
-            return (
-              <PlayerControls
-                playAudio={this.state.playAudio}
-                selectedAttachment={this.state.selectedAttachment}
-              />
-            );
-          }
-
-          return null;
-        })()}
-        {(() => {
-          //http://vimeo.com/63300324
+        {
+          this.context.uiRoutePrefix === 'mini' ?
+            <PlayerControls
+              playAudio={this.state.playAudio}
+              selectedAttachment={this.state.selectedAttachment}
+            />
+            : null
+        }
+        {
+          // http://vimeo.com/63300324
           // console.log(this.state.selectedAttachment);
-          if (this.state.selectedVideoAttachment !== null) {
-            return (
-              <VideoPlayer
-                selectedVideoAttachment={this.state.selectedVideoAttachment}
-              />
-            );
-          }
-
-          return null;
-        })()}
+          this.state.selectedVideoAttachment !== null ?
+            <VideoPlayer
+              selectedVideoAttachment={this.state.selectedVideoAttachment}
+            />
+            : null
+        }
         <AttachmentsList
           songItems={songItems}
           planAttachments={this.state.planAttachments}

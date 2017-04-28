@@ -29,6 +29,10 @@
       width: 100% !important;
     }
   }
+
+  #songs-list-container {
+    padding-bottom: 61px !important;
+  }
 }
 
 #side-menu {
@@ -37,5 +41,5 @@
   top: 0px;
   width: 220px;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.35);
 }
