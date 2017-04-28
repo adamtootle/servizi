@@ -1,11 +1,13 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Subheader from 'material-ui/Subheader';
 import { ListItem } from 'material-ui/List';
 import { filter } from 'lodash';
 import S from 'string';
 import SelectableList from './SelectableList';
+import actions from '../../actions';
 
-export default class AttachmentsList extends Component {
+class AttachmentsList extends Component {
   static propTypes = {
     songItems: PropTypes.arrayOf(PropTypes.object),
     planAttachments: PropTypes.shape({
@@ -70,7 +72,8 @@ export default class AttachmentsList extends Component {
                       this[`attachment${attachment.id}ListItem`] = ref;
                     }}
                     onClick={() => {
-                      this.props.onSelectAttachment(attachment);
+                      // this.props.onSelectAttachment(attachment);
+                      this.props.dispatch(actions.player.playAttachment(attachment));
                     }}
                     style={style}
                   >
@@ -85,3 +88,9 @@ export default class AttachmentsList extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return { todos: state.todos };
+}
+
+export default connect(mapStateToProps)(AttachmentsList);

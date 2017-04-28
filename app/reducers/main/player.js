@@ -1,6 +1,6 @@
 const initialState = {};
 
 module.exports = function(state = initialState, action) {
-  console.log('action', action);
+  console.log('main action', action);
   return state;
 };

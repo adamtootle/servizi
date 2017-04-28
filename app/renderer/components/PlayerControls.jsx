@@ -13,6 +13,10 @@ class PlayerControls extends Component {
     selectedAttachment: PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     }),
+    player: PropTypes.shape({
+      selectedAttachmentUrl: PropTypes.string,
+      playAudio: PropTypes.bool,
+    }),
   };
 
   static contextTypes = {
@@ -38,15 +42,16 @@ class PlayerControls extends Component {
 
   componentDidMount() {
     this.loadSelectedAttachment();
-    console.log('componentDidMount');
-    console.log(this.props.dispatch);
   }
 
   componentWillReceiveProps(props) {
     this.setState({
       playAudio: props.playAudio,
     });
-    if (props.selectedAttachment !== null && this.selectedAttachmentId !== props.selectedAttachment.id) {
+    if (
+        props.selectedAttachment !== null
+        && this.selectedAttachmentId !== props.selectedAttachment.id
+    ) {
       this.selectedAttachmentId = props.selectedAttachment.id;
       setTimeout(() => {
         this.loadSelectedAttachment();
@@ -65,14 +70,6 @@ class PlayerControls extends Component {
       playerTotalSeconds: 0,
       playerCurrentTime: 0,
     });
-
-    window.apiClient.attachments.getAttachmentStreamUrl(this.props.selectedAttachment)
-      .then((res) => {
-        this.setState({
-          selectedAttachmentUrl: res.data.attributes.attachment_url,
-          playAudio: true,
-        });
-      });
   }
 
   render() {
@@ -156,9 +153,10 @@ class PlayerControls extends Component {
                   this.playButton = ref;
                 }}
                 onClick={(ev) => {
-                  ev.preventDefault();
-                  ev.stopPropagation();
-                  this.context.player.emit(keys.PlayPauseAttachmentKey);
+                  // ev.preventDefault();
+                  // ev.stopPropagation();
+                  // this.context.player.emit(keys.PlayPauseAttachmentKey);
+                  this.props.dispatch({type: 'CLICK_PLAY_PAUSE', payload: {}});
                 }}
               >
                 {(() => {
@@ -188,9 +186,9 @@ class PlayerControls extends Component {
           ref={(ref) => {
             this.audioPlayer = ref;
           }}
-          url={this.state.selectedAttachmentUrl}
+          url={this.props.player.selectedAttachmentUrl}
           progressFrequency={500}
-          playing={this.state.playAudio}
+          playing={this.props.player.playAudio}
           width="100%"
           height="0px"
           onReady={() => {
@@ -215,7 +213,7 @@ class PlayerControls extends Component {
 }
 
 function mapStateToProps(state) {
-  return { todos: state.todos };
+  return { player: state.player };
 }
 
 export default connect(mapStateToProps)(PlayerControls);

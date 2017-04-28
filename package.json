@@ -33,6 +33,7 @@
     "react-tap-event-plugin": "2.0.1",
     "redux": "^3.6.0",
     "redux-electron-store": "^0.4.1",
+    "redux-thunk": "^2.2.0",
     "request-promise": "^4.1.1",
     "scroll-into-view": "^1.7.1",
     "scroll-into-view-if-needed": "^1.0.6",

@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { HashRouter as Router, Route } from 'react-router-dom'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import thunk from 'redux-thunk';
 import { Provider } from 'react-redux'
 import { electronEnhancer } from 'redux-electron-store';
 import { Login, SinglePlan, SchedulesList, SongsList, Settings } from './scenes';
-import reducers from '../reducers';
+import reducers from '../reducers/renderer';
 import settings from '../main/settings';
 import AppWrapper from './AppWrapper';
 import PlayerControls from './components/PlayerControls';
 
 let storeDispatch;
 const enhancer = compose(
+  applyMiddleware(thunk),
   electronEnhancer({
     dispatchProxy: a => storeDispatch(a),
   })
