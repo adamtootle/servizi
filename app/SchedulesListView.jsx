@@ -31,7 +31,7 @@ class SchedulesListView extends Component {
     const serviceType = schedule.relationships.service_type;
     const plan = schedule.relationships.plan;
     const route = `/service_types/${serviceType.data.id}/plans/${plan.data.id}`;
-    this.context.router.push(route);
+    this.context.router.history.push(route);
   };
 
   render() {

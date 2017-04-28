@@ -9,9 +9,8 @@ import settings from '../lib/settings';
 
 class SinglePlanView extends Component {
   static propTypes = {
-    params: PropTypes.shape({
-      service_type_id: PropTypes.string,
-      plan_id: PropTypes.string,
+    match: PropTypes.shape({
+      params: PropTypes.object,
     }),
   };
   static defaultProps = {};
@@ -37,8 +36,8 @@ class SinglePlanView extends Component {
 
   componentDidMount() {
     window.apiClient.plans.getPlan({
-      serviceTypeId: this.props.params.service_type_id,
-      planId: this.props.params.plan_id,
+      serviceTypeId: this.props.match.params.service_type_id,
+      planId: this.props.match.params.plan_id,
     })
     .then(window.apiClient.plans.getPlanItems)
     .then(window.apiClient.plans.getPlanAttachments)

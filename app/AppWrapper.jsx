@@ -94,7 +94,7 @@ class AppWrapper extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const newPathDepth = props.location.pathname.split('/').length - 1;
+    const newPathDepth = this.context.router.history.location.pathname.split('/').length - 1;
     let transitionDirection;
     if (newPathDepth > this.state.pathDepth) {
       transitionDirection = 'push';
@@ -112,9 +112,9 @@ class AppWrapper extends Component {
 
   handleValidateAuthResponse = (valid) => {
     if (valid) {
-      this.context.router.replace('/schedules');
+      this.context.router.history.replace('schedules');
     } else {
-      this.context.router.replace('/login');
+      this.context.router.history.replace('login');
     }
 
     this.setState({
@@ -150,7 +150,7 @@ class AppWrapper extends Component {
             return <Navbar />;
           })()}
           {React.cloneElement(this.props.children, {
-            key: this.props.location.pathname,
+            key: this.context.router.history.location.pathname,
           })}
           {(() => {
             if (fullPlayerUI) {

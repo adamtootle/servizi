@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router-dom'
 import { ListItem } from 'material-ui/List';
 import SelectableList from './SelectableList';
 
@@ -14,27 +15,27 @@ class SideMenu extends Component {
         <SelectableList id="plan-items-container" defaultValue={0}>
           <ListItem
             value={0}
-            onClick={() => {
-              this.context.router.replace('/schedules');
+            innerDivStyle={{
+              padding: 0,
             }}
           >
-            Schedules
+            <Link to="/schedules">Schedules</Link>
           </ListItem>
           <ListItem
             value={1}
-            onClick={() => {
-              this.context.router.replace('/songs');
+            innerDivStyle={{
+              padding: 0,
             }}
           >
-            Songs
+            <Link to="/songs">Songs</Link>
           </ListItem>
           <ListItem
             value={2}
-            onClick={() => {
-              this.context.router.replace('/app/settings');
+            innerDivStyle={{
+              padding: 0,
             }}
           >
-            Settings
+            <Link to="/app/settings">Settings</Link>
           </ListItem>
         </SelectableList>
       </div>
