@@ -25,12 +25,11 @@ export default class Routes extends Component {
     return (
       <Router basename="/">
         <AppWrapper>
-          <div>
-            { fullPlayerUI ? <SideMenu /> : <Navbar /> }
+          <div id={fullPlayerUI ? 'full-player-inner' : 'mini-player-inner'}>
             <Route path="/login" component={LoginView} />
-            <Route path="/schedules" component={SchedulesListView} />
+            <Route path="/plans" exact component={SchedulesListView} />
             <Route path="/songs" component={SongsListView} />
-            <Route path="/service_types/:service_type_id/plans/:plan_id" component={SinglePlanView} />
+            <Route path="/plans/:planId" component={SinglePlanView} />
             <Route path="/app/settings" component={SettingsView} />
           </div>
         </AppWrapper>

@@ -1,7 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Link } from 'react-router-dom'
-import { ListItem } from 'material-ui/List';
-import SelectableList from './SelectableList';
+import { NavLink } from 'react-router-dom'
 
 class SideMenu extends Component {
   static contextTypes = {
@@ -12,32 +10,12 @@ class SideMenu extends Component {
   render() {
     return (
       <div id="side-menu">
-        <SelectableList id="plan-items-container" defaultValue={0}>
-          <ListItem
-            value={0}
-            innerDivStyle={{
-              padding: 0,
-            }}
-          >
-            <Link to="/schedules">Schedules</Link>
-          </ListItem>
-          <ListItem
-            value={1}
-            innerDivStyle={{
-              padding: 0,
-            }}
-          >
-            <Link to="/songs">Songs</Link>
-          </ListItem>
-          <ListItem
-            value={2}
-            innerDivStyle={{
-              padding: 0,
-            }}
-          >
-            <Link to="/app/settings">Settings</Link>
-          </ListItem>
-        </SelectableList>
+        <div id="plan-items-container">
+          <NavLink to="/account" id="account-link">My Account</NavLink>
+          <NavLink to="/plans">Plans</NavLink>
+          <NavLink to="/songs">Songs</NavLink>
+          <NavLink to="/app/settings">Settings</NavLink>
+        </div>
       </div>
     );
   }

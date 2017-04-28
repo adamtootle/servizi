@@ -20,8 +20,8 @@ class SinglePlanView extends Component {
     uiRoutePrefix: PropTypes.string,
   };
 
-  constructor(args) {
-    super(args);
+  constructor(props) {
+    super(props);
 
     this.state = {
       plan: null,
@@ -36,8 +36,7 @@ class SinglePlanView extends Component {
 
   componentDidMount() {
     window.apiClient.plans.getPlan({
-      serviceTypeId: this.props.match.params.service_type_id,
-      planId: this.props.match.params.plan_id,
+      planId: this.props.match.params.planId,
     })
     .then(window.apiClient.plans.getPlanItems)
     .then(window.apiClient.plans.getPlanAttachments)

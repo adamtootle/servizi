@@ -3,9 +3,12 @@ html, body {
   height: 100%;
 }
 
+* {
+  font-family: 'Lato', sans-serif !important;
+}
+
 body {
-  background: #E7E7E5;
-  font-family: Roboto, sans-serif;
+  // background: #E7E7E5;
   color: #2e2e2e;
 }
 
@@ -134,15 +137,15 @@ body {
  */
 
 #player-container {
-  position: fixed;
+  // position: fixed;
   z-index: 2;
-  width: 100%;
+  // width: 100%;
 }
 
 #player-container-inner {
   position: relative;
   height: 60px;
-  background: #D8D8D8;
+  background: #E6E6E6;
 }
 
 #player-progress-bar {
