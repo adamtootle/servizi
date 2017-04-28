@@ -5,9 +5,9 @@ import ActionPlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import ActionPauseIcon from 'material-ui/svg-icons/av/pause';
 import ActionPreviousIcon from 'material-ui/svg-icons/av/skip-previous';
 import ActionNextIcon from 'material-ui/svg-icons/av/skip-next';
-import keys from '../lib/keys';
+import keys from '../../lib/keys';
 
-class PlayerControls extends Component {
+export default class PlayerControls extends Component {
   static propTypes = {
     selectedAttachment: PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -210,5 +210,3 @@ class PlayerControls extends Component {
     );
   }
 }
-
-export default PlayerControls;

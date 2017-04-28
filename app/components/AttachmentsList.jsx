@@ -5,7 +5,7 @@ import { filter } from 'lodash';
 import S from 'string';
 import SelectableList from './SelectableList';
 
-class AttachmentsList extends Component {
+export default class AttachmentsList extends Component {
   static propTypes = {
     songItems: PropTypes.arrayOf(PropTypes.object),
     planAttachments: PropTypes.shape({
@@ -85,5 +85,3 @@ class AttachmentsList extends Component {
     );
   }
 }
-
-export default AttachmentsList;

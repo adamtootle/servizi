@@ -1,23 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { HashRouter as Router, Route } from 'react-router-dom'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import SinglePlanView from './SinglePlanView';
-import LoginView from './LoginView';
-import SchedulesListView from './SchedulesListView';
-import SongsListView from './SongsListView';
-import SettingsView from './SettingsView';
+import { Login, SinglePlan, SchedulesList, SongsList, Settings } from './scenes';
 import settings from '../lib/settings';
-import Navbar from './Navbar';
-import SideMenu from './SideMenu';
 import AppWrapper from './AppWrapper';
-
-const theme = {
-  palette: {
-    primary1Color: '#2e2e2e',
-    textColor: '#11629E',
-  },
-};
 
 export default class Routes extends Component {
   render() {
@@ -26,11 +11,11 @@ export default class Routes extends Component {
       <Router basename="/">
         <AppWrapper>
           <div id={fullPlayerUI ? 'full-player-inner' : 'mini-player-inner'}>
-            <Route path="/login" component={LoginView} />
-            <Route path="/plans" exact component={SchedulesListView} />
-            <Route path="/songs" component={SongsListView} />
-            <Route path="/plans/:planId" component={SinglePlanView} />
-            <Route path="/app/settings" component={SettingsView} />
+            <Route path="/login" component={Login} />
+            <Route path="/plans" exact component={SchedulesList} />
+            <Route path="/songs" component={SongsList} />
+            <Route path="/plans/:planId" component={SinglePlan} />
+            <Route path="/app/settings" component={Settings} />
           </div>
         </AppWrapper>
       </Router>

@@ -1,13 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
 import { filter, findIndex } from 'lodash';
-import PlayerControls from './PlayerControls';
-import AttachmentsList from './AttachmentsList';
-import VideoPlayer from './VideoPlayer';
-import keys from '../lib/keys';
-import settings from '../lib/settings';
+import PlayerControls from '../components/PlayerControls';
+import AttachmentsList from '../AttachmentsList';
+import VideoPlayer from '../VideoPlayer';
+import keys from '../../lib/keys';
+import settings from '../../lib/settings';
 
-class SinglePlanView extends Component {
+export default class SinglePlan extends Component {
   static propTypes = {
     match: PropTypes.shape({
       params: PropTypes.object,
@@ -164,5 +164,3 @@ class SinglePlanView extends Component {
     );
   }
 }
-
-export default SinglePlanView;

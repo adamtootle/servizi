@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { List, ListItem } from 'material-ui/List';
 
-class SchedulesListView extends Component {
+export default class SchedulesList extends Component {
   static propTypes = {};
   static defaultProps = {};
   static contextTypes = {
@@ -58,5 +58,3 @@ class SchedulesListView extends Component {
     );
   }
 }
-
-export default SchedulesListView;

@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import Checkbox from 'material-ui/Checkbox';
-import settings from '../lib/settings';
+import settings from '../../lib/settings';
 
-class SettingsView extends Component {
+export default class Settings extends Component {
   static propTypes = {};
   static defaultProps = {};
   static contextTypes = {
@@ -72,5 +72,3 @@ class SettingsView extends Component {
     );
   }
 }
-
-export default SettingsView;

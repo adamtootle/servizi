@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ipcRenderer } from 'electron';
 import RaisedButton from 'material-ui/RaisedButton';
 
-class LoginView extends Component {
+export default class Login extends Component {
   static propTypes = {};
   static defaultProps = {};
 
@@ -29,5 +29,3 @@ class LoginView extends Component {
     );
   }
 }
-
-export default LoginView;

@@ -2,13 +2,13 @@ import React, { Component, PropTypes } from 'react';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
-import Navbar from './Navbar';
-import SideMenu from './SideMenu';
-import PlayerControls from './PlayerControls';
+import { ipcRenderer } from 'electron';
+import Navbar from './components/Navbar';
+import SideMenu from './components/SideMenu';
+import PlayerControls from './components/PlayerControls';
 import PlayerContext from './PlayerContext';
 import settings from '../lib/settings';
 import keys from '../lib/keys';
-import { ipcRenderer } from 'electron';
 
 const theme = {
   palette: {

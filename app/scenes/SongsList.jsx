@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { List, ListItem } from 'material-ui/List';
-import SelectableList from './SelectableList';
 import CircularProgress from 'material-ui/CircularProgress';
+import SelectableList from '../SelectableList';
 
-class SongsListView extends Component {
+export default class SongsList extends Component {
   constructor(args) {
     super(args);
 
@@ -66,5 +66,3 @@ class SongsListView extends Component {
     );
   }
 }
-
-export default SongsListView;

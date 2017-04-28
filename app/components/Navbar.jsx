@@ -3,7 +3,7 @@ import IconButton from 'material-ui/IconButton';
 import ChevronIcon from 'material-ui/svg-icons/navigation/chevron-left';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 
-class Navbar extends Component {
+export default class Navbar extends Component {
   static propTypes = {
     location: PropTypes.object,
   };
@@ -55,5 +55,3 @@ class Navbar extends Component {
     );
   }
 }
-
-export default Navbar;

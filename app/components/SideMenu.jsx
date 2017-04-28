@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { NavLink } from 'react-router-dom'
 
-class SideMenu extends Component {
+export default class SideMenu extends Component {
   static contextTypes = {
     router: PropTypes.object,
     uiRoutePrefix: PropTypes.string,
@@ -20,5 +20,3 @@ class SideMenu extends Component {
     );
   }
 }
-
-export default SideMenu;
