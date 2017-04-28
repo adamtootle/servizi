@@ -1,5 +1,5 @@
 const PCO = require('pco');
-const config = require('../config');
+const config = require('../../config');
 const util = require('util');
 const EventEmitter = require('events');
 const db = require('./database');

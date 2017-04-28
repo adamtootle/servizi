@@ -1,5 +1,5 @@
-const database = require('../lib/database');
-const config = require('../config');
+const database = require('./database');
+const config = require('../../config');
 const keys = require('./keys');
 const Promise = require('bluebird');
 const simpleOauth2 = require('simple-oauth2');

@@ -4,8 +4,8 @@ import { filter, findIndex } from 'lodash';
 import PlayerControls from '../components/PlayerControls';
 import AttachmentsList from '../components/AttachmentsList';
 import VideoPlayer from '../VideoPlayer';
-import keys from '../../lib/keys';
-import settings from '../../lib/settings';
+import keys from '../../main/keys';
+import settings from '../../main/settings';
 
 export default class SinglePlan extends Component {
   static propTypes = {

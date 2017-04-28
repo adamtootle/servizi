@@ -1,6 +1,9 @@
+const electron = require('electron');
+const redux = require('redux');
+const reduxElectronStore = require('redux-electron-store');
 const auth = require('./auth');
 const database = require('./database');
-const electron = require('electron');
+
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const Tray = electron.Tray;
@@ -8,6 +11,7 @@ const Menu = electron.Menu;
 const MenuItem = electron.MenuItem;
 const globalShortcut = electron.globalShortcut;
 const settings = require('./settings');
+
 
 let mainWindow;
 

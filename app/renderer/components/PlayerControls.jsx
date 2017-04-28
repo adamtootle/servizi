@@ -1,13 +1,14 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
 import IconButton from 'material-ui/IconButton';
 import ActionPlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import ActionPauseIcon from 'material-ui/svg-icons/av/pause';
 import ActionPreviousIcon from 'material-ui/svg-icons/av/skip-previous';
 import ActionNextIcon from 'material-ui/svg-icons/av/skip-next';
-import keys from '../../lib/keys';
+import keys from '../../main/keys';
 
-export default class PlayerControls extends Component {
+class PlayerControls extends Component {
   static propTypes = {
     selectedAttachment: PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -37,6 +38,8 @@ export default class PlayerControls extends Component {
 
   componentDidMount() {
     this.loadSelectedAttachment();
+    console.log('componentDidMount');
+    console.log(this.props.dispatch);
   }
 
   componentWillReceiveProps(props) {
@@ -210,3 +213,9 @@ export default class PlayerControls extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return { todos: state.todos };
+}
+
+export default connect(mapStateToProps)(PlayerControls);

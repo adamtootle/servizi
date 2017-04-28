@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Hello World!</title>
-    <link rel="stylesheet" href="css/font-awesome.css" />
+    <link rel="stylesheet" href="app/renderer/css/font-awesome.css" />
   </head>
   <body>
     <div id="draggable-nav-bar"></div>
@@ -11,8 +11,8 @@
 
     <script>
       const P = require('bluebird');
-      const auth = require('./lib/auth');
-      var pcoWrapper = require('./lib/pco-wrapper');
+      const auth = require('./app/main/auth');
+      var pcoWrapper = require('./app/main/pco-wrapper');
       pcoWrapper.on('ready', (err, res) => {
         if (!err) {
           window.apiClient = res;

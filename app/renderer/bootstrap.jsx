@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Routes from './Routes';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import Routes from './Routes';
 
 injectTapEventPlugin();
 
-require('../css/app.scss');
+require('./css/app.scss');
 
 window.renderApp = function renderApp() {
   ReactDOM.render(

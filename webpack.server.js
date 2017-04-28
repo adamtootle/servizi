@@ -5,7 +5,7 @@ module.exports = {
 
   devtool: 'eval',
 
-  entry: ['./app/bootstrap.jsx'],
+  entry: ['./app/renderer/bootstrap.jsx'],
 
   output: {
     libraryTarget: 'umd',

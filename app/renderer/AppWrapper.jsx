@@ -5,10 +5,9 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { ipcRenderer } from 'electron';
 import Navbar from './components/Navbar';
 import SideMenu from './components/SideMenu';
-import PlayerControls from './components/PlayerControls';
 import PlayerContext from './PlayerContext';
-import settings from '../lib/settings';
-import keys from '../lib/keys';
+import settings from '../main/settings';
+import keys from '../main/keys';
 
 const theme = {
   palette: {
