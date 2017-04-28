@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { List, ListItem } from 'material-ui/List';
 import CircularProgress from 'material-ui/CircularProgress';
-import SelectableList from '../SelectableList';
+import SelectableList from '../components/SelectableList';
 
 export default class SongsList extends Component {
   constructor(args) {

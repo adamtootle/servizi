@@ -19,6 +19,7 @@ body {
 #full-player-inner {
   flex: 1;
   background-color: #F2F2F2;
+  overflow: scroll;
 }
 
 #app.full-player {
@@ -26,10 +27,10 @@ body {
   display: flex;
   flex: 1;
   flex-direction: column;
+  overflow: hidden;
 
   .single-plan-view {
     position: relative;
-    padding-bottom: 55px;
   }
 
   #player-container {

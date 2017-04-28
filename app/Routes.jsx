@@ -3,8 +3,17 @@ import { HashRouter as Router, Route } from 'react-router-dom'
 import { Login, SinglePlan, SchedulesList, SongsList, Settings } from './scenes';
 import settings from '../lib/settings';
 import AppWrapper from './AppWrapper';
+import PlayerControls from './components/PlayerControls';
 
 export default class Routes extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selectedAttachment: null,
+      playAudio: false,
+    };
+  }
   render() {
     const fullPlayerUI = settings.getStoredSettings().fullPlayerUI;
     return (
@@ -17,6 +26,10 @@ export default class Routes extends Component {
             <Route path="/plans/:planId" component={SinglePlan} />
             <Route path="/app/settings" component={Settings} />
           </div>
+          <PlayerControls
+            selectedAttachment={this.state.selectedAttachment}
+            playAudio={this.state.playAudio}
+          />
         </AppWrapper>
       </Router>
     );

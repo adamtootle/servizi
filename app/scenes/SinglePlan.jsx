@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
 import { filter, findIndex } from 'lodash';
 import PlayerControls from '../components/PlayerControls';
-import AttachmentsList from '../AttachmentsList';
+import AttachmentsList from '../components/AttachmentsList';
 import VideoPlayer from '../VideoPlayer';
 import keys from '../../lib/keys';
 import settings from '../../lib/settings';
@@ -70,7 +70,10 @@ export default class SinglePlan extends Component {
 
   getSelectedAttachmentIndex() {
     if (this.state.planAttachments !== null && this.state.selectedAttachment !== null) {
-      return findIndex(this.state.planAttachments.data, attachmentToMatch => this.state.selectedAttachment.id === attachmentToMatch.id);
+      return findIndex(
+        this.state.planAttachments.data,
+        attachment => this.state.selectedAttachment.id === attachment.id
+      );
     }
 
     return -1;

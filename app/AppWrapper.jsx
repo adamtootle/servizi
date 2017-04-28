@@ -142,28 +142,12 @@ class AppWrapper extends Component {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
         <div id="app" className={fullPlayerUI ? 'full-player' : 'mini-player'}>
-          {(() => {
-            if (fullPlayerUI) {
-              return <SideMenu />;
-            }
-
-            return <Navbar />;
-          })()}
-          {React.cloneElement(this.props.children, {
-            key: this.context.router.history.location.pathname,
-          })}
-          {(() => {
-            if (fullPlayerUI) {
-              return (
-                <PlayerControls
-                  selectedAttachment={this.state.selectedAttachment}
-                  playAudio={this.state.playAudio}
-                />
-              );
-            }
-
-            return null;
-          })()}
+          {
+            fullPlayerUI ?
+              <SideMenu />
+              : <Navbar />
+          }
+          {this.props.children}
         </div>
       </MuiThemeProvider>
     );

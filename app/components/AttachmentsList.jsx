@@ -48,8 +48,8 @@ export default class AttachmentsList extends Component {
             <div key={item.id}>
               <Subheader
                 style={{
-                  backgroundColor: '#B4B4B4',
-                  color: '#ffffff',
+                  backgroundColor: 'rgba(27, 127, 220, 0.1)',
+                  color: '#2E2E2E',
                   lineHeight: '27px',
                 }}
               >
