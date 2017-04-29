@@ -1,8 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { List, ListItem } from 'material-ui/List';
+import { connect } from 'react-redux';
+import { schedules as schedulesActions } from '../../actions';
 
-export default class SchedulesList extends Component {
-  static propTypes = {};
+class Plans extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func,
+  };
   static defaultProps = {};
   static contextTypes = {
     router: PropTypes.object,
@@ -19,12 +23,7 @@ export default class SchedulesList extends Component {
   }
 
   componentDidMount() {
-    window.apiClient.schedules.getSchedules()
-      .then((res) => {
-        this.setState({
-          schedules: res.data,
-        });
-      });
+    this.props.dispatch(schedulesActions.loadSchedules());
   }
 
   handlePlanClick = (schedule) => {
@@ -38,7 +37,7 @@ export default class SchedulesList extends Component {
     return (
       <div>
         <List>
-          {this.state.schedules.map((schedule) => {
+          {this.props.schedules.schedules.map((schedule) => {
             const serviceTypeName = schedule.attributes.service_type_name;
             const teamPositionName = schedule.attributes.team_position_name;
             const teamName = schedule.attributes.team_name;
@@ -58,3 +57,9 @@ export default class SchedulesList extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return { schedules: state.schedules };
+}
+
+export default connect(mapStateToProps)(Plans);

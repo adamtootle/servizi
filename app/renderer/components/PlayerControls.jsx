@@ -7,15 +7,16 @@ import ActionPauseIcon from 'material-ui/svg-icons/av/pause';
 import ActionPreviousIcon from 'material-ui/svg-icons/av/skip-previous';
 import ActionNextIcon from 'material-ui/svg-icons/av/skip-next';
 import keys from '../../main/keys';
+import { player as playerActions } from '../../actions';
 
 class PlayerControls extends Component {
   static propTypes = {
-    selectedAttachment: PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    }),
+    dispatch: PropTypes.func,
     player: PropTypes.shape({
       selectedAttachmentUrl: PropTypes.string,
       playAudio: PropTypes.bool,
+      currentSecond: PropTypes.number,
+      totalSeconds: PropTypes.number,
     }),
   };
 
@@ -27,53 +28,8 @@ class PlayerControls extends Component {
     playAudio: false,
   };
 
-  constructor(args) {
-    super(args);
-
-    this.selectedAttachmentId = -1;
-
-    this.state = {
-      selectedAttachmentUrl: null,
-      playerTotalSeconds: 0,
-      playerCurrentTime: 0,
-      playAudio: false,
-    };
-  }
-
-  componentDidMount() {
-    this.loadSelectedAttachment();
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({
-      playAudio: props.playAudio,
-    });
-    if (
-        props.selectedAttachment !== null
-        && this.selectedAttachmentId !== props.selectedAttachment.id
-    ) {
-      this.selectedAttachmentId = props.selectedAttachment.id;
-      setTimeout(() => {
-        this.loadSelectedAttachment();
-      }, 0);
-    }
-  }
-
-  loadSelectedAttachment() {
-    if (this.props.selectedAttachment === null) {
-      return;
-    }
-
-    this.setState({
-      selectedAttachmentUrl: null,
-      playAudio: false,
-      playerTotalSeconds: 0,
-      playerCurrentTime: 0,
-    });
-  }
-
   render() {
-    let playerProgressBarPercentageWidth = (this.state.playerCurrentTime / this.state.playerTotalSeconds) * 100;
+    let playerProgressBarPercentageWidth = (this.props.player.currentSecond / this.props.player.totalSeconds) * 100;
 
     if (isNaN(playerProgressBarPercentageWidth)) {
       playerProgressBarPercentageWidth = 0;
@@ -91,9 +47,8 @@ class PlayerControls extends Component {
           onClick={(ev) => {
             const elementRect = this.playerContainer.getBoundingClientRect();
             const newProgress = (ev.clientX - elementRect.left) / this.playerContainer.clientWidth;
-            this.setState({
-              playerCurrentTime: newProgress * this.state.playerTotalSeconds,
-            });
+            const currentSecond = newProgress * this.props.player.totalSeconds;
+            this.props.dispatch(playerActions.currentAttachmentTime({ currentSecond }));
             this.audioPlayer.seekTo(newProgress);
           }}
         >
@@ -110,18 +65,18 @@ class PlayerControls extends Component {
               id="player-timestamp"
             >
               {(() => {
-                const totalTimeMinutes = Math.floor(this.state.playerTotalSeconds / 60);
-                const totalTimeSeconds = Math.ceil(this.state.playerTotalSeconds % 60);
+                const totalTimeMinutes = Math.floor(this.props.player.totalSeconds / 60);
+                const totalTimeSeconds = Math.ceil(this.props.player.totalSeconds % 60);
                 let totalTimeSecondsString = `${totalTimeSeconds}`;
                 if (totalTimeSeconds < 10) {
                   totalTimeSecondsString = `0${totalTimeSecondsString}`;
                 }
 
-                let currentTimeMinutes = Math.floor(this.state.playerCurrentTime / 60);
+                let currentTimeMinutes = Math.floor(this.props.player.currentSecond / 60);
                 if (isNaN(currentTimeMinutes)) {
                   currentTimeMinutes = 0;
                 }
-                let currentTimeSeconds = Math.ceil(this.state.playerCurrentTime % 60);
+                let currentTimeSeconds = Math.ceil(this.props.player.currentSecond % 60);
                 if (isNaN(currentTimeSeconds)) {
                   currentTimeSeconds = 0;
                 }
@@ -153,14 +108,14 @@ class PlayerControls extends Component {
                   this.playButton = ref;
                 }}
                 onClick={(ev) => {
-                  // ev.preventDefault();
-                  // ev.stopPropagation();
+                  ev.preventDefault();
+                  ev.stopPropagation();
                   // this.context.player.emit(keys.PlayPauseAttachmentKey);
-                  this.props.dispatch({type: 'CLICK_PLAY_PAUSE', payload: {}});
+                  this.props.dispatch(playerActions.playPauseAttachment());
                 }}
               >
                 {(() => {
-                  if (this.state.playAudio) {
+                  if (this.props.player.playAudio) {
                     return <ActionPauseIcon />;
                   }
 
@@ -195,16 +150,13 @@ class PlayerControls extends Component {
             // console.log('onReady');
           }}
           onProgress={(progress) => {
-            if (this.state.playerTotalSeconds > 0 && progress.played !== undefined) {
-              this.setState({
-                playerCurrentTime: Math.floor(this.state.playerTotalSeconds * progress.played),
-              });
+            if (this.props.player.totalSeconds > 0 && progress.played !== undefined) {
+              const currentSecond = Math.floor(this.props.player.totalSeconds * progress.played);
+              this.props.dispatch(playerActions.currentAttachmentTime({ currentSecond }));
             }
           }}
-          onDuration={(seconds) => {
-            this.setState({
-              playerTotalSeconds: seconds,
-            });
+          onDuration={(totalSeconds) => {
+            this.props.dispatch(playerActions.currentAttachmentTime({ totalSeconds }));
           }}
         />
       </div>

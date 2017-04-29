@@ -5,7 +5,7 @@ import { ListItem } from 'material-ui/List';
 import { filter } from 'lodash';
 import S from 'string';
 import SelectableList from './SelectableList';
-import actions from '../../actions';
+import { player as playerActions } from '../../actions';
 
 class AttachmentsList extends Component {
   static propTypes = {
@@ -16,7 +16,7 @@ class AttachmentsList extends Component {
     selectedAttachment: PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     }),
-    onSelectAttachment: PropTypes.func,
+    dispatch: PropTypes.func,
   };
 
   static contextTypes = {
@@ -27,10 +27,6 @@ class AttachmentsList extends Component {
     songItems: [],
     planAttachments: [],
   };
-
-  componentDidMount() {
-    console.log(this.props);
-  }
 
   adjustedAttachmentName(name) {
     return S(name).truncate(50).toString().replace(/(.mp3|.wav)*/gi, '');
@@ -58,8 +54,9 @@ class AttachmentsList extends Component {
                 {item.attributes.title}
               </Subheader>
               {itemAttachments.map((attachment) => {
-                attachmentIndex++;
-                const itemIsSelected = this.props.selectedAttachment !== null && this.props.selectedAttachment.id === attachment.id;
+                attachmentIndex += attachmentIndex;
+                const itemIsSelected = this.props.player.selectedAttachment
+                  && this.props.player.selectedAttachment.id === attachment.id;
                 const style = {
                   backgroundColor: itemIsSelected ? 'rgba(0, 0, 0, 0.05)' : '',
                   color: '#2E2E2E',
@@ -72,8 +69,7 @@ class AttachmentsList extends Component {
                       this[`attachment${attachment.id}ListItem`] = ref;
                     }}
                     onClick={() => {
-                      // this.props.onSelectAttachment(attachment);
-                      this.props.dispatch(actions.player.playAttachment(attachment));
+                      this.props.dispatch(playerActions.playAttachment(attachment));
                     }}
                     style={style}
                   >
@@ -90,7 +86,7 @@ class AttachmentsList extends Component {
 }
 
 function mapStateToProps(state) {
-  return { todos: state.todos };
+  return { player: state.player };
 }
 
 export default connect(mapStateToProps)(AttachmentsList);

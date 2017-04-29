@@ -59,13 +59,13 @@ export default class SinglePlan extends Component {
       });
     });
 
-    this.context.player.on(keys.PlayPreviousAttachmentKey, () => {
-      this.handleClickPreviousTrack();
-    });
-
-    this.context.player.on(keys.PlayNextAttachmentKey, () => {
-      this.handleClickNextTrack();
-    });
+    // this.context.player.on(keys.PlayPreviousAttachmentKey, () => {
+    //   this.handleClickPreviousTrack();
+    // });
+    //
+    // this.context.player.on(keys.PlayNextAttachmentKey, () => {
+    //   this.handleClickNextTrack();
+    // });
   }
 
   getSelectedAttachmentIndex() {
@@ -139,7 +139,7 @@ export default class SinglePlan extends Component {
     const songItems = filter(this.state.planItems.data, item => item.attributes.item_type === 'song');
 
     return (
-      <div className="single-plan-view">
+      <div id="single-plan">
         {
           this.context.uiRoutePrefix === 'mini' ?
             <PlayerControls

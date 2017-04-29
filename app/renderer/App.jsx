@@ -13,8 +13,8 @@ import SideMenu from './components/SideMenu';
 import PlayerContext from './PlayerContext';
 import settings from '../main/settings';
 import keys from '../main/keys';
-import { Login, SinglePlan, SchedulesList, SongsList, Settings } from './scenes';
-import reducers from '../reducers/renderer';
+import { Login, SinglePlan, Plans, SongsList, Settings } from './scenes';
+import reducers from '../reducers';
 import PlayerControls from './components/PlayerControls';
 
 const theme = {
@@ -28,6 +28,7 @@ let storeDispatch;
 const enhancer = compose(
   applyMiddleware(thunk),
   electronEnhancer({
+    filter: true,
     dispatchProxy: a => storeDispatch(a),
   })
 );
@@ -169,7 +170,7 @@ export default class App extends Component {
               }
               <div id={fullPlayerUI ? 'full-player-inner' : 'mini-player-inner'}>
                 <Route path="/login" component={Login} />
-                <Route path="/plans" exact component={SchedulesList} />
+                <Route path="/plans" exact component={Plans} />
                 <Route path="/songs" component={SongsList} />
                 <Route path="/plans/:planId" component={SinglePlan} />
                 <Route path="/app/settings" component={Settings} />

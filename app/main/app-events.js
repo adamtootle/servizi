@@ -11,6 +11,8 @@ const Menu = electron.Menu;
 const MenuItem = electron.MenuItem;
 const globalShortcut = electron.globalShortcut;
 const settings = require('./settings');
+const reduxStore = require('./redux-store');
+const reduxActions = require('../actions');
 
 
 let mainWindow;
@@ -71,7 +73,7 @@ function AppEvents() {
     mainWindow.show();
 
     globalShortcut.register('MediaPlayPause', () => {
-      mainWindow.webContents.send('MediaPlayPause');
+      reduxStore.dispatch(reduxActions.player.playPauseAttachment());
     });
 
     globalShortcut.register('MediaPreviousTrack', () => {
