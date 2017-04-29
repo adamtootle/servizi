@@ -3,11 +3,19 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
 import { ipcRenderer } from 'electron';
+import { HashRouter as Router, Route } from 'react-router-dom';
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
+import { electronEnhancer } from 'redux-electron-store';
 import Navbar from './components/Navbar';
 import SideMenu from './components/SideMenu';
 import PlayerContext from './PlayerContext';
 import settings from '../main/settings';
 import keys from '../main/keys';
+import { Login, SinglePlan, SchedulesList, SongsList, Settings } from './scenes';
+import reducers from '../reducers/renderer';
+import PlayerControls from './components/PlayerControls';
 
 const theme = {
   palette: {
@@ -16,7 +24,18 @@ const theme = {
   },
 };
 
-class AppWrapper extends Component {
+let storeDispatch;
+const enhancer = compose(
+  applyMiddleware(thunk),
+  electronEnhancer({
+    dispatchProxy: a => storeDispatch(a),
+  })
+);
+
+const store = createStore(combineReducers(reducers), {}, enhancer);
+storeDispatch = store.dispatch;
+
+export default class App extends Component {
   static propTypes = {
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
@@ -81,28 +100,28 @@ class AppWrapper extends Component {
     });
   }
 
-  getChildContext() {
-    this.playerContext.location = this.props.location;
-    return {
-      player: this.playerContext,
-    };
-  }
+  // getChildContext() {
+  //   this.playerContext.location = this.props.location;
+  //   return {
+  //     player: this.playerContext,
+  //   };
+  // }
 
   componentDidMount() {
     window.validateAuth().then(this.handleValidateAuthResponse);
   }
 
   componentWillReceiveProps(props) {
-    const newPathDepth = this.context.router.history.location.pathname.split('/').length - 1;
-    let transitionDirection;
-    if (newPathDepth > this.state.pathDepth) {
-      transitionDirection = 'push';
-    } else {
-      transitionDirection = 'pop';
-    }
+    // const newPathDepth = this.context.router.history.location.pathname.split('/').length - 1;
+    // let transitionDirection;
+    // if (newPathDepth > this.state.pathDepth) {
+    //   transitionDirection = 'push';
+    // } else {
+    //   transitionDirection = 'pop';
+    // }
     this.setState({
-      pathDepth: newPathDepth,
-      transitionDirection,
+      // pathDepth: newPathDepth,
+      // transitionDirection,
       player: {
         timestamp: '',
       },
@@ -110,11 +129,11 @@ class AppWrapper extends Component {
   }
 
   handleValidateAuthResponse = (valid) => {
-    if (valid) {
-      this.context.router.history.replace('schedules');
-    } else {
-      this.context.router.history.replace('login');
-    }
+    // if (valid) {
+    //   this.context.router.history.replace('schedules');
+    // } else {
+    //   this.context.router.history.replace('login');
+    // }
 
     this.setState({
       showLoader: false,
@@ -126,6 +145,8 @@ class AppWrapper extends Component {
   };
 
   render() {
+    const fullPlayerUI = settings.getStoredSettings().fullPlayerUI;
+
     if (this.state.showLoader) {
       return (
         <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
@@ -136,21 +157,31 @@ class AppWrapper extends Component {
       );
     }
 
-    const fullPlayerUI = settings.getStoredSettings().fullPlayerUI;
-
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-        <div id="app" className={fullPlayerUI ? 'full-player' : 'mini-player'}>
-          {
-            fullPlayerUI ?
-              <SideMenu />
-              : <Navbar />
-          }
-          {this.props.children}
-        </div>
-      </MuiThemeProvider>
+      <Provider store={store}>
+        <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+          <Router basename="/">
+            <div id="app" className={fullPlayerUI ? 'full-player' : 'mini-player'}>
+              {
+                fullPlayerUI ?
+                  <SideMenu />
+                  : <Navbar />
+              }
+              <div id={fullPlayerUI ? 'full-player-inner' : 'mini-player-inner'}>
+                <Route path="/login" component={Login} />
+                <Route path="/plans" exact component={SchedulesList} />
+                <Route path="/songs" component={SongsList} />
+                <Route path="/plans/:planId" component={SinglePlan} />
+                <Route path="/app/settings" component={Settings} />
+              </div>
+              <PlayerControls
+                selectedAttachment={this.state.selectedAttachment}
+                playAudio={this.state.playAudio}
+              />
+            </div>
+          </Router>
+        </MuiThemeProvider>
+      </Provider>
     );
   }
 }
-
-export default AppWrapper;
