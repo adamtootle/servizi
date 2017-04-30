@@ -6,6 +6,7 @@ import ActionPlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import ActionPauseIcon from 'material-ui/svg-icons/av/pause';
 import ActionPreviousIcon from 'material-ui/svg-icons/av/skip-previous';
 import ActionNextIcon from 'material-ui/svg-icons/av/skip-next';
+import formatDuration from 'format-duration';
 import keys from '../../main/keys';
 import { player as playerActions } from '../../actions';
 
@@ -58,35 +59,9 @@ class PlayerControls extends Component {
               width: `${playerProgressBarPercentageWidth}%`,
             }}
           />
-          <div
-            id="player-controls"
-          >
-            <span
-              id="player-timestamp"
-            >
-              {(() => {
-                const totalTimeMinutes = Math.floor(this.props.player.totalSeconds / 60);
-                const totalTimeSeconds = Math.ceil(this.props.player.totalSeconds % 60);
-                let totalTimeSecondsString = `${totalTimeSeconds}`;
-                if (totalTimeSeconds < 10) {
-                  totalTimeSecondsString = `0${totalTimeSecondsString}`;
-                }
-
-                let currentTimeMinutes = Math.floor(this.props.player.currentSecond / 60);
-                if (isNaN(currentTimeMinutes)) {
-                  currentTimeMinutes = 0;
-                }
-                let currentTimeSeconds = Math.ceil(this.props.player.currentSecond % 60);
-                if (isNaN(currentTimeSeconds)) {
-                  currentTimeSeconds = 0;
-                }
-
-                let currentTimeSecondsString = `${currentTimeSeconds}`;
-                if (currentTimeSeconds < 10) {
-                  currentTimeSecondsString = `0${currentTimeSecondsString}`;
-                }
-                return `${currentTimeMinutes}:${currentTimeSecondsString}/${totalTimeMinutes}:${totalTimeSecondsString}`;
-              })()}
+          <div id="player-controls">
+            <span id="player-timestamp">
+              {formatDuration(this.props.player.currentSecond * 1000)}/{formatDuration(this.props.player.totalSeconds * 1000)}
             </span>
             <div
               id="player-buttons"
@@ -98,7 +73,7 @@ class PlayerControls extends Component {
                 onClick={(ev) => {
                   ev.preventDefault();
                   ev.stopPropagation();
-                  this.context.player.emit(keys.PlayPreviousAttachmentKey);
+                  this.props.dispatch(playerActions.previousAttachment());
                 }}
               >
                 <ActionPreviousIcon />
@@ -110,7 +85,6 @@ class PlayerControls extends Component {
                 onClick={(ev) => {
                   ev.preventDefault();
                   ev.stopPropagation();
-                  // this.context.player.emit(keys.PlayPauseAttachmentKey);
                   this.props.dispatch(playerActions.playPauseAttachment());
                 }}
               >
@@ -129,7 +103,7 @@ class PlayerControls extends Component {
                 onClick={(ev) => {
                   ev.preventDefault();
                   ev.stopPropagation();
-                  this.context.player.emit(keys.PlayNextAttachmentKey);
+                  this.props.dispatch(playerActions.nextAttachment());
                 }}
               >
                 <ActionNextIcon />

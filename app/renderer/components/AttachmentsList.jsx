@@ -9,23 +9,11 @@ import { player as playerActions } from '../../actions';
 
 class AttachmentsList extends Component {
   static propTypes = {
-    songItems: PropTypes.arrayOf(PropTypes.object),
-    planAttachments: PropTypes.shape({
-      data: PropTypes.array,
-    }),
-    selectedAttachment: PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    }),
     dispatch: PropTypes.func,
   };
 
   static contextTypes = {
     player: PropTypes.object,
-  };
-
-  static defaultProps = {
-    songItems: [],
-    planAttachments: [],
   };
 
   adjustedAttachmentName(name) {
@@ -36,9 +24,9 @@ class AttachmentsList extends Component {
     let attachmentIndex = -1;
     return (
       <SelectableList id="plan-items-container">
-        {this.props.songItems.map((item) => {
+        {this.props.schedules.currentPlanItems.map((item) => {
           const songId = item.relationships.song.data.id;
-          const itemAttachments = filter(this.props.planAttachments.data, (attachment) => {
+          const itemAttachments = filter(this.props.schedules.currentPlanAttachments, (attachment) => {
             return attachment.relationships.attachable.data.id === songId;
           });
 
@@ -86,7 +74,10 @@ class AttachmentsList extends Component {
 }
 
 function mapStateToProps(state) {
-  return { player: state.player };
+  return {
+    player: state.player,
+    schedules: state.schedules,
+  };
 }
 
 export default connect(mapStateToProps)(AttachmentsList);

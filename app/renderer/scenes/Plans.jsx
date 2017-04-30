@@ -14,20 +14,11 @@ class Plans extends Component {
     uiRoutePrefix: PropTypes.string,
   };
 
-  constructor(args) {
-    super(args);
-
-    this.state = {
-      schedules: [],
-    };
-  }
-
   componentDidMount() {
     this.props.dispatch(schedulesActions.loadSchedules());
   }
 
-  handlePlanClick = (schedule) => {
-    const serviceType = schedule.relationships.service_type;
+  handleClickPlan = (schedule) => {
     const plan = schedule.relationships.plan;
     const route = `/plans/${plan.data.id}`;
     this.context.router.history.push(route);
@@ -47,7 +38,7 @@ class Plans extends Component {
                 primaryText={schedule.attributes.dates}
                 secondaryText={`${serviceTypeName} - ${teamPositionName} (${teamName})`}
                 onClick={() => {
-                  this.handlePlanClick(schedule);
+                  this.handleClickPlan(schedule);
                 }}
               />
             );

@@ -35,4 +35,14 @@ module.exports = {
       payload: args,
     };
   },
+  previousAttachment: () => {
+    return {
+      type: keys.PREVIOUS_ATTACHMENT,
+    };
+  },
+  nextAttachment: () => {
+    return {
+      type: keys.NEXT_ATTACHMENT,
+    };
+  },
 };

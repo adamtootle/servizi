@@ -19,6 +19,9 @@ module.exports = function (state = initialState, action) {
     case keys.CURRENT_ATTACHMENT_TIME:
       return Object.assign({}, state, action.payload);
 
+    case keys.PREVIOUS_ATTACHMENT:
+      return state;
+
     default:
       return state;
   }

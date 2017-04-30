@@ -77,11 +77,11 @@ function AppEvents() {
     });
 
     globalShortcut.register('MediaPreviousTrack', () => {
-      mainWindow.webContents.send('MediaPreviousTrack');
+      reduxStore.dispatch(reduxActions.player.previousAttachment());
     });
 
     globalShortcut.register('MediaNextTrack', () => {
-      mainWindow.webContents.send('MediaNextTrack');
+      reduxStore.dispatch(reduxActions.player.nextAttachment());
     });
   };
 
