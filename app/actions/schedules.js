@@ -1,6 +1,4 @@
-import { filter } from 'lodash';
-import settings from '../main/settings';
-
+const filter = require('lodash').filter;
 const keys = require('./keys');
 
 module.exports = {

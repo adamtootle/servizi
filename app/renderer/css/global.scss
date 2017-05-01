@@ -142,8 +142,7 @@ body {
   // width: 100%;
 }
 
-#player-container-inner {
-  position: relative;
+#player-container {
   height: 60px;
   background: #E6E6E6;
 }
@@ -171,7 +170,7 @@ body {
   bottom: 4px;
 }
 
-#player-buttons {
+#track-buttons {
   text-align: center;
   height: 100%;
   padding-top: 7px;

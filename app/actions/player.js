@@ -45,4 +45,14 @@ module.exports = {
       type: keys.NEXT_ATTACHMENT,
     };
   },
+  repeat: () => {
+    return {
+      type: keys.REPEAT_ATTACHMENT,
+    };
+  },
+  attachmentEnded: () => {
+    return {
+      type: keys.ATTACHMENT_ENDED,
+    };
+  },
 };

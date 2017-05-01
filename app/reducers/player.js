@@ -4,6 +4,7 @@ const initialState = {
   playAudio: false,
   currentSecond: 0,
   totalSeconds: 0,
+  repeat: false,
 };
 
 module.exports = function (state = initialState, action) {
@@ -21,6 +22,11 @@ module.exports = function (state = initialState, action) {
 
     case keys.PREVIOUS_ATTACHMENT:
       return state;
+
+    case keys.REPEAT_ATTACHMENT:
+      return Object.assign({}, state, {
+        repeat: !state.repeat,
+      });
 
     default:
       return state;

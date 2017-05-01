@@ -45,7 +45,7 @@ function AppEvents() {
         // frame: false,
         width: screenSize.width * 0.75,
         height: screenSize.height * 0.95,
-        vibrancy: 'ultra-dark',
+        vibrancy: 'dark',
         titleBarStyle: 'hidden-inset',
       };
     }

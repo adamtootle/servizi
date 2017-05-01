@@ -3,7 +3,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
 import { ipcRenderer } from 'electron';
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
@@ -169,6 +169,7 @@ export default class App extends Component {
                   : <Navbar />
               }
               <div id={fullPlayerUI ? 'full-player-inner' : 'mini-player-inner'}>
+                <Redirect from="/" to="/plans" />
                 <Route path="/login" component={Login} />
                 <Route path="/plans" exact component={Plans} />
                 <Route path="/songs" component={SongsList} />

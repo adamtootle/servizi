@@ -23,7 +23,7 @@ body {
 }
 
 #app.full-player {
-  padding-left: 220px;
+  padding-left: 188px;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -36,11 +36,49 @@ body {
   #player-container {
     left: 0px;
     bottom: 0px;
-    // padding-left: 220px;
-    // box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-top: 1px solid #D2D2D2;
 
-    #player-container-inner {
-      border-top: 1px solid #B4B4B4;
+    #player-time {
+      flex: 1;
+      display: flex;
+      padding:  0px 12px;
+
+      .timestamp {
+        line-height: 60px;
+        color: #535353;
+        font-size: 13px;
+      }
+
+      #player-time-bar-container {
+        flex: 1;
+        position: relative;
+
+        #player-time-bar-gray {
+          background-color: #D8D8D8;
+          position: relative;
+          top: 50%;
+          height: 4px;
+          margin-top: -2px;
+          border-radius: 2px;
+          overflow: hidden;
+        }
+
+        #player-time-bar-blue {
+          background-color: #71C7FF;
+          height: 4px;
+        }
+      }
+    }
+
+    #extra-controls {
+      width: 100px;
+
+      .icon {
+        width: 100px;
+      }
     }
   }
 
@@ -66,24 +104,27 @@ body {
   position: fixed;
   left: 0px;
   top: 0px;
-  width: 220px;
+  width: 188px;
   height: 100%;
+  background-color: rgba(113, 199, 255, 0.45);
   -webkit-app-region: drag;
 
   a {
     display: block;
     padding: 16px;
+    padding-left: 28px;
     color: #F3F3F3;
     text-decoration: none;
+    font-size: 18px;
     -webkit-app-region: no-drag;
   }
 
   a:hover {
-    background: rgba(242, 242, 242, 0.03);
+    background: rgba(255, 255, 255, 0.07);
   }
 
   a.active {
-    background: rgba(242, 242, 242, 0.08);
+    background: rgba(255, 255, 255, 0.15);
   }
 
   #account-link {

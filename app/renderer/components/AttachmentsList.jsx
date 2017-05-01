@@ -34,9 +34,10 @@ class AttachmentsList extends Component {
             <div key={item.id}>
               <Subheader
                 style={{
-                  backgroundColor: 'rgba(27, 127, 220, 0.1)',
-                  color: '#2E2E2E',
+                  color: '#969FA5',
                   lineHeight: '27px',
+                  fontWeight: 'bold',
+                  paddingTop: 20,
                 }}
               >
                 {item.attributes.title}
@@ -46,8 +47,8 @@ class AttachmentsList extends Component {
                 const itemIsSelected = this.props.player.selectedAttachment
                   && this.props.player.selectedAttachment.id === attachment.id;
                 const style = {
-                  backgroundColor: itemIsSelected ? 'rgba(0, 0, 0, 0.05)' : '',
-                  color: '#2E2E2E',
+                  backgroundColor: itemIsSelected ? '#E8EAEB' : '',
+                  color: '#171717',
                 };
                 return (
                   <ListItem
