@@ -8,6 +8,7 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { electronEnhancer } from 'redux-electron-store';
+import ReactPlayer from 'react-player';
 import Navbar from './components/Navbar';
 import SideMenu from './components/SideMenu';
 import PlayerContext from './PlayerContext';
@@ -16,6 +17,7 @@ import keys from '../main/keys';
 import { Login, SinglePlan, Plans, SongsList, Settings } from './scenes';
 import reducers from '../reducers';
 import PlayerControls from './components/PlayerControls';
+import { player as playerActions } from '../actions';
 
 const theme = {
   palette: {
@@ -58,15 +60,7 @@ export default class App extends Component {
   constructor(args) {
     super(args);
 
-    this.state = {
-      showLoader: true,
-      showLogin: false,
-      showApp: false,
-      title: 'Playr',
-      transitionDirection: 'push',
-      selectedAttachment: null,
-      playAudio: false,
-    };
+    this.state = store.getState();
 
     this.playerContext = new PlayerContext();
     this.playerContext.setTitle = (title) => {
@@ -99,34 +93,14 @@ export default class App extends Component {
     ipcRenderer.on('MediaNextTrack', () => {
       this.playerContext.emit(keys.PlayNextAttachmentKey);
     });
-  }
 
-  // getChildContext() {
-  //   this.playerContext.location = this.props.location;
-  //   return {
-  //     player: this.playerContext,
-  //   };
-  // }
+    store.subscribe(() => {
+      this.setState(store.getState());
+    });
+  }
 
   componentDidMount() {
     window.validateAuth().then(this.handleValidateAuthResponse);
-  }
-
-  componentWillReceiveProps(props) {
-    // const newPathDepth = this.context.router.history.location.pathname.split('/').length - 1;
-    // let transitionDirection;
-    // if (newPathDepth > this.state.pathDepth) {
-    //   transitionDirection = 'push';
-    // } else {
-    //   transitionDirection = 'pop';
-    // }
-    this.setState({
-      // pathDepth: newPathDepth,
-      // transitionDirection,
-      player: {
-        timestamp: '',
-      },
-    });
   }
 
   handleValidateAuthResponse = (valid) => {
@@ -143,6 +117,60 @@ export default class App extends Component {
 
   handleLoginResults = () => {
     console.log('handleLoginResults');
+  };
+
+  handlePlayerProgressUpdate = (progress) => {
+    if (this.state.player.totalSeconds > 0 && progress.played !== undefined) {
+      const currentSecond = Math.floor(this.state.player.totalSeconds * progress.played);
+      store.dispatch(playerActions.currentAttachmentTime({ currentSecond }));
+    }
+  };
+
+  handlePlayerDurationUpdate = (totalSeconds) => {
+    store.dispatch(playerActions.currentAttachmentTime({ totalSeconds }));
+  };
+
+  handlePlayerEnded = () => {
+    if (this.state.player.repeat) {
+      this.player.seekTo(0);
+    }
+  };
+
+  selectedAttachmentTypeClassName = () => {
+    const fullPlayerUI = settings.getStoredSettings().fullPlayerUI;
+
+    let className = fullPlayerUI ? 'full-player' : 'mini-player';
+
+    if (this.state.player.playAudio) {
+      className += ' playing';
+    }
+
+    if (this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3') {
+      className += ' audio-player';
+    } else {
+      className += ' video-player';
+    }
+
+    return className;
+  };
+
+  currentPlayerStyles = () => {
+    if (this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3') {
+      return {
+        position: 'absolute',
+        top: 9999,
+      };
+    }
+
+    return {};
+  };
+
+  currentPlayerHeight = () => {
+    if (this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3') {
+      return '0px';
+    }
+
+    return '400px';
   };
 
   render() {
@@ -162,24 +190,50 @@ export default class App extends Component {
       <Provider store={store}>
         <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
           <Router basename="/">
-            <div id="app" className={fullPlayerUI ? 'full-player' : 'mini-player'}>
+            <div
+              id="app"
+              className={this.selectedAttachmentTypeClassName()}
+            >
               {
                 fullPlayerUI ?
                   <SideMenu />
                   : <Navbar />
               }
-              <div id={fullPlayerUI ? 'full-player-inner' : 'mini-player-inner'}>
-                <Redirect from="/" to="/plans" />
-                <Route path="/login" component={Login} />
-                <Route path="/plans" exact component={Plans} />
-                <Route path="/songs" component={SongsList} />
-                <Route path="/plans/:planId" component={SinglePlan} />
-                <Route path="/app/settings" component={Settings} />
+              <div id={fullPlayerUI ? 'full-player-inner' : 'mini-player-inner'} >
+                <div id="media-player-container">
+                  <ReactPlayer
+                    ref={(ref) => { this.player = ref; }}
+                    style={this.currentPlayerStyles()}
+                    url={this.state.player.selectedAttachmentUrl}
+                    progressFrequency={500}
+                    playing={this.state.player.playAudio}
+                    volume={1}
+                    width="100%"
+                    height={this.currentPlayerHeight()}
+                    onProgress={this.handlePlayerProgressUpdate}
+                    onDuration={this.handlePlayerDurationUpdate}
+                    onEnded={this.handlePlayerEnded}
+                    youtubeConfig={{
+                      playerVars: {
+                        controls: 1,
+                      },
+                    }}
+                  />
+                </div>
+                <div id="routes-wrapper">
+                  <Redirect from="/" to="/plans" />
+                  <Route path="/login" component={Login} />
+                  <Route path="/plans" exact component={Plans} />
+                  <Route path="/songs" component={SongsList} />
+                  <Route path="/plans/:planId" component={SinglePlan} />
+                  <Route path="/app/settings" component={Settings} />
+                </div>
               </div>
-              <PlayerControls
-                selectedAttachment={this.state.selectedAttachment}
-                playAudio={this.state.playAudio}
-              />
+              {
+                this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3' ?
+                  <PlayerControls playerRef={this.player} />
+                  : null
+              }
             </div>
           </Router>
         </MuiThemeProvider>

@@ -11,6 +11,11 @@ body {
   -webkit-app-region: drag;
 }
 
+#app-wrapper {
+  flex: 1;
+  display: flex;
+}
+
 #app {
   flex: 1;
   display: flex;
@@ -19,7 +24,9 @@ body {
 #full-player-inner {
   flex: 1;
   background-color: #F2F2F2;
-  overflow-y: scroll;
+  // overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
 }
 
 #app.full-player {
@@ -28,6 +35,20 @@ body {
   flex: 1;
   flex-direction: column;
   overflow: hidden;
+
+  #routes-wrapper {
+    background-color: #F2F2F2;
+    overflow-y: scroll;
+  }
+
+  #media-player-container {
+    transition: 0.2s ease-in-out;
+    height: 0px;
+  }
+
+  &.video-player #media-player-container {
+    height: 400px;
+  }
 
   #single-plan {
     position: relative;

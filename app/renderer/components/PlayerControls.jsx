@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import ReactPlayer from 'react-player';
 import IconButton from 'material-ui/IconButton';
 import ActionPlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import ActionPauseIcon from 'material-ui/svg-icons/av/pause';
@@ -32,32 +31,13 @@ class PlayerControls extends Component {
       playAudio: PropTypes.bool,
       currentSecond: PropTypes.number,
       totalSeconds: PropTypes.number,
+      player: PropTypes.object,
     }),
+    playerRef: PropTypes.object,
   };
 
   static contextTypes = {
     player: PropTypes.object,
-  };
-
-  static defaultProps = {
-    playAudio: false,
-  };
-
-  handlePlayerProgressUpdate = (progress) => {
-    if (this.props.player.totalSeconds > 0 && progress.played !== undefined) {
-      const currentSecond = Math.floor(this.props.player.totalSeconds * progress.played);
-      this.props.dispatch(playerActions.currentAttachmentTime({ currentSecond }));
-    }
-  };
-
-  handlePlayerDurationUpdate = (totalSeconds) => {
-    this.props.dispatch(playerActions.currentAttachmentTime({ totalSeconds }));
-  };
-
-  handlePlayerEnded = () => {
-    if (this.props.player.repeat) {
-      this.audioPlayer.seekTo(0);
-    }
   };
 
   render() {
@@ -137,7 +117,7 @@ class PlayerControls extends Component {
                 const newProgress = (ev.clientX - elementRect.left) / this.playerContainer.clientWidth;
                 const currentSecond = newProgress * this.props.player.totalSeconds;
                 this.props.dispatch(playerActions.currentAttachmentTime({ currentSecond }));
-                this.audioPlayer.seekTo(newProgress);
+                this.props.playerRef.seekTo(newProgress);
               }}
             >
               <div id="player-time-bar-gray">
@@ -175,22 +155,7 @@ class PlayerControls extends Component {
             </IconButton>
           </div>
         </div>
-        <ReactPlayer
-          ref={(ref) => { this.audioPlayer = ref; }}
-          style={{
-            position: 'absolute',
-            top: 9999,
-          }}
-          url={this.props.player.selectedAttachmentUrl}
-          progressFrequency={500}
-          playing={this.props.player.playAudio}
-          volume={1}
-          width="100%"
-          height="0px"
-          onProgress={this.handlePlayerProgressUpdate}
-          onDuration={this.handlePlayerDurationUpdate}
-          onEnded={this.handlePlayerEnded}
-        />
+
       </div>
     );
   }

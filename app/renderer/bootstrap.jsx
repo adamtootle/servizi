@@ -10,6 +10,6 @@ require('./css/app.scss');
 window.renderApp = function renderApp() {
   ReactDOM.render(
     React.createElement(App),
-    document.getElementById('app')
+    document.getElementById('app-wrapper')
   );
 };

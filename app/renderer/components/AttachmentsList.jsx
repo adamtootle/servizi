@@ -16,10 +16,6 @@ class AttachmentsList extends Component {
     player: PropTypes.object,
   };
 
-  adjustedAttachmentName(name) {
-    return S(name).truncate(50).toString().replace(/(.mp3|.wav)*/gi, '');
-  }
-
   render() {
     let attachmentIndex = -1;
     return (
@@ -62,7 +58,7 @@ class AttachmentsList extends Component {
                     }}
                     style={style}
                   >
-                    {this.adjustedAttachmentName(attachment.attributes.filename)}
+                    {S(attachment.attributes.filename).truncate(50).toString().replace(/(.mp3|.wav)*/gi, '')}
                   </ListItem>
                 );
               })}

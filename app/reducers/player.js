@@ -23,6 +23,9 @@ module.exports = function (state = initialState, action) {
     case keys.PREVIOUS_ATTACHMENT:
       return state;
 
+    case keys.NEXT_ATTACHMENT:
+      return state;
+
     case keys.REPEAT_ATTACHMENT:
       return Object.assign({}, state, {
         repeat: !state.repeat,
