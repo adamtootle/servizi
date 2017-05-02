@@ -145,17 +145,20 @@ export default class App extends Component {
       className += ' playing';
     }
 
-    if (this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3') {
-      className += ' audio-player';
-    } else {
-      className += ' video-player';
+    if (this.state.player.selectedAttachment) {
+      if (this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3') {
+        className += ' audio-player';
+      } else {
+        className += ' video-player';
+      }
     }
 
     return className;
   };
 
   currentPlayerStyles = () => {
-    if (this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3') {
+    if (this.state.player.selectedAttachment
+        && this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3') {
       return {
         position: 'absolute',
         top: 9999,
@@ -166,7 +169,8 @@ export default class App extends Component {
   };
 
   currentPlayerHeight = () => {
-    if (this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3') {
+    if (this.state.player.selectedAttachment
+        && this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3') {
       return '0px';
     }
 
@@ -230,7 +234,8 @@ export default class App extends Component {
                 </div>
               </div>
               {
-                this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3' ?
+                this.state.player.selectedAttachment
+                && this.state.player.selectedAttachment.attributes.pco_type === 'AttachmentS3' ?
                   <PlayerControls playerRef={this.player} />
                   : null
               }
