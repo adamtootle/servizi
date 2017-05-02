@@ -1,10 +1,12 @@
-const filter = require('lodash').filter;
+const filter = require('lodash/filter');
+const forEach = require('lodash/forEach');
 const keys = require('./keys');
+const pcoWrapper = require('../main/pco-wrapper');
 
 module.exports = {
   loadSchedules: () => {
     return (dispatch) => {
-      window.apiClient.schedules.getSchedules()
+      pcoWrapper.apiClient.schedules.getSchedules()
         .then((res) => {
           dispatch({
             type: keys.LOAD_SCHEDULES,
@@ -17,28 +19,42 @@ module.exports = {
   },
   selectPlan: (planId) => {
     return (dispatch) => {
-      window.apiClient.plans.getPlan(planId)
-      .then(window.apiClient.plans.getPlanItems)
-      .then(window.apiClient.plans.getPlanAttachments)
+      dispatch({
+        type: keys.SELECT_PLAN,
+        payload: {
+          currentPlan: null,
+          currentPlanItems: [],
+          currentPlanAttachments: [],
+        },
+      });
+      dispatch({
+        type: keys.SHOW_LOADER,
+      });
+      pcoWrapper.apiClient.plans.getPlan(planId)
+      .then(pcoWrapper.apiClient.plans.getPlanItems)
+      .then(pcoWrapper.apiClient.plans.getPlanAttachments)
       .then((res) => {
-        const planAttachments = res.planAttachments;
-        let newData = planAttachments.data;
         const items = filter(res.planItems.data, item => item.attributes.item_type === 'song');
+        var planAttachments = [];
 
-        // if (!settings.getStoredSettings().fullPlayerUI) {
-        //   filter(planAttachments.data, attachment => attachment.attributes.pco_type === 'AttachmentS3');
-        // }
-        //
-        // if (this.context.uiRoutePrefix === 'full') {
-        //   newData = planAttachments.data;
-        // }
-        // planAttachments.data = newData;
+        forEach(items, (item) => {
+          const songId = item.relationships.song.data.id
+          const itemAttachments = filter(res.planAttachments.data, (attachment) => {
+            return attachment.relationships.attachable.data.id === songId;
+          });
+          planAttachments = planAttachments.concat(itemAttachments);
+        });
+
+        dispatch({
+          type: keys.HIDE_LOADER,
+        });
+
         dispatch({
           type: keys.SELECT_PLAN,
           payload: {
             currentPlan: res.plan,
             currentPlanItems: items,
-            currentPlanAttachments: newData,
+            currentPlanAttachments: planAttachments,
           },
         });
       });

@@ -104,15 +104,15 @@ export default class App extends Component {
   }
 
   handleValidateAuthResponse = (valid) => {
-    // if (valid) {
-    //   this.context.router.history.replace('schedules');
-    // } else {
-    //   this.context.router.history.replace('login');
-    // }
-
-    this.setState({
-      showLoader: false,
-    });
+    if (valid) {
+      this.setState({
+        hasValidAuth: true,
+      });
+    } else {
+      this.setState({
+        hasValidAuth: false,
+      });
+    }
   };
 
   handleLoginResults = () => {
@@ -180,16 +180,6 @@ export default class App extends Component {
   render() {
     const fullPlayerUI = settings.getStoredSettings().fullPlayerUI;
 
-    if (this.state.showLoader) {
-      return (
-        <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-          <div className="loading-indicator-wrapper">
-            <CircularProgress />
-          </div>
-        </MuiThemeProvider>
-      );
-    }
-
     return (
       <Provider store={store}>
         <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
@@ -225,7 +215,13 @@ export default class App extends Component {
                   />
                 </div>
                 <div id="routes-wrapper">
-                  <Redirect from="/" to="/plans" />
+                  {
+                    this.state.ui.showLoader ?
+                      <div className="loading-indicator-wrapper">
+                        <CircularProgress />
+                      </div>
+                      : null
+                  }
                   <Route path="/login" component={Login} />
                   <Route path="/plans" exact component={Plans} />
                   <Route path="/songs" component={SongsList} />

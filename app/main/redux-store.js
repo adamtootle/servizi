@@ -1,9 +1,11 @@
 const redux = require('redux');
 const reduxElectronStore = require('redux-electron-store');
+const thunk = require('redux-thunk');
 const reducers = require('../reducers');
 
 let storeDispatch;
 const enhancer = redux.compose(
+  redux.applyMiddleware(thunk.default),
   reduxElectronStore.electronEnhancer({ dispatchProxy: a => storeDispatch(a) })
 );
 

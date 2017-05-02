@@ -26,7 +26,7 @@ class SinglePlan extends Component {
   }
 
   render() {
-    if (!this.props.schedules.currentPlanItems || !this.props.schedules.currentPlanAttachments) {
+    if (!this.props.plans.currentPlanItems || !this.props.plans.currentPlanAttachments) {
       return (
         <div className="loading-indicator-wrapper" style={{ marginTop: '100px' }}>
           <CircularProgress />
@@ -34,7 +34,7 @@ class SinglePlan extends Component {
       );
     }
 
-    // const songItems = filter(this.props.schedules.currentPlanItems.data, item => item.attributes.item_type === 'song');
+    // const songItems = filter(this.props.plans.currentPlanItems.data, item => item.attributes.item_type === 'song');
 
     return (
       <div id="single-plan">
@@ -56,7 +56,7 @@ class SinglePlan extends Component {
             : null
         }
         <AttachmentsList
-          planAttachments={this.props.schedules.currentPlanAttachments}
+          planAttachments={this.props.plans.currentPlanAttachments}
         />
       </div>
     );
@@ -66,7 +66,8 @@ class SinglePlan extends Component {
 function mapStateToProps(state) {
   return {
     player: state.player,
-    schedules: state.schedules
+    plans: state.plans,
+    schedules: state.schedules,
   };
 }
 

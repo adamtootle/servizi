@@ -13,18 +13,13 @@
       const P = require('bluebird');
       const auth = require('./app/main/auth');
       var pcoWrapper = require('./app/main/pco-wrapper');
-      pcoWrapper.on('ready', (err, res) => {
-        if (!err) {
-          window.apiClient = res;
-          window.renderApp();
-        }
-      });
       window.validateAuth = function validateAuth(event, args) {
         return new P((resolve, reject) => {
           auth.getStoredToken()
               .then((token) => {
+                console.log('token', token);
                 if (token !== null) {
-                  window.apiClient.http.accessToken = token.token.access_token;
+                  pcoWrapper.apiClient.http.accessToken = token.token.access_token;
                 }
                 resolve(token !== null);
               });
@@ -32,7 +27,16 @@
       };
 
       document.addEventListener("DOMContentLoaded", function() {
-        pcoWrapper.refreshAuth();
+        // pcoWrapper.refreshAuth();
+        if (pcoWrapper.ready) {
+          window.renderApp();
+        } else {
+          pcoWrapper.on('ready', (err, res) => {
+            if (!err) {
+              window.renderApp();
+            }
+          });
+        }
       });
     </script>
     <script src="http://localhost:8080/webpack-dev-server.js"></script>

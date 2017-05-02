@@ -8,19 +8,22 @@ const eventEmitter = new EventEmitter();
 
 class PCOWrapper {
 
-  refreshAuth() {
-    db.findOne({ key: 'oauth_token' }, (err, res) => {
-      const pcoConfig = {
-        clientId: config.oauthClientId,
-        clientSecret: config.oauthClientSecret,
-      };
+  constructor() {
+    const pcoConfig = {
+      clientId: config.oauthClientId,
+      clientSecret: config.oauthClientSecret,
+    };
 
-      if (res !== null) {
-        pcoConfig.accessToken = res.value.token.access_token;
-        pcoConfig.redirectUri = res.value.redirect_uri;
+    this.apiClient = new PCO(pcoConfig);
+
+    db.findOne({ key: 'oauth_token' }, (err, res) => {
+      if (res) {
+        this.apiClient.http.accessToken = res.value.token.access_token;
+        this.apiClient.http.redirectUri = res.value.redirect_uri;
       }
 
-      eventEmitter.emit('ready', null, new PCO(pcoConfig));
+      this.ready = true;
+      eventEmitter.emit('ready', null, this.apiClient);
     });
   }
 

@@ -20,9 +20,9 @@ class AttachmentsList extends Component {
     let attachmentIndex = -1;
     return (
       <SelectableList id="plan-items-container">
-        {this.props.schedules.currentPlanItems.map((item) => {
+        {this.props.plans.currentPlanItems.map((item) => {
           const songId = item.relationships.song.data.id;
-          const itemAttachments = filter(this.props.schedules.currentPlanAttachments, (attachment) => {
+          const itemAttachments = filter(this.props.plans.currentPlanAttachments, (attachment) => {
             return attachment.relationships.attachable.data.id === songId;
           });
 
@@ -74,6 +74,7 @@ function mapStateToProps(state) {
   return {
     player: state.player,
     schedules: state.schedules,
+    plans: state.plans,
   };
 }
 

@@ -1,29 +1,36 @@
+const findIndex = require('lodash/findIndex');
 const keys = require('./keys');
+const pcoWrapper = require('../main/pco-wrapper');
 
-module.exports = {
-  playAttachment: (attachment) => {
-    return (dispatch) => {
+function dispatchAndLoadAttachment(attachment, dispatch) {
+  dispatch({
+    type: keys.PLAY_ATTACHMENT,
+    payload: {
+      selectedAttachment: attachment,
+      playAudio: false,
+      currentSecond: 0,
+      totalSeconds: 0,
+    },
+  });
+  pcoWrapper.apiClient.attachments.getAttachmentStreamUrl(attachment)
+    .then((res) => {
       dispatch({
         type: keys.PLAY_ATTACHMENT,
         payload: {
-          selectedAttachment: attachment,
-          playAudio: false,
-          currentSecond: 0,
-          totalSeconds: 0,
+          selectedAttachmentUrl: res.data.attributes.attachment_url,
+          playAudio: true,
         },
       });
-      window.apiClient.attachments.getAttachmentStreamUrl(attachment)
-        .then((res) => {
-          dispatch({
-            type: keys.PLAY_ATTACHMENT,
-            payload: {
-              selectedAttachmentUrl: res.data.attributes.attachment_url,
-              playAudio: true,
-            },
-          });
-        });
-    };
-  },
+    });
+}
+function playAttachment(attachment) {
+  return (dispatch) => {
+    dispatchAndLoadAttachment(attachment, dispatch);
+  };
+}
+
+module.exports = {
+  playAttachment,
   playPauseAttachment: () => {
     return {
       type: keys.PLAY_PAUSE_ATTACHMENT,
@@ -36,13 +43,38 @@ module.exports = {
     };
   },
   previousAttachment: () => {
-    return {
-      type: keys.PREVIOUS_ATTACHMENT,
+    return (dispatch, getState) => {
+      const state = getState();
+      const selectedAttachment = state.player.selectedAttachment;
+      const selectedAttachmentIndex = findIndex(state.plans.currentPlanAttachments, (attachment) => {
+        return attachment.id === selectedAttachment.id;
+      });
+
+      const attachmentsLength = state.plans.currentPlanAttachments.length;
+      let newAttachment;
+      if (selectedAttachmentIndex === 0) {
+        newAttachment = state.plans.currentPlanAttachments[attachmentsLength - 1];
+      } else {
+        newAttachment = state.plans.currentPlanAttachments[selectedAttachmentIndex - 1];
+      }
+      dispatchAndLoadAttachment(newAttachment, dispatch);
     };
   },
   nextAttachment: () => {
-    return {
-      type: keys.NEXT_ATTACHMENT,
+    return (dispatch, getState) => {
+      const state = getState();
+      const selectedAttachment = state.player.selectedAttachment;
+      const selectedAttachmentIndex = findIndex(state.plans.currentPlanAttachments, (attachment) => {
+        return attachment.id === selectedAttachment.id;
+      });
+
+      let newAttachment;
+      if (selectedAttachmentIndex === state.plans.currentPlanAttachments.length - 1) {
+        newAttachment = state.plans.currentPlanAttachments[0];
+      } else {
+        newAttachment = state.plans.currentPlanAttachments[selectedAttachmentIndex + 1];
+      }
+      dispatchAndLoadAttachment(newAttachment, dispatch);
     };
   },
   repeat: () => {
