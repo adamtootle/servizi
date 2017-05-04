@@ -95,7 +95,12 @@ export default class App extends Component {
     });
 
     store.subscribe(() => {
-      this.setState(store.getState());
+      const newState = store.getState();
+      this.setState(newState);
+      if (newState.player.restartCurrentAttachment) {
+        this.player.seekTo(0);
+        store.dispatch(playerActions.didRestartCurrentAttachment());
+      }
     });
   }
 

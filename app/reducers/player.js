@@ -31,6 +31,16 @@ module.exports = function (state = initialState, action) {
         repeat: !state.repeat,
       });
 
+    case keys.RESTART_CURRENT_ATTACHMENT:
+      return Object.assign({}, state, {
+        restartCurrentAttachment: true,
+      });
+
+    case keys.DID_RESTART_CURRENT_ATTACHMENT:
+      return Object.assign({}, state, {
+        restartCurrentAttachment: false,
+      });
+
     default:
       return state;
   }

@@ -45,19 +45,24 @@ module.exports = {
   previousAttachment: () => {
     return (dispatch, getState) => {
       const state = getState();
-      const selectedAttachment = state.player.selectedAttachment;
-      const selectedAttachmentIndex = findIndex(state.plans.currentPlanAttachments, (attachment) => {
-        return attachment.id === selectedAttachment.id;
-      });
-
-      const attachmentsLength = state.plans.currentPlanAttachments.length;
-      let newAttachment;
-      if (selectedAttachmentIndex === 0) {
-        newAttachment = state.plans.currentPlanAttachments[attachmentsLength - 1];
+      if (state.player.currentSecond > 5) {
+        dispatch({ type: keys.RESTART_CURRENT_ATTACHMENT });
       } else {
-        newAttachment = state.plans.currentPlanAttachments[selectedAttachmentIndex - 1];
+        const selectedAttachment = state.player.selectedAttachment;
+        const attachments = state.plans.currentPlanAttachments;
+        const selectedAttachmentIndex = findIndex(attachments, (attachment) => {
+          return attachment.id === selectedAttachment.id;
+        });
+
+        const attachmentsLength = state.plans.currentPlanAttachments.length;
+        let newAttachment;
+        if (selectedAttachmentIndex === 0) {
+          newAttachment = state.plans.currentPlanAttachments[attachmentsLength - 1];
+        } else {
+          newAttachment = state.plans.currentPlanAttachments[selectedAttachmentIndex - 1];
+        }
+        dispatchAndLoadAttachment(newAttachment, dispatch);
       }
-      dispatchAndLoadAttachment(newAttachment, dispatch);
     };
   },
   nextAttachment: () => {
@@ -85,6 +90,11 @@ module.exports = {
   attachmentEnded: () => {
     return {
       type: keys.ATTACHMENT_ENDED,
+    };
+  },
+  didRestartCurrentAttachment: () => {
+    return {
+      type: keys.DID_RESTART_CURRENT_ATTACHMENT,
     };
   },
 };
