@@ -36,6 +36,10 @@ body {
   flex-direction: column;
   overflow: hidden;
 
+  &.log-in {
+    padding-left: 0px;
+  }
+
   #routes-wrapper {
     background-color: #F2F2F2;
     overflow-y: scroll;
@@ -127,6 +131,7 @@ body {
   top: 0px;
   width: 188px;
   height: 100%;
+  padding-top: 100px;
   background-color: rgba(25, 51, 67, 0.4);
   -webkit-app-region: drag;
 

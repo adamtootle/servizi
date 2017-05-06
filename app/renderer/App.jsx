@@ -14,7 +14,7 @@ import Navbar from './components/Navbar';
 import SideMenu from './components/SideMenu';
 import settings from '../main/settings';
 import keys from '../main/keys';
-import { Login, SinglePlan, Plans, SongsList, Settings } from './scenes';
+import { Login, SinglePlan, Plans, SongsList, Settings, LoggedIn } from './scenes';
 import reducers from '../reducers';
 import PlayerControls from './components/PlayerControls';
 import { player as playerActions } from '../actions';
@@ -101,7 +101,7 @@ export default class App extends Component {
               .then((refreshedToken) => {
                 if (refreshedToken) {
                   pcoWrapper.apiClient.http.accessToken = refreshedToken.token.access_token;
-                  this.router.history.replace('/plans');
+                  this.router.history.replace('/logged_in/plans');
                   resolve(true);
                 } else {
                   this.router.history.replace('/login');
@@ -110,7 +110,7 @@ export default class App extends Component {
               });
           } else {
             pcoWrapper.apiClient.http.accessToken = token.token.access_token;
-            this.router.history.replace('/plans');
+            this.router.history.replace('/logged_in/plans');
             resolve(false);
           }
         });
@@ -186,11 +186,6 @@ export default class App extends Component {
               id="app"
               className={this.selectedAttachmentTypeClassName()}
             >
-              {
-                fullPlayerUI ?
-                  <SideMenu />
-                  : <Navbar />
-              }
               <div id={fullPlayerUI ? 'full-player-inner' : 'mini-player-inner'} >
                 <div id="media-player-container">
                   <ReactPlayer
@@ -220,24 +215,12 @@ export default class App extends Component {
                       </div>
                       : null
                   }
-                  <Route
-                    path="/"
-                    exact
-                    render={() => {
-                      if (this.state.isCheckingAuth) {
-                        return <div />;
-                      } else if (this.state.isAuthenticated) {
-                        return <Redirect to={{ pathname: '/plans' }} />;
-                      }
-
-                      return <Redirect to={{ pathname: '/login' }} />;
-                    }}
-                  />
                   <Route path="/login" component={Login} />
-                  <Route path="/plans" exact component={Plans} />
-                  <Route path="/songs" component={SongsList} />
-                  <Route path="/plans/:planId" component={SinglePlan} />
-                  <Route path="/app/settings" component={Settings} />
+                  <Route path="/logged_in" component={LoggedIn} />
+                  <Route path="/logged_in/plans" exact component={Plans} />
+                  <Route path="/logged_in/songs" component={SongsList} />
+                  <Route path="/logged_in/plans/:planId" component={SinglePlan} />
+                  <Route path="/logged_in/app/settings" component={Settings} />
                 </div>
               </div>
               {

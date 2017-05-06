@@ -11,12 +11,13 @@ export default class SideMenu extends Component {
     return (
       <div id="side-menu">
         <div id="plan-items-container">
-          <NavLink to="/account" id="account-link">My Account</NavLink>
-          <NavLink to="/plans">Plans</NavLink>
-          <NavLink to="/songs">Songs</NavLink>
-          <NavLink to="/app/settings">Settings</NavLink>
+          <NavLink to="/logged_in/plans">Plans</NavLink>
         </div>
       </div>
     );
   }
 }
+
+// <NavLink to="/logged_in/account" id="account-link">My Account</NavLink>
+// <NavLink to="/logged_in/songs">Songs</NavLink>
+// <NavLink to="/logged_in/app/settings">Settings</NavLink>

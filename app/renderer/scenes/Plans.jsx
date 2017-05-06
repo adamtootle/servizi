@@ -20,7 +20,7 @@ class Plans extends Component {
 
   handleClickPlan = (schedule) => {
     const plan = schedule.relationships.plan;
-    const route = `/plans/${plan.data.id}`;
+    const route = `/logged_in/plans/${plan.data.id}`;
     setTimeout(() => {
       this.context.router.history.push(route);
     }, 300);
