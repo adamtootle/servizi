@@ -13,18 +13,6 @@
       const P = require('bluebird');
       const auth = require('./app/main/auth');
       var pcoWrapper = require('./app/main/pco-wrapper');
-      window.validateAuth = function validateAuth(event, args) {
-        return new P((resolve, reject) => {
-          auth.getStoredToken()
-              .then((token) => {
-                console.log('token', token);
-                if (token !== null) {
-                  pcoWrapper.apiClient.http.accessToken = token.token.access_token;
-                }
-                resolve(token !== null);
-              });
-        });
-      };
 
       document.addEventListener("DOMContentLoaded", function() {
         // pcoWrapper.refreshAuth();

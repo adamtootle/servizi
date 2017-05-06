@@ -9,6 +9,7 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { electronEnhancer } from 'redux-electron-store';
 import ReactPlayer from 'react-player';
+import Promise from 'bluebird';
 import Navbar from './components/Navbar';
 import SideMenu from './components/SideMenu';
 import PlayerContext from './PlayerContext';
@@ -18,6 +19,8 @@ import { Login, SinglePlan, Plans, SongsList, Settings } from './scenes';
 import reducers from '../reducers';
 import PlayerControls from './components/PlayerControls';
 import { player as playerActions } from '../actions';
+import pcoWrapper from '../main/pco-wrapper';
+import auth from '../main/auth';
 
 const theme = {
   palette: {
@@ -60,7 +63,7 @@ export default class App extends Component {
   constructor(args) {
     super(args);
 
-    this.state = store.getState();
+    this.state = Object.assign({}, store.getState());
 
     this.playerContext = new PlayerContext();
     this.playerContext.setTitle = (title) => {
@@ -102,26 +105,49 @@ export default class App extends Component {
         store.dispatch(playerActions.didRestartCurrentAttachment());
       }
     });
+
+    pcoWrapper.apiClient.on('error', (err) => {
+      if (err.statusCode && err.statusCode === 401) {
+        this.checkStoredAuthToken()
+          .then((didRefreshToken) => {
+            if (!didRefreshToken) {
+              this.router.history.replace('/login');
+            }
+          });
+      }
+    });
   }
 
   componentDidMount() {
-    window.validateAuth().then(this.handleValidateAuthResponse);
+    this.checkStoredAuthToken();
   }
 
-  handleValidateAuthResponse = (valid) => {
-    if (valid) {
-      this.setState({
-        hasValidAuth: true,
-      });
-    } else {
-      this.setState({
-        hasValidAuth: false,
-      });
-    }
-  };
-
-  handleLoginResults = () => {
-    console.log('handleLoginResults');
+  checkStoredAuthToken = () => {
+    return new Promise((resolve) => {
+      auth.loadStoredToken()
+        .then((token) => {
+          if (!token) {
+            this.router.history.replace('/login');
+            resolve(false);
+          } else if (auth.shouldRefreshToken(token)) {
+            auth.refreshStoredToken(token)
+              .then((refreshedToken) => {
+                if (refreshedToken) {
+                  pcoWrapper.apiClient.http.accessToken = refreshedToken.token.access_token;
+                  this.router.history.replace('/plans');
+                  resolve(true);
+                } else {
+                  this.router.history.replace('/login');
+                  resolve(false);
+                }
+              });
+          } else {
+            pcoWrapper.apiClient.http.accessToken = token.token.access_token;
+            this.router.history.replace('/plans');
+            resolve(false);
+          }
+        });
+    });
   };
 
   handlePlayerProgressUpdate = (progress) => {
@@ -188,7 +214,7 @@ export default class App extends Component {
     return (
       <Provider store={store}>
         <MuiThemeProvider muiTheme={getMuiTheme(theme)}>
-          <Router basename="/">
+          <Router basename="/" ref={(component) => { this.router = component; }}>
             <div
               id="app"
               className={this.selectedAttachmentTypeClassName()}
@@ -227,6 +253,19 @@ export default class App extends Component {
                       </div>
                       : null
                   }
+                  <Route
+                    path="/"
+                    exact
+                    render={() => {
+                      if (this.state.isCheckingAuth) {
+                        return <div />;
+                      } else if (this.state.isAuthenticated) {
+                        return <Redirect to={{ pathname: '/plans' }} />;
+                      }
+
+                      return <Redirect to={{ pathname: '/login' }} />;
+                    }}
+                  />
                   <Route path="/login" component={Login} />
                   <Route path="/plans" exact component={Plans} />
                   <Route path="/songs" component={SongsList} />
