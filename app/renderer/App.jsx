@@ -12,7 +12,6 @@ import ReactPlayer from 'react-player';
 import Promise from 'bluebird';
 import Navbar from './components/Navbar';
 import SideMenu from './components/SideMenu';
-import PlayerContext from './PlayerContext';
 import settings from '../main/settings';
 import keys from '../main/keys';
 import { Login, SinglePlan, Plans, SongsList, Settings } from './scenes';
@@ -64,38 +63,6 @@ export default class App extends Component {
     super(args);
 
     this.state = Object.assign({}, store.getState());
-
-    this.playerContext = new PlayerContext();
-    this.playerContext.setTitle = (title) => {
-      this.setState({
-        title,
-      });
-    };
-
-    this.playerContext.on(keys.PlayAttachmentKey, (selectedAttachment) => {
-      this.setState({
-        selectedAttachment,
-        playAudio: true,
-      });
-    });
-
-    this.playerContext.on(keys.PlayPauseAttachmentKey, () => {
-      this.setState({
-        playAudio: !this.state.playAudio,
-      });
-    });
-
-    ipcRenderer.on('MediaPlayPause', () => {
-      this.playerContext.emit(keys.PlayPauseAttachmentKey);
-    });
-
-    ipcRenderer.on('MediaPreviousTrack', () => {
-      this.playerContext.emit(keys.PlayPreviousAttachmentKey);
-    });
-
-    ipcRenderer.on('MediaNextTrack', () => {
-      this.playerContext.emit(keys.PlayNextAttachmentKey);
-    });
 
     store.subscribe(() => {
       const newState = store.getState();
