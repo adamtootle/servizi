@@ -30,34 +30,39 @@ module.exports = {
       dispatch({
         type: keys.SHOW_LOADER,
       });
-      pcoWrapper.apiClient.plans.getPlan(planId)
-      .then(pcoWrapper.apiClient.plans.getPlanItems)
-      .then(pcoWrapper.apiClient.plans.getPlanAttachments)
-      .then((res) => {
-        const items = filter(res.planItems.data, item => item.attributes.item_type === 'song');
-        var planAttachments = [];
+      pcoWrapper.apiClient.reloadMe()
+        .then((userResponse) => {
+          pcoWrapper.apiClient.plans.getPlan(planId, userResponse.data.id)
+          .then(pcoWrapper.apiClient.plans.getPlanItems)
+          .then(pcoWrapper.apiClient.plans.getPlanAttachments)
+          .then(pcoWrapper.apiClient.plans.getSkipFilter)
+          .then((res) => {
+            const items = filter(res.planItems, item => item.attributes.item_type === 'song');
+            var planAttachments = [];
 
-        forEach(items, (item) => {
-          const songId = item.relationships.song.data.id
-          const itemAttachments = filter(res.planAttachments.data, (attachment) => {
-            return attachment.relationships.attachable.data.id === songId;
+            forEach(items, (item) => {
+              const songId = item.relationships.song.data.id;
+              const itemAttachments = filter(res.planAttachments.data, (attachment) => {
+                return attachment.relationships.attachable.data.id === songId;
+              });
+              planAttachments = planAttachments.concat(itemAttachments);
+            });
+
+            dispatch({
+              type: keys.HIDE_LOADER,
+            });
+
+            dispatch({
+              type: keys.SELECT_PLAN,
+              payload: {
+                currentPlan: res.plan,
+                currentPlanItems: res.planItems,
+                currentPlanAttachments: res.planAttachments,
+                currentPlanSkippedAttachments: res.skippedAttachments,
+              },
+            });
           });
-          planAttachments = planAttachments.concat(itemAttachments);
         });
-
-        dispatch({
-          type: keys.HIDE_LOADER,
-        });
-
-        dispatch({
-          type: keys.SELECT_PLAN,
-          payload: {
-            currentPlan: res.plan,
-            currentPlanItems: items,
-            currentPlanAttachments: planAttachments,
-          },
-        });
-      });
     };
   },
 };

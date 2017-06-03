@@ -6,6 +6,7 @@ import { filter } from 'lodash';
 import S from 'string';
 import SelectableList from './SelectableList';
 import { player as playerActions } from '../../actions';
+import shouldSkipAttachment from '../../helpers/shouldSkipAttachment';
 
 class AttachmentsList extends Component {
   static propTypes = {
@@ -42,9 +43,10 @@ class AttachmentsList extends Component {
                 attachmentIndex += attachmentIndex;
                 const itemIsSelected = this.props.player.selectedAttachment
                   && this.props.player.selectedAttachment.id === attachment.id;
+                const skipped = shouldSkipAttachment(attachment, this.props.plans.currentPlanSkippedAttachments);
                 const style = {
                   backgroundColor: itemIsSelected ? '#E8EAEB' : '',
-                  color: '#171717',
+                  color: skipped ? '#BCBEBE' : '#171717',
                 };
                 return (
                   <ListItem

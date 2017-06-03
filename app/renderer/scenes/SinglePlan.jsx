@@ -55,9 +55,7 @@ class SinglePlan extends Component {
             />
             : null
         }
-        <AttachmentsList
-          planAttachments={this.props.plans.currentPlanAttachments}
-        />
+        <AttachmentsList />
       </div>
     );
   }
