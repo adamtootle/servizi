@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { List, makeSelectable } from 'material-ui/List';
 
-let SelectableList = makeSelectable(List);
+const SelectableList = makeSelectable(List);
 
 function wrapState(ComposedComponent) {
-  return class SelectableList extends Component {
+  return class WrappedSelectableList extends Component {
     static propTypes = {
       children: PropTypes.node.isRequired,
       defaultValue: PropTypes.number,
@@ -35,6 +35,4 @@ function wrapState(ComposedComponent) {
   };
 }
 
-SelectableList = wrapState(SelectableList);
-
-export default SelectableList;
+export default wrapState(SelectableList);

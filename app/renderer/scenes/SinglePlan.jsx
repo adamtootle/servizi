@@ -1,11 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
-import { filter, findIndex } from 'lodash';
 import { connect } from 'react-redux';
 import PlayerControls from '../components/PlayerControls';
 import AttachmentsList from '../components/AttachmentsList';
 import VideoPlayer from '../VideoPlayer';
-import keys from '../../main/keys';
 import { schedules as schedulesActions } from '../../actions';
 
 class SinglePlan extends Component {
@@ -13,6 +11,14 @@ class SinglePlan extends Component {
     match: PropTypes.shape({
       params: PropTypes.object,
     }),
+    plans: PropTypes.shape({
+      currentPlanItems: PropTypes.array,
+      currentPlanAttachments: PropTypes.array,
+    }),
+    player: PropTypes.shape({
+      selectedVideoAttachment: PropTypes.object,
+    }),
+    dispatch: PropTypes.func,
   };
   static defaultProps = {};
   static contextTypes = {
@@ -22,7 +28,7 @@ class SinglePlan extends Component {
   };
 
   componentDidMount() {
-    this.props.dispatch(schedulesActions.selectPlan(parseInt(this.props.match.params.planId)));
+    this.props.dispatch(schedulesActions.selectPlan(parseInt(this.props.match.params.planId, 10)));
   }
 
   render() {
@@ -33,8 +39,6 @@ class SinglePlan extends Component {
         </div>
       );
     }
-
-    // const songItems = filter(this.props.plans.currentPlanItems.data, item => item.attributes.item_type === 'song');
 
     return (
       <div id="single-plan">

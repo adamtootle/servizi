@@ -11,6 +11,14 @@ import shouldSkipAttachment from '../../helpers/shouldSkipAttachment';
 class AttachmentsList extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
+    plans: PropTypes.shape({
+      currentPlanItems: PropTypes.array,
+      currentPlanAttachments: PropTypes.array,
+      currentPlanSkippedAttachments: PropTypes.array,
+    }),
+    player: PropTypes.shape({
+      selectedAttachment: PropTypes.object,
+    }),
   };
 
   static contextTypes = {
@@ -23,9 +31,7 @@ class AttachmentsList extends Component {
       <SelectableList id="plan-items-container">
         {this.props.plans.currentPlanItems.map((item) => {
           const songId = item.relationships.song.data.id;
-          const itemAttachments = filter(this.props.plans.currentPlanAttachments, (attachment) => {
-            return attachment.relationships.attachable.data.id === songId;
-          });
+          const itemAttachments = filter(this.props.plans.currentPlanAttachments, attachment => attachment.relationships.attachable.data.id === songId);
 
           return (
             <div key={item.id}>
