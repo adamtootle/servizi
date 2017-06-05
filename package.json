@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "electron .",
-    "build-mac": "electron-packager . 'PCS Player' --platform=darwin --arch=all --version=1.4.9 --extend-info=Info.plist --overwrite --prune",
+    "build-mac": "electron-packager . 'PCS Player' --platform=darwin --arch=all --version=1.4.9 --extend-info=Info.plist --overwrite --prune --icon=icons/icon.icns",
     "webpack-server": "webpack-dev-server --config webpack.server.js",
     "babel-watch": "babel src --watch --out-dir lib",
     "dev-server": "NODE_ENV=production concurrently 'npm run babel-watch' 'npm run webpack-server'"
