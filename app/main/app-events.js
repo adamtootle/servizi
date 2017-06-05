@@ -56,7 +56,7 @@ function AppEvents() {
     mainWindow.loadURL('file://' + app.getAppPath() + '/index.html');
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     if (!storedSettings.fullPlayerUI) {
       mainWindow.on('closed', () => {
@@ -67,7 +67,7 @@ function AppEvents() {
         mainWindow.hide();
       });
 
-      setUpStatusBarIcon();
+      // setUpStatusBarIcon();
     }
 
     mainWindow.show();
@@ -90,7 +90,7 @@ function AppEvents() {
     let token;
     const tokenConfig = {
       code: code,
-      redirect_uri: 'playr://oauth/callback'
+      redirect_uri: 'servizi://oauth/callback'
     };
     // Callbacks
     // Save the access token

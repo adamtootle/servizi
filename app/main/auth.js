@@ -20,7 +20,7 @@ function Auth() {
   });
 
   this.authorizationUrl = this.oauthClient.authorizationCode.authorizeURL({
-    redirect_uri: 'playr://oauth/callback',
+    redirect_uri: 'servizi://oauth/callback',
     scope: 'services',
   });
 

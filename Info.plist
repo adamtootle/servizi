@@ -11,7 +11,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>playr</string>
+				<string>servizi</string>
 			</array>
 		</dict>
 	</array>

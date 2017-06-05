@@ -5,7 +5,7 @@ class Settings {
     let storedSettings = electronSettings.getSync('settings');
     if (storedSettings === null || storedSettings === undefined) {
       storedSettings = {
-        fullPlayerUI: false,
+        fullPlayerUI: true,
       };
     }
     return storedSettings;
