@@ -5,7 +5,7 @@ import { ListItem } from 'material-ui/List';
 import { filter } from 'lodash';
 import S from 'string';
 import SelectableList from './SelectableList';
-import { player as playerActions } from '../../actions';
+import { player as playerActions } from '../../redux/actions';
 import shouldSkipAttachment from '../../helpers/shouldSkipAttachment';
 
 class AttachmentsList extends Component {

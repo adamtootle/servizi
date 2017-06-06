@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import PlayerControls from '../components/PlayerControls';
 import AttachmentsList from '../components/AttachmentsList';
 import VideoPlayer from '../VideoPlayer';
-import { schedules as schedulesActions } from '../../actions';
+import { schedules as schedulesActions } from '../../redux/actions';
 
 class SinglePlan extends Component {
   static propTypes = {

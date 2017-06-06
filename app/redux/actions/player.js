@@ -2,8 +2,8 @@ const findIndex = require('lodash/findIndex');
 const find = require('lodash/find');
 const findLast = require('lodash/findLast');
 const keys = require('./keys');
-const pcoWrapper = require('../main/pco-wrapper');
-const shouldSkipAttachment = require('../helpers/shouldSkipAttachment');
+const pcoWrapper = require('../../main/pco-wrapper');
+const shouldSkipAttachment = require('../../helpers/shouldSkipAttachment');
 
 function dispatchAndLoadAttachment(attachment, dispatch) {
   dispatch({

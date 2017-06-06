@@ -15,9 +15,9 @@ import SideMenu from './components/SideMenu';
 import settings from '../main/settings';
 import keys from '../main/keys';
 import { Login, SinglePlan, Plans, SongsList, Settings, LoggedIn } from './scenes';
-import reducers from '../reducers';
+import reducers from '../redux/reducers';
 import PlayerControls from './components/PlayerControls';
-import { player as playerActions } from '../actions';
+import { player as playerActions } from '../redux/actions';
 import pcoWrapper from '../main/pco-wrapper';
 import auth from '../main/auth';
 

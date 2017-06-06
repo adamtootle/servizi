@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { List, ListItem } from 'material-ui/List';
 import { connect } from 'react-redux';
-import { schedules as schedulesActions, currentUser as currentUserActions } from '../../actions';
+import { schedules as schedulesActions, currentUser as currentUserActions } from '../../redux/actions';
 
 class Plans extends Component {
   static propTypes = {

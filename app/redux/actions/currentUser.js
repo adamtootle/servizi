@@ -1,5 +1,5 @@
 const keys = require('./keys');
-const pcoWrapper = require('../main/pco-wrapper');
+const pcoWrapper = require('../../main/pco-wrapper');
 
 module.exports = {
   reloadCurrentUser: () => (dispatch) => {

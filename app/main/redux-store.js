@@ -1,7 +1,7 @@
 const redux = require('redux');
 const reduxElectronStore = require('redux-electron-store');
 const thunk = require('redux-thunk');
-const reducers = require('../reducers');
+const reducers = require('../redux/reducers');
 
 let storeDispatch;
 const enhancer = redux.compose(

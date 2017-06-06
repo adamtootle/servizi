@@ -8,7 +8,7 @@ import ActionNextIcon from 'material-ui/svg-icons/av/skip-next';
 import ActionRepeatIcon from 'material-ui/svg-icons/av/repeat';
 import formatDuration from 'format-duration';
 import keys from '../../main/keys';
-import { player as playerActions } from '../../actions';
+import { player as playerActions } from '../../redux/actions';
 
 const styles = {
   trackControlIcon: {

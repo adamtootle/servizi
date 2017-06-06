@@ -2,7 +2,7 @@ const filter = require('lodash/filter');
 const forEach = require('lodash/forEach');
 const Promise = require('bluebird');
 const keys = require('./keys');
-const pcoWrapper = require('../main/pco-wrapper');
+const pcoWrapper = require('../../main/pco-wrapper');
 
 module.exports = {
   loadSchedules: () => (dispatch) => {

@@ -12,7 +12,7 @@ const MenuItem = electron.MenuItem;
 const globalShortcut = electron.globalShortcut;
 const settings = require('./settings');
 const reduxStore = require('./redux-store');
-const reduxActions = require('../actions');
+const reduxActions = require('../redux/actions');
 
 
 let mainWindow;
@@ -56,7 +56,7 @@ function AppEvents() {
     mainWindow.loadURL('file://' + app.getAppPath() + '/index.html');
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     if (!storedSettings.fullPlayerUI) {
       mainWindow.on('closed', () => {
@@ -97,7 +97,6 @@ function AppEvents() {
     auth.oauthClient.authorizationCode.getToken(tokenConfig, (error, result) => {
       let message;
       if (error) {
-        console.log('Access Token Error', error.message);
         message = error.message;
       } else {
         message = auth.oauthClient.accessToken.create(result);
