@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { List, ListItem } from 'material-ui/List';
 import { connect } from 'react-redux';
-import { schedules as schedulesActions } from '../../actions';
+import { schedules as schedulesActions, currentUser as currentUserActions } from '../../actions';
 
 class Plans extends Component {
   static propTypes = {
@@ -15,6 +15,7 @@ class Plans extends Component {
   };
 
   componentDidMount() {
+    this.props.dispatch(currentUserActions.reloadCurrentUser());
     this.props.dispatch(schedulesActions.loadSchedules());
   }
 

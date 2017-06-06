@@ -1,11 +1,12 @@
 const filter = require('lodash/filter');
 const forEach = require('lodash/forEach');
+const Promise = require('bluebird');
 const keys = require('./keys');
 const pcoWrapper = require('../main/pco-wrapper');
 
 module.exports = {
   loadSchedules: () => (dispatch) => {
-    pcoWrapper.apiClient.schedules.getSchedules()
+    pcoWrapper.apiClient.services.schedules.getSchedules()
       .then((res) => {
         dispatch({
           type: keys.LOAD_SCHEDULES,
@@ -15,7 +16,9 @@ module.exports = {
         });
       });
   },
-  selectPlan: planId => (dispatch) => {
+
+  selectPlan: planId => (dispatch, getState) => {
+    const { currentUser } = getState();
     dispatch({
       type: keys.SELECT_PLAN,
       payload: {
@@ -29,34 +32,39 @@ module.exports = {
     });
     pcoWrapper.apiClient.reloadMe()
       .then((userResponse) => {
-        pcoWrapper.apiClient.plans.getPlan(planId, userResponse.data.id)
-        .then(pcoWrapper.apiClient.plans.getPlanItems)
-        .then(pcoWrapper.apiClient.plans.getPlanAttachments)
-        .then(pcoWrapper.apiClient.plans.getSkipFilter)
-        .then((res) => {
-          const items = filter(res.planItems, item => item.attributes.item_type === 'song');
-          let planAttachments = [];
+        pcoWrapper.apiClient.services.plans.get(planId)
+          .then((plan) => {
+            Promise.all([
+              pcoWrapper.apiClient.services.plans.getItems(plan),
+              pcoWrapper.apiClient.services.plans.getAttachments(plan),
+            ]).then((itemsAndAttachments) => {
+              pcoWrapper.apiClient.services.plans.getSkipFilter({ plan, user: currentUser, attachments: itemsAndAttachments[1] })
+                .then((skippedAttachments) => {
+                  const items = filter(itemsAndAttachments[0], item => item.attributes.item_type === 'song');
+                  let planAttachments = [];
 
-          forEach(items, (item) => {
-            const songId = item.relationships.song.data.id;
-            const itemAttachments = filter(res.planAttachments.data, attachment => attachment.relationships.attachable.data.id === songId);
-            planAttachments = planAttachments.concat(itemAttachments);
-          });
+                  forEach(items, (item) => {
+                    const songId = item.relationships.song.data.id;
+                    const itemAttachments = filter(itemsAndAttachments[1], attachment => attachment.relationships.attachable.data.id === songId);
+                    planAttachments = planAttachments.concat(itemAttachments);
+                  });
 
-          dispatch({
-            type: keys.HIDE_LOADER,
-          });
+                  dispatch({
+                    type: keys.HIDE_LOADER,
+                  });
 
-          dispatch({
-            type: keys.SELECT_PLAN,
-            payload: {
-              currentPlan: res.plan,
-              currentPlanItems: res.planItems,
-              currentPlanAttachments: res.planAttachments,
-              currentPlanSkippedAttachments: res.skippedAttachments,
-            },
+                  dispatch({
+                    type: keys.SELECT_PLAN,
+                    payload: {
+                      currentPlan: plan,
+                      currentPlanItems: itemsAndAttachments[0],
+                      currentPlanAttachments: itemsAndAttachments[1],
+                      currentPlanSkippedAttachments: skippedAttachments,
+                    },
+                  });
+                });
+            });
           });
-        });
       });
   },
 };

@@ -51,8 +51,6 @@ class SinglePlan extends Component {
             : null
         }
         {
-          // http://vimeo.com/63300324
-          // console.log(this.state.selectedAttachment);
           this.props.player.selectedVideoAttachment ?
             <VideoPlayer
               selectedVideoAttachment={this.props.player.selectedVideoAttachment}

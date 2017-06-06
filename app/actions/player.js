@@ -15,7 +15,7 @@ function dispatchAndLoadAttachment(attachment, dispatch) {
       totalSeconds: 0,
     },
   });
-  pcoWrapper.apiClient.attachments.getAttachmentStreamUrl(attachment)
+  pcoWrapper.apiClient.services.attachments.getAttachmentStreamUrl(attachment)
     .then((res) => {
       dispatch({
         type: keys.PLAY_ATTACHMENT,
