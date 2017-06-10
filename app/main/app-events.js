@@ -54,7 +54,7 @@ function AppEvents() {
     mainWindow = new BrowserWindow(windowConfig);
 
     // and load the index.html of the app.
-    mainWindow.loadURL('file://' + app.getAppPath() + '/index.html');
+    mainWindow.loadURL(`file://${app.getAppPath()}/index.html`);
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools();

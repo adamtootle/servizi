@@ -13,6 +13,14 @@
       const P = require('bluebird');
       const auth = require('./app/main/auth');
       var pcoWrapper = require('./app/main/pco-wrapper');
+      const utils = require('./app/main/utils');
+
+      if (utils.isDev()) {
+        document.write('<script src="http://localhost:8080/webpack-dev-server.js"><\/script>');
+        document.write('<script src="http://localhost:8080/bundle.js"><\/script>');
+      } else {
+        document.write('<script src="app/dist/bundle.js"><\/script>');
+      }
 
       document.addEventListener("DOMContentLoaded", function() {
         // pcoWrapper.refreshAuth();
@@ -27,7 +35,6 @@
         }
       });
     </script>
-    <script src="http://localhost:8080/webpack-dev-server.js"></script>
-    <script src="http://localhost:8080/bundle.js"></script>
+    
   </body>
 </html>

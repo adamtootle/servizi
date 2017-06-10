@@ -6,13 +6,11 @@
   "productName": "Servizi",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-dev": "electron .",
-    "build-mac": "electron-packager . 'Servizi' --platform=darwin --arch=all --version=1.4.9 --extend-info=Info.plist --overwrite --prune --icon=icons/icon.icns",
-    "webpack-server": "webpack-dev-server --config webpack.server.js",
-    "babel-watch": "babel src --watch --out-dir lib",
-    "dev-server": "NODE_ENV=production concurrently 'npm run babel-watch' 'npm run webpack-server'",
-    "build": "build --dir",
-    "release": "build --publish=always"
+    "webpack-server": "webpack-dev-server --config webpack.config.js",
+    "webpack-build": "webpack --config webpack.config.js",
+    "run-dev": "electron .",
+    "build-prod": "npm run webpack-build && build --dir",
+    "release-prod": "npm run webpack-build && build --publish=always"
   },
   "build": {
     "appId": "com.adamtootle.servizi",
