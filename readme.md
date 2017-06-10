@@ -1,4 +1,4 @@
-Servizi is a desktop music player for [Planning Center Services](https://planning.center/services/) written using [Electron](https://github.com/electron/electron), [React](https://github.com/facebook/react), and [Redux](https://github.com/reactjs/redux).
+Servizi is a desktop music player for [Planning Center Services](https://planning.center/services/) written using [Electron](https://github.com/electron/electron), [React](https://github.com/facebook/react), and [Redux](https://github.com/reactjs/redux). It is a complete rewrite of an old project called PCS Player.
 
 ## Run locally
 
@@ -18,6 +18,7 @@ NOTE: Due to how macOS handles custom URL schemes while running dev apps, the OA
 
 ## TODO
 
+- Multiple accounts support
 - PDF attachment support
 - Full song library support
 - Offline playback
