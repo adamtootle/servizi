@@ -43,6 +43,9 @@ class Plans extends Component {
                 onClick={() => {
                   this.handleClickPlan(schedule);
                 }}
+                style={{
+                  color: '#5DBCE5',
+                }}
               />
             );
           })}

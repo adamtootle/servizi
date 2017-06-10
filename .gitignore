@@ -2,3 +2,4 @@ node_modules
 config.js
 database
 .DS_Store
+dist

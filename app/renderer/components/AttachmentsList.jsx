@@ -37,7 +37,7 @@ class AttachmentsList extends Component {
             <div key={item.id}>
               <Subheader
                 style={{
-                  color: '#969FA5',
+                  color: '#5DBCE5',
                   lineHeight: '27px',
                   fontWeight: 'bold',
                   paddingTop: 20,

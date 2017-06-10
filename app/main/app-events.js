@@ -57,7 +57,7 @@ function AppEvents() {
     mainWindow.loadURL(`file://${app.getAppPath()}/index.html`);
 
     // Open the DevTools.
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     if (!storedSettings.fullPlayerUI) {
       mainWindow.on('closed', () => {
