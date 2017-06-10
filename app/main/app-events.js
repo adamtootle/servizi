@@ -15,6 +15,7 @@ const settings = require('./settings');
 const store = require('./redux-store');
 const reduxActions = require('../redux/actions');
 const pcoWrapper = require('./pco-wrapper');
+const utils = require('./utils');
 
 let mainWindow;
 
@@ -57,7 +58,9 @@ function AppEvents() {
     mainWindow.loadURL(`file://${app.getAppPath()}/index.html`);
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    if (utils.isDev()) {
+      mainWindow.webContents.openDevTools();
+    }
 
     if (!storedSettings.fullPlayerUI) {
       mainWindow.on('closed', () => {
