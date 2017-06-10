@@ -1,6 +1,7 @@
 const electron = require('electron');
 const redux = require('redux');
 const reduxElectronStore = require('redux-electron-store');
+const { ipcMain } = require('electron');
 const auth = require('./auth');
 const database = require('./database');
 
@@ -11,11 +12,9 @@ const Menu = electron.Menu;
 const MenuItem = electron.MenuItem;
 const globalShortcut = electron.globalShortcut;
 const settings = require('./settings');
-const reduxStore = require('./redux-store');
+const store = require('./redux-store');
 const reduxActions = require('../redux/actions');
 const pcoWrapper = require('./pco-wrapper');
-const store = require('./redux-store');
-const { reloadCurrentUser } = require('../redux/actions/currentUser');
 
 let mainWindow;
 
@@ -75,43 +74,42 @@ function AppEvents() {
     mainWindow.show();
 
     globalShortcut.register('MediaPlayPause', () => {
-      reduxStore.dispatch(reduxActions.player.playPauseAttachment());
+      store.dispatch(reduxActions.player.playPauseAttachment());
     });
 
     globalShortcut.register('MediaPreviousTrack', () => {
-      reduxStore.dispatch(reduxActions.player.previousAttachment());
+      store.dispatch(reduxActions.player.previousAttachment());
     });
 
     globalShortcut.register('MediaNextTrack', () => {
-      reduxStore.dispatch(reduxActions.player.nextAttachment());
+      store.dispatch(reduxActions.player.nextAttachment());
     });
   };
 
   this.openUrl = (ev, url) => {
     const code = url.split('code=')[1];
-    let token;
+    // let token;
     const tokenConfig = {
       code: code,
-      redirect_uri: 'servizi://oauth/callback'
+      redirect_uri: 'servizi://oauth/callback',
     };
 
     // Callbacks
     // Save the access token
-    auth.oauthClient.authorizationCode.getToken(tokenConfig, (error, result) => {
+    auth.oauthClient.authorizationCode.getToken(tokenConfig, (error, token) => {
       let message;
       if (error) {
         message = error.message;
       } else {
-        message = auth.oauthClient.accessToken.create(result);
-        database.insert({
-          key: 'oauth_token',
-          value: { token: result },
+        message = auth.oauthClient.accessToken.create(token);
+        mainWindow.webContents.send('didLogin', {
+          redirect_uri: tokenConfig.redirect_uri,
+          token,
         });
-        pcoWrapper.apiClient.http.accessToken = result.access_token;
-        store.dispatch(reloadCurrentUser());
+        mainWindow.focus();
       }
     });
-  }
+  };
 
   this.windowAllClosed = () => {
     // On OS X it is common for applications and their menu bar

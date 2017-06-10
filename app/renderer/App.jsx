@@ -17,9 +17,11 @@ import keys from '../main/keys';
 import { Login, SinglePlan, Plans, SongsList, Settings, LoggedIn } from './scenes';
 import reducers from '../redux/reducers';
 import PlayerControls from './components/PlayerControls';
-import { player as playerActions } from '../redux/actions';
+import { player as playerActions, currentUser as currentUserActions } from '../redux/actions';
 import pcoWrapper from '../main/pco-wrapper';
 import auth from '../main/auth';
+import store from '../main/redux-store';
+import database from '../main/database';
 
 const theme = {
   palette: {
@@ -28,17 +30,17 @@ const theme = {
   },
 };
 
-let storeDispatch;
-const enhancer = compose(
-  applyMiddleware(thunk),
-  electronEnhancer({
-    filter: true,
-    dispatchProxy: a => storeDispatch(a),
-  })
-);
+// let storeDispatch;
+// const enhancer = compose(
+//   applyMiddleware(thunk),
+//   electronEnhancer({
+//     filter: true,
+//     dispatchProxy: a => storeDispatch(a),
+//   })
+// );
 
-const store = createStore(combineReducers(reducers), {}, enhancer);
-storeDispatch = store.dispatch;
+// const store = createStore(combineReducers(reducers), {}, enhancer);
+// storeDispatch = store.dispatch;
 
 export default class App extends Component {
   static propTypes = {
@@ -82,6 +84,16 @@ export default class App extends Component {
             }
           });
       }
+    });
+
+    ipcRenderer.on('didLogin', (event, tokenInfo) => {
+      database.insert({
+        key: 'oauth_token',
+        value: tokenInfo,
+      });
+      pcoWrapper.apiClient.http.accessToken = tokenInfo.token.access_token;
+      this.router.history.replace('/logged_in/plans');
+      store.dispatch(currentUserActions.reloadCurrentUser());
     });
   }
 

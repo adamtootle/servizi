@@ -18,7 +18,9 @@
     "appId": "com.adamtootle.servizi",
     "protocols": {
       "name": "servizi",
-      "schemes": ["servizi"]
+      "schemes": [
+        "servizi"
+      ]
     },
     "mac": {
       "category": "public.app-category.music"
