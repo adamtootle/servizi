@@ -1,4 +1,4 @@
-const PCO = require('pco');
+const PCO = require('pco-js');
 const config = require('../../config');
 const util = require('util');
 const EventEmitter = require('events');

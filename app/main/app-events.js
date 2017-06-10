@@ -13,7 +13,9 @@ const globalShortcut = electron.globalShortcut;
 const settings = require('./settings');
 const reduxStore = require('./redux-store');
 const reduxActions = require('../redux/actions');
-
+const pcoWrapper = require('./pco-wrapper');
+const store = require('./redux-store');
+const { reloadCurrentUser } = require('../redux/actions/currentUser');
 
 let mainWindow;
 
@@ -92,6 +94,7 @@ function AppEvents() {
       code: code,
       redirect_uri: 'servizi://oauth/callback'
     };
+
     // Callbacks
     // Save the access token
     auth.oauthClient.authorizationCode.getToken(tokenConfig, (error, result) => {
@@ -104,7 +107,8 @@ function AppEvents() {
           key: 'oauth_token',
           value: { token: result },
         });
-        mainWindow.webContents.send('didLogin', result);
+        pcoWrapper.apiClient.http.accessToken = result.access_token;
+        store.dispatch(reloadCurrentUser());
       }
     });
   }

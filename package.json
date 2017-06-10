@@ -1,29 +1,48 @@
 {
   "name": "servizi",
   "version": "1.0.0",
-  "description": "",
+  "description": "Music player",
   "main": "main.js",
-  "productName" : "Servizi",
+  "productName": "Servizi",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "electron .",
+    "build-dev": "electron .",
     "build-mac": "electron-packager . 'Servizi' --platform=darwin --arch=all --version=1.4.9 --extend-info=Info.plist --overwrite --prune --icon=icons/icon.icns",
     "webpack-server": "webpack-dev-server --config webpack.server.js",
     "babel-watch": "babel src --watch --out-dir lib",
-    "dev-server": "NODE_ENV=production concurrently 'npm run babel-watch' 'npm run webpack-server'"
+    "dev-server": "NODE_ENV=production concurrently 'npm run babel-watch' 'npm run webpack-server'",
+    "build": "build --dir",
+    "release": "build --publish=always"
+  },
+  "build": {
+    "appId": "com.adamtootle.servizi",
+    "protocols": {
+      "name": "servizi",
+      "schemes": ["servizi"]
+    },
+    "mac": {
+      "category": "public.app-category.music"
+    },
+    "publish": {
+      "provider": "s3",
+      "bucket": "servizi",
+      "path": "releases/mac"
+    }
   },
   "author": "Adam Tootle",
   "license": "Apache License 2.0",
   "dependencies": {
     "bluebird": "^3.4.1",
-    "electron": "1.6.6",
     "electron-settings": "^2.2.2",
+    "electron-updater": "^2.1.2",
     "eventemitter3": "^2.0.2",
     "format-duration": "^1.0.0",
     "json-loader": "^0.5.4",
+    "keytar": "^4.0.3",
     "lodash": "^4.13.1",
     "material-ui": "^0.16.4",
     "nedb": "^1.8.0",
+    "pco-js": "git+ssh://git@github.com/adamtootle/pco-js.git",
     "react": "^15.4.0",
     "react-addons-css-transition-group": "^15.1.0",
     "react-dom": "^15.4.0",
@@ -54,7 +73,11 @@
     "babel-preset-stage-0": "^6.5.0",
     "concurrently": "^2.1.0",
     "css-loader": "^0.26.1",
+    "electron": "^1.6.10",
+    "electron-builder": "^18.6.2",
     "electron-packager": "^7.0.2",
+    "electron-publisher-s3": "^18.6.0",
+    "electron-rebuild": "^1.5.11",
     "eslint": "^3.11.1",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",

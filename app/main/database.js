@@ -4,6 +4,6 @@ const electron = utils.isRenderer() ? require('electron').remote : require('elec
 const app = electron.app;
 
 module.exports = new NeDB({
-  filename: app.getAppPath() + '/database',
+  filename: `${app.getPath('appData')}/Servizi/database`,
   autoload: true,
 });
