@@ -2,6 +2,8 @@ const electron = require('electron');
 const redux = require('redux');
 const reduxElectronStore = require('redux-electron-store');
 const { ipcMain } = require('electron');
+const autoUpdater = require('electron-updater').autoUpdater;
+const logger = require('electron-log');
 const auth = require('./auth');
 const database = require('./database');
 
@@ -14,8 +16,13 @@ const globalShortcut = electron.globalShortcut;
 const settings = require('./settings');
 const store = require('./redux-store');
 const reduxActions = require('../redux/actions');
+const reduxActionKeys = require('../redux/actions/keys');
 const pcoWrapper = require('./pco-wrapper');
 const utils = require('./utils');
+
+autoUpdater.autoDownload = false;
+autoUpdater.logger = logger;
+autoUpdater.logger.transports.file.level = 'info';
 
 let mainWindow;
 
@@ -25,9 +32,43 @@ function AppEvents() {
     app.on('open-url', this.openUrl);
     app.on('window-all-closed', this.windowAllClosed); // Quit when all windows are closed.
     app.on('activate', this.activate);
+    ipcMain.on('startUpdate', () => {
+      autoUpdater.downloadUpdate();
+      store.dispatch({
+        type: reduxActionKeys.UPDATE_PROGRESS,
+        payload: 0.0,
+      });
+    });
+    ipcMain.on('installUpdate', () => {
+      autoUpdater.quitAndInstall();
+    });
+    autoUpdater.on('update-available', (updateInfo) => {
+      store.dispatch({
+        type: reduxActionKeys.UPDATE_AVAILABLE,
+        payload: updateInfo,
+      });
+    });
+    autoUpdater.on('update-not-available', () => {
+      store.dispatch({
+        type: reduxActionKeys.NO_UPDATE_AVAILABLE,
+      });
+    });
+    autoUpdater.on('download-progress', (progress) => {
+      store.dispatch({
+        type: reduxActionKeys.UPDATE_PROGRESS,
+        payload: progress.percent,
+      });
+    });
+    autoUpdater.on('update-downloaded', () => {
+      store.dispatch({
+        type: reduxActionKeys.UPDATE_DOWNLOADED,
+      });
+    });
   };
 
   this.ready = () => {
+    autoUpdater.checkForUpdates();
+
     const screenSize = electron.screen.getPrimaryDisplay().workAreaSize;
     const storedSettings = settings.getStoredSettings();
     let windowConfig = {

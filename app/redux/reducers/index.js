@@ -3,6 +3,7 @@ const schedules = require('./schedules');
 const plans = require('./plans');
 const player = require('./player');
 const ui = require('./ui');
+const update = require('./update');
 
 module.exports = {
   currentUser,
@@ -10,4 +11,5 @@ module.exports = {
   plans,
   player,
   ui,
+  update,
 };
