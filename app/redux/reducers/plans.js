@@ -6,7 +6,7 @@ const initialState = {
   currentPlanAttachments: [],
 };
 
-module.exports = function (state = initialState, action) {
+module.exports = function plansReducer(state = initialState, action) {
   switch (action.type) {
     case keys.LOAD_PLANS:
       return Object.assign({}, state, action.payload);

@@ -4,7 +4,7 @@ const initialState = {
   schedules: [],
 };
 
-module.exports = function (state = initialState, action) {
+module.exports = function schedulesReducer(state = initialState, action) {
   switch (action.type) {
     case keys.LOAD_SCHEDULES:
       return Object.assign({}, state, action.payload);

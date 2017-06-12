@@ -3,23 +3,15 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
 import { ipcRenderer, remote as electronRemote } from 'electron';
-import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
-import thunk from 'redux-thunk';
+import { HashRouter as Router, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { electronEnhancer } from 'redux-electron-store';
 import ReactPlayer from 'react-player';
 import Promise from 'bluebird';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import LinearProgress from 'material-ui/LinearProgress';
-import Navbar from './components/Navbar';
-import SideMenu from './components/SideMenu';
 import settings from '../main/settings';
-import keys from '../main/keys';
 import { Login, SinglePlan, Plans, SongsList, Settings, LoggedIn } from './scenes';
-import reducers from '../redux/reducers';
 import PlayerControls from './components/PlayerControls';
 import { player as playerActions, currentUser as currentUserActions } from '../redux/actions';
 import pcoWrapper from '../main/pco-wrapper';
@@ -51,7 +43,7 @@ export default class App extends Component {
   static propTypes = {
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node
+      PropTypes.node,
     ]),
     location: PropTypes.object,
   };
@@ -106,8 +98,8 @@ export default class App extends Component {
     this.checkStoredAuthToken();
   }
 
-  checkStoredAuthToken = () => {
-    return new Promise((resolve) => {
+  checkStoredAuthToken = () => (
+    new Promise((resolve) => {
       auth.loadStoredToken()
         .then((token) => {
           if (!token) {
@@ -131,8 +123,8 @@ export default class App extends Component {
             resolve(false);
           }
         });
-    });
-  };
+    })
+  );
 
   handlePlayerProgressUpdate = (progress) => {
     if (this.state.player.totalSeconds > 0 && progress.played !== undefined) {

@@ -1,11 +1,13 @@
 const electron = require('electron');
-const redux = require('redux');
-const reduxElectronStore = require('redux-electron-store');
 const { ipcMain } = require('electron');
 const autoUpdater = require('electron-updater').autoUpdater;
 const logger = require('electron-log');
 const auth = require('./auth');
-const database = require('./database');
+const settings = require('./settings');
+const store = require('./redux-store');
+const reduxActions = require('../redux/actions');
+const reduxActionKeys = require('../redux/actions/keys');
+const utils = require('./utils');
 
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -13,12 +15,6 @@ const Tray = electron.Tray;
 const Menu = electron.Menu;
 const MenuItem = electron.MenuItem;
 const globalShortcut = electron.globalShortcut;
-const settings = require('./settings');
-const store = require('./redux-store');
-const reduxActions = require('../redux/actions');
-const reduxActionKeys = require('../redux/actions/keys');
-const pcoWrapper = require('./pco-wrapper');
-const utils = require('./utils');
 
 autoUpdater.autoDownload = false;
 autoUpdater.logger = logger;
@@ -134,18 +130,18 @@ function AppEvents() {
     const code = url.split('code=')[1];
     // let token;
     const tokenConfig = {
-      code: code,
+      code,
       redirect_uri: 'servizi://oauth/callback',
     };
 
     // Callbacks
     // Save the access token
     auth.oauthClient.authorizationCode.getToken(tokenConfig, (error, token) => {
-      let message;
+      // let message;
       if (error) {
-        message = error.message;
+        // message = error.message;
       } else {
-        message = auth.oauthClient.accessToken.create(token);
+        // message = auth.oauthClient.accessToken.create(token);
         mainWindow.webContents.send('didLogin', {
           redirect_uri: tokenConfig.redirect_uri,
           token,
@@ -173,7 +169,7 @@ function AppEvents() {
 }
 
 function setUpStatusBarIcon() {
-  const statusBarIcon = new Tray(app.getAppPath() + '/images/status-bar-icon.png');
+  const statusBarIcon = new Tray(`${app.getAppPath()}/images/status-bar-icon.png`);
   statusBarIcon.on('click', (err, bounds) => {
     mainWindow.setBounds({
       x: bounds.x,

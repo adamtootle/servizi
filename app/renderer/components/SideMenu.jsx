@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
 
 export default class SideMenu extends Component {
   static contextTypes = {
@@ -17,7 +17,3 @@ export default class SideMenu extends Component {
     );
   }
 }
-
-// <NavLink to="/logged_in/account" id="account-link">My Account</NavLink>
-// <NavLink to="/logged_in/songs">Songs</NavLink>
-// <NavLink to="/logged_in/app/settings">Settings</NavLink>

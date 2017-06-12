@@ -4,7 +4,7 @@ const initialState = {
   showLoader: false,
 };
 
-module.exports = function (state = initialState, action) {
+module.exports = function uiReducer(state = initialState, action) {
   switch (action.type) {
     case keys.SHOW_LOADER:
       return Object.assign({}, state, { showLoader: true });

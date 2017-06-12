@@ -7,7 +7,7 @@ const initialState = {
   repeat: false,
 };
 
-module.exports = function (state = initialState, action) {
+module.exports = function playerReducer(state = initialState, action) {
   switch (action.type) {
     case keys.PLAY_ATTACHMENT:
       return Object.assign({}, state, action.payload);

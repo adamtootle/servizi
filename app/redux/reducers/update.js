@@ -6,7 +6,7 @@ const initialState = {
   updateProgress: -1,
 };
 
-module.exports = function (state = initialState, action) {
+module.exports = function updateReducer(state = initialState, action) {
   switch (action.type) {
     case keys.UPDATE_AVAILABLE:
       return Object.assign({}, state, { updateAvailable: true, updateInfo: action.payload });
