@@ -1,4 +1,5 @@
-import React, { Component, PropTypes, CSSTransitionGroup } from 'react';
+import React, { Component, CSSTransitionGroup } from 'react';
+import PropTypes from 'prop-types';
 
 export default class SlideTransition extends Component {
   static propTypes = {

@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import IconButton from 'material-ui/IconButton';
 import ChevronIcon from 'material-ui/svg-icons/navigation/chevron-left';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
