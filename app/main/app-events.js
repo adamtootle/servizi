@@ -63,7 +63,9 @@ function AppEvents() {
   };
 
   this.ready = () => {
-    autoUpdater.checkForUpdates();
+    if (!utils.isDev()) {
+      autoUpdater.checkForUpdates();
+    }
 
     const screenSize = electron.screen.getPrimaryDisplay().workAreaSize;
     const storedSettings = settings.getStoredSettings();
