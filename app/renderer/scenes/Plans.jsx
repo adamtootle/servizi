@@ -32,33 +32,46 @@ class Plans extends Component {
   render() {
     return (
       <div>
-        <List>
-          {this.props.schedules.schedules.map((schedule) => {
-            const serviceTypeName = schedule.attributes.service_type_name;
-            const teamPositionName = schedule.attributes.team_position_name;
-            const teamName = schedule.attributes.team_name;
-            return (
-              <ListItem
-                key={schedule.id}
-                primaryText={schedule.attributes.dates}
-                secondaryText={`${serviceTypeName} - ${teamPositionName} (${teamName})`}
-                onClick={() => {
-                  this.handleClickPlan(schedule);
-                }}
-                style={{
-                  color: '#5DBCE5',
-                }}
-              />
-            );
-          })}
-        </List>
+        {
+          this.props.schedules.length === 0 && !this.props.ui.showLoader ?
+            <div className="empty-data-message">You have no plans currently scheduled.</div>
+            : null
+        }
+        {
+          this.props.schedules.length > 0 ?
+            <List>
+              {this.props.schedules.map((schedule) => {
+                const serviceTypeName = schedule.attributes.service_type_name;
+                const teamPositionName = schedule.attributes.team_position_name;
+                const teamName = schedule.attributes.team_name;
+                return (
+                  <ListItem
+                    key={schedule.id}
+                    primaryText={schedule.attributes.dates}
+                    secondaryText={`${serviceTypeName} - ${teamPositionName} (${teamName})`}
+                    onClick={() => {
+                      this.handleClickPlan(schedule);
+                    }}
+                    style={{
+                      color: '#5DBCE5',
+                    }}
+                  />
+                );
+              })}
+            </List>
+          : null
+        }
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  return { schedules: state.schedules, accounts: state.accounts };
+  return {
+    schedules: state.schedules.schedules,
+    accounts: state.accounts,
+    ui: state.ui,
+  };
 }
 
 export default connect(mapStateToProps)(Plans);
