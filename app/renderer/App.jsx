@@ -14,7 +14,7 @@ import LinearProgress from 'material-ui/LinearProgress';
 import settings from '../main/settings';
 import { Login, SinglePlan, Plans, SongsList, Settings, LoggedIn, Account } from './scenes';
 import PlayerControls from './components/PlayerControls';
-import { player as playerActions, currentUser as currentUserActions, accounts as accountsActions } from '../redux/actions';
+import { player as playerActions, currentUser as currentUserActions, schedules as schedulesActions } from '../redux/actions';
 import pcoWrapper from '../main/pco-wrapper';
 import auth from '../main/auth';
 import store from '../main/redux-store';
@@ -76,11 +76,23 @@ export default class App extends Component {
 
     pcoWrapper.apiClient.on('error', (err) => {
       if (err.statusCode && err.statusCode === 401) {
-        this.checkStoredAuthToken()
-          .then((didRefreshToken) => {
-            if (!didRefreshToken) {
-              this.router.history.replace('/add-account');
-            }
+        auth.refreshSelectedAccountTokenIfNecessary()
+          .then(() => {
+            accounts.find({}, (err, accountsResults) => {
+              store.dispatch({
+                type: reduxActionKeys.ACCOUNTS_LOADED,
+                payload: accountsResults,
+              });
+              store.dispatch({
+                type: reduxActionKeys.LOAD_SCHEDULES,
+                payload: {
+                  schedules: [],
+                },
+              });
+              store.dispatch({
+                type: reduxActionKeys.SHOW_LOADER,
+              });
+            });
           });
       }
     });
@@ -113,6 +125,13 @@ export default class App extends Component {
                 type: reduxActionKeys.ACCOUNTS_LOADED,
                 payload: storedAccounts,
               });
+              store.dispatch({
+                type: reduxActionKeys.LOAD_SCHEDULES,
+                payload: {
+                  schedules: [],
+                },
+              });
+              store.dispatch(schedulesActions.loadSchedules());
             });
           });
         });
@@ -121,7 +140,6 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    // this.checkStoredAuthToken();
     this.getStoredAccounts()
       .then((storedAccounts) => {
         if (storedAccounts.length === 0) {
@@ -129,11 +147,15 @@ export default class App extends Component {
         } else {
           const selectedAccount = storedAccounts.filter(account => account.selected === true)[0];
           pcoWrapper.apiClient.http.accessToken = selectedAccount.tokenInfo.token.access_token;
+          this.router.history.replace('/logged_in/plans');
+          store.dispatch({
+            type: reduxActionKeys.SHOW_LOADER,
+          });
           store.dispatch({
             type: reduxActionKeys.ACCOUNTS_LOADED,
             payload: storedAccounts,
           });
-          this.router.history.replace('/logged_in/plans');
+          store.dispatch(schedulesActions.loadSchedules());
         }
       });
   }

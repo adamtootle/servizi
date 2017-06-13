@@ -18,7 +18,7 @@ class Plans extends Component {
 
   componentDidMount() {
     this.props.dispatch(currentUserActions.reloadCurrentUser());
-    this.props.dispatch(schedulesActions.loadSchedules());
+    // this.props.dispatch(schedulesActions.loadSchedules());
   }
 
   handleClickPlan = (schedule) => {

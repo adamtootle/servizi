@@ -1,4 +1,4 @@
-const database = require('./database');
+const { accounts } = require('./database');
 const config = require('../../config');
 const keys = require('./keys');
 const Promise = require('bluebird');
@@ -28,29 +28,6 @@ function Auth() {
   // public methods
   //
 
-  this.getStoredToken = function getStoredToken() {
-    return new Promise((resolve) => {
-      this.loadStoredToken()
-          .then(this.checkIfShouldRefreshToken)
-          .then(this.refreshStoredToken)
-          .then((token) => {
-            resolve(token);
-          });
-    });
-  };
-
-  this.loadStoredToken = function loadStoredToken() {
-    return new Promise((resolve) => {
-      database.findOne({ key: 'oauth_token' }, (err, doc) => {
-        if (doc) {
-          resolve(doc.value);
-        } else {
-          resolve(null);
-        }
-      });
-    });
-  };
-
   this.checkIfShouldRefreshToken = function shouldRefreshToken(_tokenRecord) {
     const tokenRecord = _tokenRecord;
     return new Promise((resolve) => {
@@ -69,44 +46,70 @@ function Auth() {
     });
   };
 
-  this.shouldRefreshToken = function shouldRefreshToken(tokenRecord) {
-    if (tokenRecord === null) {
+  this.shouldRefreshToken = function shouldRefreshToken(token) {
+    if (!token) {
       return true;
     }
 
-    const timeDifference = Math.floor(Date.now() / 1000) - tokenRecord.token.created_at;
-    if (timeDifference >= tokenRecord.token.expires_in) {
+    const timeDifference = Math.floor(Date.now() / 1000) - token.created_at;
+    if (timeDifference >= token.expires_in) {
       return true;
     }
 
     return false;
   };
 
-  this.refreshStoredToken = (tokenRecord) => {
+  this.refreshSelectedAccountTokenIfNecessary = (tokenRecord) => {
     return new Promise((resolve, reject) => {
-      if (tokenRecord === null) {
-        resolve(null);
-        return;
-      }
+      accounts.findOne({ selected: true }, (err, existingTokenResult) => {
+        if (!existingTokenResult) {
+          reject();
+        } else if (err) {
+          reject(err);
+        }
 
-      const tokenObject = {
-        access_token: tokenRecord.token.access_token,
-        refresh_token: tokenRecord.token.refresh_token,
-        expires_in: tokenRecord.token.expires_in,
-      };
-      const token = this.oauthClient.accessToken.create(tokenObject);
-      token.refresh()
-      .then((tokenResponse) => {
-        database.findOne({ key: 'oauth_token' }, (err, doc) => {
-          database.update(
-            { _id: doc._id },
-            { key: 'oauth_token', value: tokenResponse },
-            { multi: false },
-            () => resolve(tokenResponse)
-          );
-        });
-      })
-      .catch(reject);
+        if (this.shouldRefreshToken(existingTokenResult.tokenInfo.token)) {
+          const { access_token, refresh_token, expires_in } = existingTokenResult.tokenInfo.token;
+          const oauthToken = this.oauthClient.accessToken.create({ access_token, refresh_token, expires_in });
+          oauthToken.refresh()
+            .then((tokenResponse) => {
+              accounts.update(
+                { id: existingTokenResult._id },
+                { $set: { token: tokenResponse.token } },
+                {},
+                () => {
+                  resolve();
+                }
+              );
+            })
+            .catch(reject);
+        } else {
+          resolve();
+        }
+      });
+      // if (tokenRecord === null) {
+      //   resolve(null);
+      //   return;
+      // }
+
+      // const tokenObject = {
+      //   access_token: tokenRecord.token.access_token,
+      //   refresh_token: tokenRecord.token.refresh_token,
+      //   expires_in: tokenRecord.token.expires_in,
+      // };
+      
+      // token.refresh()
+      // .then((tokenResponse) => {
+      //   database.findOne({ key: 'oauth_token' }, (err, doc) => {
+      //     database.update(
+      //       { _id: doc._id },
+      //       { key: 'oauth_token', value: tokenResponse },
+      //       { multi: false },
+      //       () => resolve(tokenResponse)
+      //     );
+      //   });
+      // })
+      // .catch(reject);
     });
   };
 }

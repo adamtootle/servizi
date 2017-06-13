@@ -15,12 +15,8 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['', '.jsx', '.js'],
-    fallback: [path.join(__dirname, 'node_modules')],
-  },
-
-  resolveLoader: {
-    fallback: [path.join(__dirname, 'node_modules')],
+    extensions: ['.jsx', '.js'],
+    modules: [path.join(__dirname, 'node_modules')],
   },
 
   plugins: [
@@ -47,7 +43,7 @@ module.exports = {
       {
         test: /\.json?$/,
         // exclude: /node_modules/,
-        loader: 'json',
+        loader: 'json-loader',
       },
       {
         test: [/node_modules[\\\/](?:electron-settings|key-path-helpers)[\\\/]lib[\\\/](?:.+).js/],
