@@ -7,7 +7,7 @@ import { schedules as schedulesActions, currentUser as currentUserActions } from
 class Plans extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
-    schedules: PropTypes.object,
+    schedules: PropTypes.array,
   };
   static defaultProps = {};
   static contextTypes = {
