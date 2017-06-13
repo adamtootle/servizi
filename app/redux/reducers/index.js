@@ -4,6 +4,7 @@ const plans = require('./plans');
 const player = require('./player');
 const ui = require('./ui');
 const update = require('./update');
+const accounts = require('./accounts');
 
 module.exports = {
   currentUser,
@@ -12,4 +13,5 @@ module.exports = {
   player,
   ui,
   update,
+  accounts,
 };

@@ -6,22 +6,36 @@ const electron = utils.isRenderer() ? require('electron').remote : require('elec
 
 const app = electron.app;
 
-module.exports = new NeDB({
-  filename: `${app.getPath('appData')}/Servizi/database`,
-  autoload: true,
-  afterSerialization: (string) => {
-    if (string) {
-      return CryptoJS.AES.encrypt(string, config.dbSecret);
-    }
+const dbRoot = `${app.getPath('appData')}/Servizi/db`;
 
-    return null;
-  },
-  beforeDeserialization: (string) => {
-    if (string) {
-      const bytes = CryptoJS.AES.decrypt(string.toString(), config.dbSecret);
-      return bytes.toString(CryptoJS.enc.Utf8);
-    }
+function afterSerialization(string) {
+  if (string) {
+    return CryptoJS.AES.encrypt(string, config.dbSecret);
+  }
 
-    return null;
-  },
-});
+  return null;
+}
+
+function beforeDeserialization(string) {
+  if (string) {
+    const bytes = CryptoJS.AES.decrypt(string.toString(), config.dbSecret);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  }
+
+  return null;
+}
+
+module.exports = {
+  accounts: new NeDB({
+    filename: `${dbRoot}/accounts`,
+    autoload: true,
+    afterSerialization,
+    beforeDeserialization,
+  }),
+  settings: new NeDB({
+    filename: `${dbRoot}/settings`,
+    autoload: true,
+    afterSerialization,
+    beforeDeserialization,
+  }),
+};

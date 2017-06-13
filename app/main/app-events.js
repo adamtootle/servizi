@@ -144,7 +144,7 @@ function AppEvents() {
         // message = error.message;
       } else {
         // message = auth.oauthClient.accessToken.create(token);
-        mainWindow.webContents.send('didLogin', {
+        mainWindow.webContents.send('didAddAccount', {
           redirect_uri: tokenConfig.redirect_uri,
           token,
         });

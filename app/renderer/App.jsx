@@ -12,14 +12,15 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import LinearProgress from 'material-ui/LinearProgress';
 import settings from '../main/settings';
-import { Login, SinglePlan, Plans, SongsList, Settings, LoggedIn } from './scenes';
+import { Login, SinglePlan, Plans, SongsList, Settings, LoggedIn, Account } from './scenes';
 import PlayerControls from './components/PlayerControls';
-import { player as playerActions, currentUser as currentUserActions } from '../redux/actions';
+import { player as playerActions, currentUser as currentUserActions, accounts as accountsActions } from '../redux/actions';
 import pcoWrapper from '../main/pco-wrapper';
 import auth from '../main/auth';
 import store from '../main/redux-store';
 import reduxActionKeys from '../redux/actions/keys';
-import database from '../main/database';
+import { accounts } from '../main/database';
+import logger from 'electron-log';
 
 const theme = {
   palette: {
@@ -78,33 +79,79 @@ export default class App extends Component {
         this.checkStoredAuthToken()
           .then((didRefreshToken) => {
             if (!didRefreshToken) {
-              this.router.history.replace('/login');
+              this.router.history.replace('/add-account');
             }
           });
       }
     });
 
-    ipcRenderer.on('didLogin', (event, tokenInfo) => {
-      database.insert({
-        key: 'oauth_token',
-        value: tokenInfo,
-      });
+    ipcRenderer.on('didAddAccount', (event, tokenInfo) => {
       pcoWrapper.apiClient.http.accessToken = tokenInfo.token.access_token;
-      this.router.history.replace('/logged_in/plans');
-      store.dispatch(currentUserActions.reloadCurrentUser());
+      Promise.all([
+        pcoWrapper.apiClient.reloadMe(),
+        pcoWrapper.apiClient.services.organizations.getOrganization(),
+      ]).then((responses) => {
+        const userId = responses[0].data.id;
+        const userName = `${responses[0].data.attributes.first_name} ${responses[0].data.attributes.last_name}`;
+        const organizationId = responses[1].data.id;
+        const organizationName = responses[1].data.attributes.name;
+        const newAccount = {
+          organizationId,
+          organizationName,
+          userId,
+          userName,
+          tokenInfo,
+          selected: true,
+        };
+
+        accounts.update({ selected: true }, { $set: { selected: false } }, {}, () => {
+          accounts.update({ organizationId, userId }, newAccount, { upsert: true }, () => {
+            this.router.history.replace('/logged_in/plans');
+            store.dispatch(currentUserActions.reloadCurrentUser());
+            accounts.find({}, (err, storedAccounts) => {
+              store.dispatch({
+                type: reduxActionKeys.ACCOUNTS_LOADED,
+                payload: storedAccounts,
+              });
+            });
+          });
+        });
+      });
     });
   }
 
   componentDidMount() {
-    this.checkStoredAuthToken();
+    // this.checkStoredAuthToken();
+    this.getStoredAccounts()
+      .then((storedAccounts) => {
+        if (storedAccounts.length === 0) {
+          this.router.history.replace('/add-account');
+        } else {
+          const selectedAccount = storedAccounts.filter(account => account.selected === true)[0];
+          pcoWrapper.apiClient.http.accessToken = selectedAccount.tokenInfo.token.access_token;
+          store.dispatch({
+            type: reduxActionKeys.ACCOUNTS_LOADED,
+            payload: storedAccounts,
+          });
+          this.router.history.replace('/logged_in/plans');
+        }
+      });
   }
+
+  getStoredAccounts = () => {
+    return new Promise((resolve) => {
+      accounts.find({}, (err, result) => {
+        resolve(result);
+      });
+    });
+  };
 
   checkStoredAuthToken = () => (
     new Promise((resolve) => {
       auth.loadStoredToken()
         .then((token) => {
           if (!token) {
-            this.router.history.replace('/login');
+            this.router.history.replace('/add-account');
             resolve(false);
           } else if (auth.shouldRefreshToken(token)) {
             auth.refreshStoredToken(token)
@@ -114,7 +161,7 @@ export default class App extends Component {
                   this.router.history.replace('/logged_in/plans');
                   resolve(true);
                 } else {
-                  this.router.history.replace('/login');
+                  this.router.history.replace('/add-account');
                   resolve(false);
                 }
               });
@@ -308,7 +355,8 @@ export default class App extends Component {
                       </div>
                       : null
                   }
-                  <Route path="/login" component={Login} />
+                  <Route path="/add-account" component={Login} />
+                  <Route path="/accounts/:accountId" component={Account} />
                   <Route path="/logged_in" component={LoggedIn} />
                   <Route path="/logged_in/plans" exact component={Plans} />
                   <Route path="/logged_in/songs" component={SongsList} />

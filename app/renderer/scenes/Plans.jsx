@@ -58,7 +58,7 @@ class Plans extends Component {
 }
 
 function mapStateToProps(state) {
-  return { schedules: state.schedules };
+  return { schedules: state.schedules, accounts: state.accounts };
 }
 
 export default connect(mapStateToProps)(Plans);

@@ -14,6 +14,9 @@ module.exports = {
             schedules: res.data,
           },
         });
+        dispatch({
+          type: keys.HIDE_LOADER,
+        });
       });
   },
 

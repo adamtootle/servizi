@@ -2,7 +2,7 @@ const PCO = require('pco-js');
 const config = require('../../config');
 const util = require('util');
 const EventEmitter = require('events');
-const db = require('./database');
+const { accounts } = require('./database');
 
 const eventEmitter = new EventEmitter();
 
@@ -16,10 +16,10 @@ class PCOWrapper {
 
     this.apiClient = new PCO(pcoConfig);
 
-    db.findOne({ key: 'oauth_token' }, (err, res) => {
+    accounts.findOne({}, (err, res) => {
       if (res) {
-        this.apiClient.http.accessToken = res.value.token.access_token;
-        this.apiClient.http.redirectUri = res.value.redirect_uri;
+        this.apiClient.http.accessToken = res.tokenInfo.access_token;
+        this.apiClient.http.redirectUri = res.tokenInfo.redirect_uri;
       }
 
       this.ready = true;
