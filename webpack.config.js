@@ -10,7 +10,7 @@ module.exports = {
   output: {
     libraryTarget: 'umd',
     library: '[name]',
-    path: path.join(__dirname, 'app', 'dist'),
+    path: path.join(__dirname, 'app-dist'),
     filename: 'bundle.js',
   },
 
