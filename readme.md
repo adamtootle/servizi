@@ -18,7 +18,7 @@ NOTE: Due to how macOS handles custom URL schemes while running dev apps, the OA
 
 ## TODO
 
-- Multiple accounts support
+- ~~Multiple accounts support~~
 - PDF attachment support
 - Full song library support
 - Offline playback
