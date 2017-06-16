@@ -3,7 +3,6 @@ const find = require('lodash/find');
 const findLast = require('lodash/findLast');
 const keys = require('./keys');
 const pcoWrapper = require('../../main/pco-wrapper');
-const shouldSkipAttachment = require('../../helpers/shouldSkipAttachment');
 
 function dispatchAndLoadAttachment(attachment, dispatch) {
   dispatch({
@@ -48,20 +47,18 @@ module.exports = {
       dispatch({ type: keys.RESTART_CURRENT_ATTACHMENT });
     } else {
       const selectedAttachment = player.selectedAttachment;
-      const attachments = plans.currentPlanAttachments;
+      const attachments = plans.flattenedAttachments;
       const selectedAttachmentIndex = findIndex(attachments, attachment => attachment.id === selectedAttachment.id);
 
       const isFirstAttachment = selectedAttachmentIndex === 0;
       let nextAttachment;
       if (isFirstAttachment) {
-        nextAttachment = findLast(state.plans.currentPlanAttachments, (attachment) => {
-          const shouldSkip = shouldSkipAttachment(attachment, plans.currentPlanSkippedAttachments);
-          return !shouldSkip;
+        nextAttachment = findLast(plans.flattenedAttachments, (attachment) => {
+          return !attachment.skipped;
         });
       } else {
-        nextAttachment = findLast(plans.currentPlanAttachments, (attachment, index) => {
-          const shouldSkip = shouldSkipAttachment(attachment, plans.currentPlanSkippedAttachments);
-          return index < selectedAttachmentIndex && !shouldSkip;
+        nextAttachment = findLast(plans.flattenedAttachments, (attachment, index) => {
+          return index < selectedAttachmentIndex && !attachment.skipped;
         });
       }
 
@@ -72,19 +69,17 @@ module.exports = {
     const state = getState();
     const { player, plans } = state;
     const selectedAttachment = player.selectedAttachment;
-    const selectedAttachmentIndex = findIndex(plans.currentPlanAttachments, attachment => attachment.id === selectedAttachment.id);
+    const selectedAttachmentIndex = findIndex(plans.flattenedAttachments, attachment => attachment.id === selectedAttachment.id);
 
-    const isLastAttachment = selectedAttachmentIndex === plans.currentPlanAttachments.length - 1;
+    const isLastAttachment = selectedAttachmentIndex === plans.flattenedAttachments.length - 1;
     let nextAttachment;
     if (isLastAttachment) {
-      nextAttachment = find(state.plans.currentPlanAttachments, (attachment) => {
-        const shouldSkip = shouldSkipAttachment(attachment, plans.currentPlanSkippedAttachments);
-        return !shouldSkip;
+      nextAttachment = find(plans.flattenedAttachments, (attachment) => {
+        return !attachment.skipped;
       });
     } else {
-      nextAttachment = find(plans.currentPlanAttachments, (attachment, index) => {
-        const shouldSkip = shouldSkipAttachment(attachment, plans.currentPlanSkippedAttachments);
-        return index > selectedAttachmentIndex && !shouldSkip;
+      nextAttachment = find(plans.flattenedAttachments, (attachment, index) => {
+        return index > selectedAttachmentIndex && !attachment.skipped;
       });
     }
     dispatchAndLoadAttachment(nextAttachment, dispatch);

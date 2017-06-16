@@ -7,15 +7,12 @@ import { filter } from 'lodash';
 import S from 'string';
 import SelectableList from './SelectableList';
 import { player as playerActions } from '../../redux/actions';
-import shouldSkipAttachment from '../../helpers/shouldSkipAttachment';
 
 class AttachmentsList extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     plans: PropTypes.shape({
-      currentPlanItems: PropTypes.array,
-      currentPlanAttachments: PropTypes.array,
-      currentPlanSkippedAttachments: PropTypes.array,
+      itemsAndAttachments: PropTypes.array,
     }),
     player: PropTypes.shape({
       selectedAttachment: PropTypes.object,
@@ -30,9 +27,9 @@ class AttachmentsList extends Component {
     let attachmentIndex = -1;
     return (
       <SelectableList id="plan-items-container">
-        {this.props.plans.currentPlanItems.map((item) => {
-          const songId = item.relationships.song.data.id;
-          const itemAttachments = filter(this.props.plans.currentPlanAttachments, attachment => attachment.relationships.attachable.data.id === songId);
+        {this.props.plans.itemsAndAttachments.map((itemAndAttachment) => {
+          const item = itemAndAttachment.item;
+          const itemAttachments = itemAndAttachment.attachments;
 
           return (
             <div key={item.id}>
@@ -50,10 +47,9 @@ class AttachmentsList extends Component {
                 attachmentIndex += attachmentIndex;
                 const itemIsSelected = this.props.player.selectedAttachment
                   && this.props.player.selectedAttachment.id === attachment.id;
-                const skipped = shouldSkipAttachment(attachment, this.props.plans.currentPlanSkippedAttachments);
                 const style = {
                   backgroundColor: itemIsSelected ? '#E8EAEB' : '',
-                  color: skipped ? '#BCBEBE' : '#171717',
+                  color: attachment.skipped ? '#BCBEBE' : '#171717',
                 };
                 return (
                   <ListItem
@@ -66,6 +62,9 @@ class AttachmentsList extends Component {
                       this.props.dispatch(playerActions.playAttachment(attachment));
                     }}
                     style={style}
+                    innerDivStyle={{
+                      padding: '10px 16px',
+                    }}
                   >
                     {S(attachment.attributes.filename).truncate(50).toString().replace(/(.mp3|.wav)*/gi, '')}
                   </ListItem>

@@ -1,8 +1,10 @@
 const filter = require('lodash/filter');
 const forEach = require('lodash/forEach');
+const flatMap = require('lodash/flatMap');
 const Promise = require('bluebird');
 const keys = require('./keys');
 const pcoWrapper = require('../../main/pco-wrapper');
+const attachmentIsSupported = require('../../helpers/attachmentIsSupported');
 
 module.exports = {
   loadSchedules: () => (dispatch) => {
@@ -21,18 +23,18 @@ module.exports = {
   },
 
   selectPlan: planId => (dispatch, getState) => {
-    const { currentUser } = getState();
+    dispatch({
+      type: keys.SHOW_LOADER,
+    });
     dispatch({
       type: keys.SELECT_PLAN,
       payload: {
         currentPlan: null,
-        currentPlanItems: [],
-        currentPlanAttachments: [],
+        itemsAndAttachments: [],
+        flattenedAttachments: [],
       },
     });
-    dispatch({
-      type: keys.SHOW_LOADER,
-    });
+    const { currentUser } = getState();
     pcoWrapper.apiClient.reloadMe()
       .then((userResponse) => {
         pcoWrapper.apiClient.services.plans.get(planId)
@@ -40,16 +42,30 @@ module.exports = {
             Promise.all([
               pcoWrapper.apiClient.services.plans.getItems(plan),
               pcoWrapper.apiClient.services.plans.getAttachments(plan),
-            ]).then((itemsAndAttachments) => {
-              pcoWrapper.apiClient.services.plans.getSkipFilter({ plan, user: currentUser, attachments: itemsAndAttachments[1] })
-                .then((skippedAttachments) => {
-                  const items = filter(itemsAndAttachments[0], item => item.attributes.item_type === 'song');
-                  let planAttachments = [];
+            ]).then((itemsAndAttachmentsResponse) => {
+              pcoWrapper.apiClient.services.plans.getSkipFilter({ plan, user: currentUser, attachments: itemsAndAttachmentsResponse[1] })
+                .then((skippedAttachmentsResponse) => {
+                  const itemsAndAttachments = [];
+                  const songItems = filter(itemsAndAttachmentsResponse[0], item => item.attributes.item_type === 'song');
+                  const skippedAttachmentIds = skippedAttachmentsResponse.map(skippedAttachment => skippedAttachment.relationships.attachment.data.id);
 
-                  forEach(items, (item) => {
-                    const songId = item.relationships.song.data.id;
-                    const itemAttachments = filter(itemsAndAttachments[1], attachment => attachment.relationships.attachable.data.id === songId);
-                    planAttachments = planAttachments.concat(itemAttachments);
+                  const attachmentsWithSkips = itemsAndAttachmentsResponse[1].map((attachment) => {
+                    const skipped = skippedAttachmentIds.indexOf(attachment.id) !== -1;
+                    return Object.assign({}, attachment, { skipped });
+                  });
+
+                  forEach(songItems, (item) => {
+                    const attachments = filter(attachmentsWithSkips, (attachment) => {
+                      const attachmentAttachableType = attachment.relationships.attachable.data.type;
+                      const attachmentAttachableId = attachment.relationships.attachable.data.id;
+                      const attachmentIsForItem = attachmentAttachableId === item.relationships[attachmentAttachableType.toLowerCase()].data.id;
+                      return attachmentIsForItem && attachmentIsSupported(attachment);
+                    });
+
+                    itemsAndAttachments.push({
+                      item,
+                      attachments,
+                    });
                   });
 
                   dispatch({
@@ -60,9 +76,9 @@ module.exports = {
                     type: keys.SELECT_PLAN,
                     payload: {
                       currentPlan: plan,
-                      currentPlanItems: itemsAndAttachments[0],
-                      currentPlanAttachments: itemsAndAttachments[1],
-                      currentPlanSkippedAttachments: skippedAttachments,
+                      currentPlanSkippedAttachments: skippedAttachmentsResponse,
+                      itemsAndAttachments,
+                      flattenedAttachments: flatMap(itemsAndAttachments.map(obj => obj.attachments)),
                     },
                   });
                 });

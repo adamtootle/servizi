@@ -2,8 +2,8 @@ const keys = require('../actions/keys');
 
 const initialState = {
   currentPlan: null,
-  currentPlanItems: [],
-  currentPlanAttachments: [],
+  itemsAndAttachments: [],
+  flattenedAttachments: [],
 };
 
 module.exports = function plansReducer(state = initialState, action) {

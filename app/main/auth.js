@@ -52,7 +52,7 @@ function Auth() {
     }
 
     const timeDifference = Math.floor(Date.now() / 1000) - token.created_at;
-    if (timeDifference >= token.expires_in) {
+    if (timeDifference >= token.expires_in - 300) {
       return true;
     }
 
@@ -69,8 +69,7 @@ function Auth() {
         }
 
         if (this.shouldRefreshToken(existingTokenResult.tokenInfo.token)) {
-          const { access_token, refresh_token, expires_in } = existingTokenResult.tokenInfo.token;
-          const oauthToken = this.oauthClient.accessToken.create({ access_token, refresh_token, expires_in });
+          const oauthToken = this.oauthClient.accessToken.create(existingTokenResult.tokenInfo.token);
           oauthToken.refresh()
             .then((tokenResponse) => {
               accounts.update(

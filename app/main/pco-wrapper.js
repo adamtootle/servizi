@@ -29,6 +29,9 @@ class PCOWrapper {
             this.apiClient.http.redirectUri = accountResult.tokenInfo.token.redirect_uri;
             this.ready = true;
             eventEmitter.emit('ready', null, this.apiClient);
+          } else {
+            this.ready = true;
+            eventEmitter.emit('ready', null, this.apiClient);
           }
         });
       }

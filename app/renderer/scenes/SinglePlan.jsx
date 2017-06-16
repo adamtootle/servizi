@@ -13,11 +13,14 @@ class SinglePlan extends Component {
       params: PropTypes.object,
     }),
     plans: PropTypes.shape({
-      currentPlanItems: PropTypes.array,
-      currentPlanAttachments: PropTypes.array,
+      itemsAndAttachments: PropTypes.array,
+      flattenedAttachments: PropTypes.array,
     }),
     player: PropTypes.shape({
       selectedVideoAttachment: PropTypes.object,
+    }),
+    ui: PropTypes.shape({
+      showLoader: PropTypes.bool,
     }),
     dispatch: PropTypes.func,
   };
@@ -33,7 +36,7 @@ class SinglePlan extends Component {
   }
 
   render() {
-    if (!this.props.plans.currentPlanItems || !this.props.plans.currentPlanAttachments) {
+    if (this.props.ui.showLoader) {
       return (
         <div className="loading-indicator-wrapper" style={{ marginTop: '100px' }}>
           <CircularProgress />
@@ -69,6 +72,7 @@ function mapStateToProps(state) {
     player: state.player,
     plans: state.plans,
     schedules: state.schedules,
+    ui: state.ui,
   };
 }
 
