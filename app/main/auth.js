@@ -72,10 +72,14 @@ function Auth() {
           const oauthToken = this.oauthClient.accessToken.create(existingTokenResult.tokenInfo.token);
           oauthToken.refresh()
             .then((tokenResponse) => {
+              const newTokenInfo = {
+                redirect_uri: existingTokenResult.tokenInfo.redirect_uri,
+                token: tokenResponse,
+              };
               accounts.update(
-                { id: existingTokenResult._id },
-                { $set: { token: tokenResponse.token } },
-                {},
+                { _id: existingTokenResult._id },
+                { $set: { tokenInfo: newTokenInfo } },
+                { upsert: true },
                 () => {
                   resolve();
                 }
