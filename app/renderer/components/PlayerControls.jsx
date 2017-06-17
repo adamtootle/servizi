@@ -143,7 +143,7 @@ class PlayerControls extends Component {
                 this.nextButton = ref;
               }}
               iconStyle={Object.assign({}, styles.trackControlIcon, {
-                color: this.props.player.repeat ? '#71C7FF' : '#C1C1C1',
+                color: this.props.player.repeat ? '#5DBCE5' : '#C1C1C1',
               })}
               style={styles.trackControlButton}
               onClick={(ev) => {
