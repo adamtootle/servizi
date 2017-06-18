@@ -1,5 +1,7 @@
 Servizi is a desktop music player for [Planning Center Services](https://planning.center/services/) written using [Electron](https://github.com/electron/electron), [React](https://github.com/facebook/react), and [Redux](https://github.com/reactjs/redux). It is a complete rewrite of an old project called PCS Player.
 
+![screenshot-1](https://github.com/adamtootle/servizi/blob/master/screenshots/screenshot-1.png)
+
 ## Run locally
 
 ```
