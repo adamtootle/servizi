@@ -29,13 +29,13 @@ module.exports = {
   accounts: new NeDB({
     filename: `${dbRoot}/accounts`,
     autoload: true,
-    // afterSerialization,
-    // beforeDeserialization,
+    afterSerialization,
+    beforeDeserialization,
   }),
   settings: new NeDB({
     filename: `${dbRoot}/settings`,
     autoload: true,
-    // afterSerialization,
-    // beforeDeserialization,
+    afterSerialization,
+    beforeDeserialization,
   }),
 };
