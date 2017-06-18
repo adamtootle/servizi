@@ -74,7 +74,7 @@ function Auth() {
             .then((tokenResponse) => {
               const newTokenInfo = {
                 redirect_uri: existingTokenResult.tokenInfo.redirect_uri,
-                token: tokenResponse,
+                token: tokenResponse.token,
               };
               accounts.update(
                 { _id: existingTokenResult._id },
