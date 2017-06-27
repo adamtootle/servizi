@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { List, ListItem } from 'material-ui/List';
 import { connect } from 'react-redux';
 import { schedules as schedulesActions, currentUser as currentUserActions } from '../../redux/actions';
+import PlanListItem from '../components/PlanListItem';
 
 class Plans extends Component {
   static propTypes = {
@@ -45,7 +46,7 @@ class Plans extends Component {
                 const teamPositionName = schedule.attributes.team_position_name;
                 const teamName = schedule.attributes.team_name;
                 return (
-                  <ListItem
+                  <PlanListItem
                     key={schedule.id}
                     primaryText={schedule.attributes.dates}
                     secondaryText={`${serviceTypeName} - ${teamPositionName} (${teamName})`}
@@ -55,6 +56,7 @@ class Plans extends Component {
                     style={{
                       color: '#5DBCE5',
                     }}
+                    planId={schedule.relationships.plan.data.id}
                   />
                 );
               })}

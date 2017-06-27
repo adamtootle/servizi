@@ -90,6 +90,31 @@ body {
 }
 
 /*
+ * Plans
+ */
+
+.plan-list-item {
+  position: relative;
+
+  .pc-link {
+    position: absolute;
+    right: 20px;
+    bottom: 50%;
+    height: 30px;
+    margin-bottom: -15px;
+    line-height: 30px;
+    font-size: 12px;
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.541176);
+    display: inline-block;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/*
  * navigation animations
  */
 .transition-push-enter {
