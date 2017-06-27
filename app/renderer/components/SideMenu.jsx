@@ -6,7 +6,7 @@ import logger from 'electron-log';
 import sortBy from 'lodash/sortBy';
 import { accounts } from '../../main/database';
 import pcoWrapper from '../../main/pco-wrapper';
-import { schedules as schedulesActions } from '../../redux/actions';
+import { schedules as schedulesActions, currentUser as currentUserActions } from '../../redux/actions';
 import reduxActionKeys from '../../redux/actions/keys';
 
 class SideMenu extends Component {
@@ -27,6 +27,7 @@ class SideMenu extends Component {
       accounts.update({ organizationId, userId }, { $set: { selected: true } }, {}, () => {
         accounts.find({}, (err, accountsResults) => {
           pcoWrapper.apiClient.http.accessToken = account.tokenInfo.token.access_token;
+          this.props.dispatch(currentUserActions.reloadCurrentUser());
           this.context.router.history.replace('/logged_in/plans');
           this.props.dispatch({
             type: reduxActionKeys.ACCOUNTS_LOADED,

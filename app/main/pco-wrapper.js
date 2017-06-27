@@ -7,7 +7,6 @@ const { accounts } = require('./database');
 const eventEmitter = new EventEmitter();
 
 class PCOWrapper {
-
   constructor() {
     const pcoConfig = {
       clientId: config.oauthClientId,
@@ -40,6 +39,10 @@ class PCOWrapper {
 
   on(eventName, handler) {
     eventEmitter.on(eventName, handler);
+  }
+
+  sendReady() {
+    eventEmitter.emit('ready', null, this.apiClient);
   }
 }
 

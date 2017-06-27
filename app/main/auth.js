@@ -81,13 +81,13 @@ function Auth() {
                 { $set: { tokenInfo: newTokenInfo } },
                 { upsert: true },
                 () => {
-                  resolve();
+                  resolve(newTokenInfo);
                 }
               );
             })
             .catch(reject);
         } else {
-          resolve();
+          resolve(existingTokenResult.tokenInfo);
         }
       });
       // if (tokenRecord === null) {

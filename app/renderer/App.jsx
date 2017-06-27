@@ -29,18 +29,6 @@ const theme = {
   },
 };
 
-// let storeDispatch;
-// const enhancer = compose(
-//   applyMiddleware(thunk),
-//   electronEnhancer({
-//     filter: true,
-//     dispatchProxy: a => storeDispatch(a),
-//   })
-// );
-
-// const store = createStore(combineReducers(reducers), {}, enhancer);
-// storeDispatch = store.dispatch;
-
 export default class App extends Component {
   static propTypes = {
     children: PropTypes.oneOfType([
@@ -76,24 +64,7 @@ export default class App extends Component {
 
     pcoWrapper.apiClient.on('error', (err) => {
       if (err.statusCode && err.statusCode === 401) {
-        auth.refreshSelectedAccountTokenIfNecessary()
-          .then(() => {
-            accounts.find({}, (err, accountsResults) => {
-              store.dispatch({
-                type: reduxActionKeys.ACCOUNTS_LOADED,
-                payload: accountsResults,
-              });
-              store.dispatch({
-                type: reduxActionKeys.LOAD_SCHEDULES,
-                payload: {
-                  schedules: [],
-                },
-              });
-              store.dispatch({
-                type: reduxActionKeys.SHOW_LOADER,
-              });
-            });
-          });
+        this.refreshAuthToken();
       }
     });
 
@@ -119,20 +90,7 @@ export default class App extends Component {
         accounts.update({ selected: true }, { $set: { selected: false } }, {}, () => {
           accounts.update({ organizationId, userId }, newAccount, { upsert: true }, () => {
             this.router.history.replace('/logged_in/plans');
-            store.dispatch(currentUserActions.reloadCurrentUser());
-            accounts.find({}, (err, storedAccounts) => {
-              store.dispatch({
-                type: reduxActionKeys.ACCOUNTS_LOADED,
-                payload: storedAccounts,
-              });
-              store.dispatch({
-                type: reduxActionKeys.LOAD_SCHEDULES,
-                payload: {
-                  schedules: [],
-                },
-              });
-              store.dispatch(schedulesActions.loadSchedules());
-            });
+            this.handleReloadAccounts();
           });
         });
       });
@@ -147,17 +105,11 @@ export default class App extends Component {
         } else {
           const selectedAccount = storedAccounts.filter(account => account.selected === true)[0];
           pcoWrapper.apiClient.http.accessToken = selectedAccount.tokenInfo.token.access_token;
-          this.router.history.replace('/logged_in/plans');
-          store.dispatch({
-            type: reduxActionKeys.SHOW_LOADER,
-          });
-          store.dispatch({
-            type: reduxActionKeys.ACCOUNTS_LOADED,
-            payload: storedAccounts,
-          });
-          store.dispatch(schedulesActions.loadSchedules());
+          this.handleReloadAccounts();
         }
       });
+
+    this.refreshAuthToken();
   }
 
   getStoredAccounts = () => {
@@ -195,6 +147,32 @@ export default class App extends Component {
         });
     })
   );
+
+  refreshAuthToken() {
+    auth.refreshSelectedAccountTokenIfNecessary()
+      .then((tokenInfo) => {
+        pcoWrapper.apiClient.http.accessToken = tokenInfo.token.access_token;
+        this.router.history.replace('/logged_in/plans');
+        this.handleReloadAccounts();
+      });
+  }
+
+  handleReloadAccounts() {
+    store.dispatch(currentUserActions.reloadCurrentUser());
+    accounts.find({}, (err, storedAccounts) => {
+      store.dispatch({
+        type: reduxActionKeys.ACCOUNTS_LOADED,
+        payload: storedAccounts,
+      });
+      store.dispatch({
+        type: reduxActionKeys.LOAD_SCHEDULES,
+        payload: {
+          schedules: [],
+        },
+      });
+      store.dispatch(schedulesActions.loadSchedules());
+    });
+  }
 
   handlePlayerProgressUpdate = (progress) => {
     if (this.state.player.totalSeconds > 0 && progress.played !== undefined) {
