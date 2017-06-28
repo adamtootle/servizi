@@ -37,11 +37,7 @@ class SinglePlan extends Component {
 
   render() {
     if (this.props.ui.showLoader) {
-      return (
-        <div className="loading-indicator-wrapper" style={{ marginTop: '100px' }}>
-          <CircularProgress />
-        </div>
-      );
+      return null;
     }
 
     return (

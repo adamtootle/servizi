@@ -53,11 +53,11 @@ module.exports = {
       const isFirstAttachment = selectedAttachmentIndex === 0;
       let nextAttachment;
       if (isFirstAttachment) {
-        nextAttachment = findLast(plans.flattenedAttachments, (attachment) => {
+        nextAttachment = findLast(attachments, (attachment) => {
           return !attachment.skipped;
         });
       } else {
-        nextAttachment = findLast(plans.flattenedAttachments, (attachment, index) => {
+        nextAttachment = findLast(attachments, (attachment, index) => {
           return index < selectedAttachmentIndex && !attachment.skipped;
         });
       }
@@ -69,19 +69,19 @@ module.exports = {
     const state = getState();
     const { player, plans } = state;
     const selectedAttachment = player.selectedAttachment;
-    const selectedAttachmentIndex = findIndex(plans.flattenedAttachments, attachment => attachment.id === selectedAttachment.id);
+    const attachments = plans.flattenedAttachments;
+    const selectedAttachmentIndex = findIndex(attachments, attachment => attachment.id === selectedAttachment.id);
 
     const isLastAttachment = selectedAttachmentIndex === plans.flattenedAttachments.length - 1;
-    let nextAttachment;
-    if (isLastAttachment) {
-      nextAttachment = find(plans.flattenedAttachments, (attachment) => {
+  let nextAttachment = find(attachments, (attachment, index) => {
+      return index > selectedAttachmentIndex && !attachment.skipped;
+    });
+    if (!nextAttachment || isLastAttachment) {
+      nextAttachment = find(attachments, (attachment) => {
         return !attachment.skipped;
       });
-    } else {
-      nextAttachment = find(plans.flattenedAttachments, (attachment, index) => {
-        return index > selectedAttachmentIndex && !attachment.skipped;
-      });
     }
+
     dispatchAndLoadAttachment(nextAttachment, dispatch);
   },
   repeat: () => ({

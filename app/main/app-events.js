@@ -82,10 +82,15 @@ function AppEvents() {
     };
 
     if (storedSettings.fullPlayerUI) {
+      let windowWidth = screenSize.width * 0.75;
+      const windowHeight = screenSize.height * 0.95;
+      if (windowWidth / windowHeight > 1.5) {
+        windowWidth = windowHeight * 1.5;
+      }
       windowConfig = {
         // frame: false,
-        width: screenSize.width * 0.75,
-        height: screenSize.height * 0.95,
+        width: windowWidth,
+        height: windowHeight,
         vibrancy: 'dark',
         titleBarStyle: 'hidden-inset',
       };
