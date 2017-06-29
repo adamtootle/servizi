@@ -312,7 +312,13 @@ autoprefixer@^6.3.1:
     postcss "^5.2.16"
     postcss-value-parser "^3.2.3"
 
-aws-sdk@^2.67.0:
+aws-sdk-mobile-analytics@^0.9.2:
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/aws-sdk-mobile-analytics/-/aws-sdk-mobile-analytics-0.9.2.tgz#b56a6e5206fc8c3975a19170b41536c53f6d5d91"
+  dependencies:
+    aws-sdk ">=2.2.37"
+
+aws-sdk@>=2.2.37, aws-sdk@^2.67.0, aws-sdk@^2.78.0:
   version "2.78.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.78.0.tgz#549556f2c1c8b516c1e21e9f6304d28d6c8542e8"
   dependencies:

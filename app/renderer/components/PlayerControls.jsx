@@ -10,6 +10,8 @@ import ActionRepeatIcon from 'material-ui/svg-icons/av/repeat';
 import formatDuration from 'format-duration';
 import keys from '../../main/keys';
 import { player as playerActions } from '../../redux/actions';
+import analytics from '../../main/analytics';
+import config from '../../../config';
 
 const styles = {
   trackControlIcon: {
@@ -63,6 +65,9 @@ class PlayerControls extends Component {
                 ev.preventDefault();
                 ev.stopPropagation();
                 this.props.dispatch(playerActions.previousAttachment());
+                analytics.recordEvent(config.aws.eventNames.previousAttachment, {
+                  method: 'mouse',
+                });
               }}
             >
               <ActionPreviousIcon />
@@ -76,6 +81,19 @@ class PlayerControls extends Component {
               onClick={(ev) => {
                 ev.preventDefault();
                 ev.stopPropagation();
+
+                if (this.props.player.playAudio) {
+                  // already playing, so we're pausing it
+                  analytics.recordEvent(config.aws.eventNames.pauseAttachment, {
+                    method: 'mouse',
+                  });
+                } else {
+                  // already paused, so we're playing it
+                  analytics.recordEvent(config.aws.eventNames.playAttachment, {
+                    method: 'mouse',
+                  });
+                }
+
                 this.props.dispatch(playerActions.playPauseAttachment());
               }}
             >
@@ -97,6 +115,9 @@ class PlayerControls extends Component {
                 ev.preventDefault();
                 ev.stopPropagation();
                 this.props.dispatch(playerActions.nextAttachment());
+                analytics.recordEvent(config.aws.eventNames.nextAttachment, {
+                  method: 'mouse',
+                });
               }}
             >
               <ActionNextIcon />
@@ -119,6 +140,7 @@ class PlayerControls extends Component {
                 const currentSecond = newProgress * this.props.player.totalSeconds;
                 this.props.dispatch(playerActions.currentAttachmentTime({ currentSecond }));
                 this.props.playerRef.seekTo(newProgress);
+                analytics.recordEvent(config.aws.eventNames.seekTime);
               }}
             >
               <div id="player-time-bar-gray">
@@ -149,6 +171,19 @@ class PlayerControls extends Component {
               onClick={(ev) => {
                 ev.preventDefault();
                 ev.stopPropagation();
+
+                if (this.props.player.repeat) {
+                  // already enabled, so we're disabling it
+                  analytics.recordEvent(config.aws.eventNames.selectRepeat, {
+                    enable: false,
+                  });
+                } else {
+                  // already disabled, so we're enabling it
+                  analytics.recordEvent(config.aws.eventNames.selectRepeat, {
+                    enable: true,
+                  });
+                }
+
                 this.props.dispatch(playerActions.repeat());
               }}
             >

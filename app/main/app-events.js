@@ -1,7 +1,6 @@
 const electron = require('electron');
 const { ipcMain } = require('electron');
 const autoUpdater = require('electron-updater').autoUpdater;
-const join = require('path').join;
 const logger = require('electron-log');
 const auth = require('./auth');
 const settings = require('./settings');
@@ -9,6 +8,8 @@ const store = require('./redux-store');
 const reduxActions = require('../redux/actions');
 const reduxActionKeys = require('../redux/actions/keys');
 const utils = require('./utils');
+const config = require('../../config');
+const analytics = require('./analytics');
 
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -122,18 +123,38 @@ function AppEvents() {
     mainWindow.show();
 
     globalShortcut.register('MediaPlayPause', () => {
+      if (store.getState().player.playAudio) {
+        // already playing, so we're pausing it
+        analytics.recordEvent(config.aws.eventNames.pauseAttachment, {
+          method: 'keyboard',
+        });
+      } else {
+        // already paused, so we're playing it
+        analytics.recordEvent(config.aws.eventNames.playAttachment, {
+          method: 'keyboard',
+        });
+      }
+
       store.dispatch(reduxActions.player.playPauseAttachment());
     });
 
     globalShortcut.register('MediaPreviousTrack', () => {
       store.dispatch(reduxActions.player.previousAttachment());
+      analytics.recordEvent(config.aws.eventNames.previousAttachment, {
+        method: 'keyboard',
+      });
     });
 
     globalShortcut.register('MediaNextTrack', () => {
       store.dispatch(reduxActions.player.nextAttachment());
+      analytics.recordEvent(config.aws.eventNames.nextAttachment, {
+        method: 'keyboard',
+      });
     });
 
     setupAppMenu();
+
+    
   };
 
   this.openUrl = (ev, url) => {
@@ -157,6 +178,7 @@ function AppEvents() {
           token,
         });
         mainWindow.focus();
+        analytics.recordEvent(config.aws.eventNames.addAccount);
       }
     });
   };

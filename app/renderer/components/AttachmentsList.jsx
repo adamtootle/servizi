@@ -7,6 +7,8 @@ import { filter } from 'lodash';
 import S from 'string';
 import SelectableList from './SelectableList';
 import { player as playerActions } from '../../redux/actions';
+import analytics from '../../main/analytics';
+import config from '../../../config';
 
 class AttachmentsList extends Component {
   static propTypes = {
@@ -75,6 +77,10 @@ class AttachmentsList extends Component {
                     }}
                     onClick={() => {
                       this.props.dispatch(playerActions.playAttachment(attachment));
+                      analytics.recordEvent(config.aws.eventNames.selectAttachment, {
+                        type: attachment.attributes.pco_type,
+                        skipped: attachment.skipped || false,
+                      });
                     }}
                     style={style}
                     innerDivStyle={{
@@ -100,6 +106,7 @@ class AttachmentsList extends Component {
                       this.setState({
                         showSkippedAttachmentsForItemIds: this.state.showSkippedAttachmentsForItemIds.concat([item.id]),
                       });
+                      analytics.recordEvent(config.aws.eventNames.showSkippedAttachments);
                     }}
                   >
                     {`+ ${skippedAttachments.length} skipped attachments`}

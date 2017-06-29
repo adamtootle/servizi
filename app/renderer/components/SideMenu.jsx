@@ -8,6 +8,8 @@ import { accounts } from '../../main/database';
 import pcoWrapper from '../../main/pco-wrapper';
 import { schedules as schedulesActions, currentUser as currentUserActions } from '../../redux/actions';
 import reduxActionKeys from '../../redux/actions/keys';
+import config from '../../../config';
+import analytics from '../../main/analytics';
 
 class SideMenu extends Component {
   static contextTypes = {
@@ -44,6 +46,8 @@ class SideMenu extends Component {
           });
           this.props.dispatch(schedulesActions.loadSchedules());
         });
+
+        analytics.recordEvent(config.aws.eventNames.switchAccount);
       });
     });
   }

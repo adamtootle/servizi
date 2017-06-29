@@ -4,6 +4,8 @@ import { List, ListItem } from 'material-ui/List';
 import { connect } from 'react-redux';
 import { schedules as schedulesActions, currentUser as currentUserActions } from '../../redux/actions';
 import PlanListItem from '../components/PlanListItem';
+import analytics from '../../main/analytics';
+import config from '../../../config';
 
 class Schedules extends Component {
   static propTypes = {
@@ -28,6 +30,8 @@ class Schedules extends Component {
     setTimeout(() => {
       this.context.router.history.push(route);
     }, 300);
+
+    analytics.recordEvent(config.aws.eventNames.selectPlan);
   };
 
   render() {
