@@ -24,7 +24,7 @@ NOTE: Due to how macOS handles custom URL schemes while running dev apps, the OA
 - PDF attachment support
 - Full song library support
 - Offline playback
-- Simultaneous track playback (for live tracking)
+- Simultaneous track playback (for live tracking/practice)
 - MIDI/remote control for playback
 
 ## Feedback
