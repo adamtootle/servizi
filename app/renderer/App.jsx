@@ -12,7 +12,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import LinearProgress from 'material-ui/LinearProgress';
 import settings from '../main/settings';
-import { Login, SinglePlan, Plans, SongsList, Settings, LoggedIn, Account } from './scenes';
+import { Login, SinglePlan, Schedules, SongsList, Settings, LoggedIn, Account } from './scenes';
 import PlayerControls from './components/PlayerControls';
 import { player as playerActions, currentUser as currentUserActions, schedules as schedulesActions } from '../redux/actions';
 import pcoWrapper from '../main/pco-wrapper';
@@ -89,7 +89,7 @@ export default class App extends Component {
 
         accounts.update({ selected: true }, { $set: { selected: false } }, {}, () => {
           accounts.update({ organizationId, userId }, newAccount, { upsert: true }, () => {
-            this.router.history.replace('/logged_in/plans');
+            this.router.history.replace('/logged_in/schedules');
             this.handleReloadAccounts();
           });
         });
@@ -132,7 +132,7 @@ export default class App extends Component {
               .then((refreshedToken) => {
                 if (refreshedToken) {
                   pcoWrapper.apiClient.http.accessToken = refreshedToken.token.access_token;
-                  this.router.history.replace('/logged_in/plans');
+                  this.router.history.replace('/logged_in/schedules');
                   resolve(true);
                 } else {
                   this.router.history.replace('/add-account');
@@ -141,7 +141,7 @@ export default class App extends Component {
               });
           } else {
             pcoWrapper.apiClient.http.accessToken = token.token.access_token;
-            this.router.history.replace('/logged_in/plans');
+            this.router.history.replace('/logged_in/schedules');
             resolve(false);
           }
         });
@@ -152,7 +152,7 @@ export default class App extends Component {
     auth.refreshSelectedAccountTokenIfNecessary()
       .then((tokenInfo) => {
         pcoWrapper.apiClient.http.accessToken = tokenInfo.token.access_token;
-        this.router.history.replace('/logged_in/plans');
+        this.router.history.replace('/logged_in/schedules');
         this.handleReloadAccounts();
       });
   }
@@ -188,6 +188,8 @@ export default class App extends Component {
   handlePlayerEnded = () => {
     if (this.state.player.repeat) {
       this.player.seekTo(0);
+    } else {
+      store.dispatch(playerActions.nextAttachment());
     }
   };
 
@@ -358,7 +360,7 @@ export default class App extends Component {
                   <Route path="/add-account" component={Login} />
                   <Route path="/accounts/:accountId" component={Account} />
                   <Route path="/logged_in" component={LoggedIn} />
-                  <Route path="/logged_in/plans" exact component={Plans} />
+                  <Route path="/logged_in/schedules" exact component={Schedules} />
                   <Route path="/logged_in/songs" component={SongsList} />
                   <Route path="/logged_in/plans/:planId" component={SinglePlan} />
                   <Route path="/logged_in/app/settings" component={Settings} />

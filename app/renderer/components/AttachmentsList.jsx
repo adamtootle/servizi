@@ -23,6 +23,14 @@ class AttachmentsList extends Component {
     player: PropTypes.object,
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showSkippedAttachmentsForItemIds: [],
+    };
+  }
+
   render() {
     let attachmentIndex = -1;
     return (
@@ -30,6 +38,8 @@ class AttachmentsList extends Component {
         {this.props.plans.itemsAndAttachments.map((itemAndAttachment) => {
           const item = itemAndAttachment.item;
           const itemAttachments = itemAndAttachment.attachments;
+          const skippedAttachments = filter(itemAttachments, attachment => attachment.skipped);
+          const showSkippedAttachmentsForItem = this.state.showSkippedAttachmentsForItemIds.indexOf(item.id) !== -1;
 
           return (
             <div key={item.id}>
@@ -45,6 +55,11 @@ class AttachmentsList extends Component {
               </Subheader>
               {itemAttachments.map((attachment) => {
                 attachmentIndex += attachmentIndex;
+
+                if (attachment.skipped && !showSkippedAttachmentsForItem) {
+                  return null;
+                }
+
                 const itemIsSelected = this.props.player.selectedAttachment
                   && this.props.player.selectedAttachment.id === attachment.id;
                 const style = {
@@ -70,6 +85,27 @@ class AttachmentsList extends Component {
                   </ListItem>
                 );
               })}
+              {
+                skippedAttachments.length > 0 && !showSkippedAttachmentsForItem ?
+                  <ListItem
+                    key="skipped_attachments"
+                    value={attachmentIndex}
+                    style={{
+                      color: '#BCBEBE',
+                    }}
+                    innerDivStyle={{
+                      padding: '10px 16px',
+                    }}
+                    onClick={() => {
+                      this.setState({
+                        showSkippedAttachmentsForItemIds: this.state.showSkippedAttachmentsForItemIds.concat([item.id]),
+                      });
+                    }}
+                  >
+                    {`+ ${skippedAttachments.length} skipped attachments`}
+                  </ListItem>
+                  : null
+              }
             </div>
           );
         })}

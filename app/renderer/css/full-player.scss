@@ -43,6 +43,10 @@ body {
   #routes-wrapper {
     background-color: #F2F2F2;
     overflow-y: scroll;
+
+    &::-webkit-scrollbar { 
+      display: none; 
+    }
   }
 
   #media-player-container {

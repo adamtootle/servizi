@@ -28,7 +28,7 @@ class SideMenu extends Component {
         accounts.find({}, (err, accountsResults) => {
           pcoWrapper.apiClient.http.accessToken = account.tokenInfo.token.access_token;
           this.props.dispatch(currentUserActions.reloadCurrentUser());
-          this.context.router.history.replace('/logged_in/plans');
+          this.context.router.history.replace('/logged_in/schedules');
           this.props.dispatch({
             type: reduxActionKeys.ACCOUNTS_LOADED,
             payload: accountsResults,
@@ -82,7 +82,14 @@ class SideMenu extends Component {
             : null
         }
         <div id="plan-items-container">
-          <NavLink to="/logged_in/plans">Plans</NavLink>
+          <NavLink
+            to="/logged_in/schedules"
+            isActive={(match, location) => {
+              return match || location.pathname.indexOf('/plans/') !== -1;
+            }}
+          >
+            Schedule
+          </NavLink>
         </div>
       </div>
     );

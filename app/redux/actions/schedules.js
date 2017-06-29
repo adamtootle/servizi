@@ -1,6 +1,7 @@
 const filter = require('lodash/filter');
 const forEach = require('lodash/forEach');
 const flatMap = require('lodash/flatMap');
+const sortBy = require('lodash/sortBy');
 const Promise = require('bluebird');
 const keys = require('./keys');
 const pcoWrapper = require('../../main/pco-wrapper');
@@ -64,7 +65,7 @@ module.exports = {
 
                     itemsAndAttachments.push({
                       item,
-                      attachments,
+                      attachments: sortBy(attachments, attachment => attachment.skipped),
                     });
                   });
 
@@ -76,7 +77,6 @@ module.exports = {
                     type: keys.SELECT_PLAN,
                     payload: {
                       currentPlan: plan,
-                      currentPlanSkippedAttachments: skippedAttachmentsResponse,
                       itemsAndAttachments,
                       flattenedAttachments: flatMap(itemsAndAttachments.map(obj => obj.attachments)),
                     },

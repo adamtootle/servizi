@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { schedules as schedulesActions, currentUser as currentUserActions } from '../../redux/actions';
 import PlanListItem from '../components/PlanListItem';
 
-class Plans extends Component {
+class Schedules extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     schedules: PropTypes.array,
@@ -76,4 +76,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Plans);
+export default connect(mapStateToProps)(Schedules);
