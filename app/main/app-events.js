@@ -1,6 +1,7 @@
 const electron = require('electron');
 const { ipcMain } = require('electron');
 const autoUpdater = require('electron-updater').autoUpdater;
+const join = require('path').join;
 const logger = require('electron-log');
 const auth = require('./auth');
 const settings = require('./settings');
@@ -131,6 +132,8 @@ function AppEvents() {
     globalShortcut.register('MediaNextTrack', () => {
       store.dispatch(reduxActions.player.nextAttachment());
     });
+
+    setupAppMenu();
   };
 
   this.openUrl = (ev, url) => {
@@ -173,6 +176,24 @@ function AppEvents() {
       createWindow();
     }
   };
+}
+
+function setupAppMenu() {
+  const template = [];
+
+  if (process.platform === 'darwin') {
+    template.unshift({
+      label: app.getName(),
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        { role: 'quit' },
+      ],
+    });
+  }
+
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
 }
 
 function setUpStatusBarIcon() {

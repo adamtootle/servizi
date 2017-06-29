@@ -16,6 +16,7 @@
   },
   "build": {
     "appId": "com.adamtootle.servizi",
+    "copyright": "Copyright © 2017 Adam Tootle\n\nServizi is not affiliated with Planning Center or Ministry Centered Technologies, Inc.",
     "protocols": {
       "name": "servizi",
       "schemes": [
@@ -78,7 +79,6 @@
     "css-loader": "^0.26.1",
     "electron": "^1.6.10",
     "electron-builder": "^18.6.2",
-    "electron-packager": "^7.0.2",
     "electron-publisher-s3": "^18.6.0",
     "electron-rebuild": "^1.5.11",
     "eslint": "^3.11.1",
