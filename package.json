@@ -80,7 +80,7 @@
     "concurrently": "^2.1.0",
     "css-loader": "^0.26.1",
     "electron": "^1.6.10",
-    "electron-builder": "^18.6.2",
+    "electron-builder": "19.11.1",
     "electron-publisher-s3": "^18.6.0",
     "electron-rebuild": "^1.5.11",
     "eslint": "^3.11.1",

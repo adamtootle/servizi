@@ -63,9 +63,9 @@ function Auth() {
     return new Promise((resolve, reject) => {
       accounts.findOne({ selected: true }, (err, existingTokenResult) => {
         if (!existingTokenResult) {
-          reject();
+          return reject();
         } else if (err) {
-          reject(err);
+          return reject(err);
         }
 
         if (this.shouldRefreshToken(existingTokenResult.tokenInfo.token)) {
