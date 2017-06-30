@@ -13,16 +13,16 @@ export default class Login extends Component {
   render() {
     return (
       <div id="login">
-        <span className="label">To use Servizi, you'll first need to log in using your Planning Center account.</span>
+        <span className="label">To use Servizi, you'll first need to log in<br />using your Planning Center account.</span>
         <RaisedButton
           className="login-button"
           label="Login"
           style={{
-            width: '100%',
+            width: '200px',
             marginTop: '40px',
           }}
           onClick={this.handleWebLogin}
-          backgroundColor="#11629E"
+          backgroundColor="#5DBCE5"
           labelColor="#ffffff"
         />
       </div>

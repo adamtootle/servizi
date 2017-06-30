@@ -11,8 +11,9 @@
     "webpack-server": "webpack-dev-server --config webpack.config.js",
     "webpack-build": "webpack --config webpack.config.js",
     "run-dev": "electron .",
-    "build-prod": "npm run webpack-build && build --dir",
-    "release-prod": "npm run webpack-build && build --publish=always"
+    "build-prod-mac": "npm run webpack-build && build --dir --mac",
+    "build-prod-win": "npm run webpack-build && build --dir --win",
+    "release-prod": "npm run webpack-build && build --publish=always --mac -win"
   },
   "build": {
     "appId": "com.adamtootle.servizi",
