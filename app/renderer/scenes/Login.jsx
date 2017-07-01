@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { ipcRenderer } from 'electron';
 import RaisedButton from 'material-ui/RaisedButton';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-export default class Login extends Component {
-  static propTypes = {};
+class Login extends Component {
+  static propTypes = {
+    accounts: React.PropTypes.array,
+  };
   static defaultProps = {};
 
   handleWebLogin = () => {
@@ -11,6 +15,7 @@ export default class Login extends Component {
   };
 
   render() {
+    console.log(this.props);
     return (
       <div id="login">
         <span className="label">To use Servizi, you'll first need to log in<br />using your Planning Center account.</span>
@@ -25,7 +30,25 @@ export default class Login extends Component {
           backgroundColor="#5DBCE5"
           labelColor="#ffffff"
         />
+        {
+          this.props.accounts.length > 0 ?
+            <span
+              className="add-account-cancel-link"
+              onClick={() => this.props.history.goBack()}
+            >
+              Cancel
+            </span>
+          : null
+        }
       </div>
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    accounts: state.accounts,
+  };
+}
+
+export default connect(mapStateToProps)(Login);

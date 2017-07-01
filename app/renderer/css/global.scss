@@ -48,6 +48,18 @@ body {
   .label {
     text-align: center;
   }
+
+  .add-account-cancel-link {
+    margin-top: 25px;
+    font-size: 13px;
+    text-decoration: none;
+    color: #363636;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .login-button {
