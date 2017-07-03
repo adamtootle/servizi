@@ -1,9 +1,16 @@
-const { accounts } = require('./database');
-const config = require('../../config');
-const keys = require('./keys');
 const Promise = require('bluebird');
 const simpleOauth2 = require('simple-oauth2');
-const request = require('request-promise');
+const electron = require('electron');
+const config = require('../../config');
+const utils = require('./utils');
+
+let accounts;
+
+if (utils.isRenderer()) {
+  accounts = electron.remote.getGlobal('servizi').database.accounts;
+} else {
+  accounts = require('./database').accounts;
+}
 
 function Auth() {
   //

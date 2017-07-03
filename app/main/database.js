@@ -6,7 +6,7 @@ const electron = utils.isRenderer() ? require('electron').remote : require('elec
 
 const app = electron.app;
 
-const dbRoot = `${app.getPath('appData')}/Servizi/db`;
+const dbRoot = `${app.getPath('userData')}/db`;
 
 function afterSerialization(string) {
   if (string) {

@@ -13,7 +13,7 @@
     "run-dev": "electron .",
     "build-prod-mac": "npm run webpack-build && build --dir --mac",
     "build-prod-win": "npm run webpack-build && build --dir --win",
-    "release-prod": "npm run webpack-build && build --publish=always --mac"
+    "release-prod": "npm run webpack-build && build --publish=always --win"
   },
   "build": {
     "appId": "com.adamtootle.servizi",
@@ -26,6 +26,9 @@
     },
     "mac": {
       "category": "public.app-category.music"
+    },
+    "win": {
+      "target": "nsis"
     },
     "publish": {
       "provider": "s3",

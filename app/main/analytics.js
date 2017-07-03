@@ -4,7 +4,7 @@ const logger = require('electron-log');
 const utils = require('./utils');
 const config = require('../../config');
 
-const platform = process.platform === 'darwin' ? 'MacOS' : 'Windows,';
+const platform = process.platform === 'darwin' ? 'MacOS' : 'Windows';
 
 AWS.config.region = 'us-east-1';
 AWS.config.credentials = new AWS.CognitoIdentityCredentials({

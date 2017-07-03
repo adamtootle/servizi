@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import logger from 'electron-log';
+import electron from 'electron';
 import sortBy from 'lodash/sortBy';
-import { accounts } from '../../main/database';
 import pcoWrapper from '../../main/pco-wrapper';
 import { schedules as schedulesActions, currentUser as currentUserActions } from '../../redux/actions';
 import reduxActionKeys from '../../redux/actions/keys';
 import config from '../../../config';
 import analytics from '../../main/analytics';
+
+const { accounts } = electron.remote.getGlobal('servizi').database;
 
 class SideMenu extends Component {
   static contextTypes = {

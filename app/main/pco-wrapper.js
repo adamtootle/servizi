@@ -1,8 +1,17 @@
 const PCO = require('pco-js');
-const config = require('../../config');
 const util = require('util');
 const EventEmitter = require('events');
-const { accounts } = require('./database');
+const electron = require('electron');
+const config = require('../../config');
+const utils = require('./utils');
+
+let accounts;
+
+if (utils.isRenderer()) {
+  accounts = electron.remote.getGlobal('servizi').database.accounts;
+} else {
+  accounts = require('./database').accounts;
+}
 
 const eventEmitter = new EventEmitter();
 

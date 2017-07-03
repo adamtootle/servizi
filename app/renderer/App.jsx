@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
-import { ipcRenderer, remote as electronRemote } from 'electron';
+import electron, { ipcRenderer, remote as electronRemote } from 'electron';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import ReactPlayer from 'react-player';
@@ -19,8 +19,9 @@ import pcoWrapper from '../main/pco-wrapper';
 import auth from '../main/auth';
 import store from '../main/redux-store';
 import reduxActionKeys from '../redux/actions/keys';
-import { accounts } from '../main/database';
-import logger from 'electron-log';
+
+const { accounts } = electron.remote.getGlobal('servizi').database;
+const platform = process.platform === 'darwin' ? 'macos' : 'windows';
 
 const theme = {
   palette: {
@@ -223,6 +224,8 @@ export default class App extends Component {
         className += ' video-player';
       }
     }
+
+    className = `${className} ${platform}`;
 
     return className;
   };

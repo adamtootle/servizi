@@ -2,7 +2,6 @@ const electron = require('electron');
 const { ipcMain } = require('electron');
 const autoUpdater = require('electron-updater').autoUpdater;
 const logger = require('electron-log');
-const auth = require('./auth');
 const settings = require('./settings');
 const store = require('./redux-store');
 const reduxActions = require('../redux/actions');
@@ -10,6 +9,7 @@ const reduxActionKeys = require('../redux/actions/keys');
 const utils = require('./utils');
 const config = require('../../config');
 const analytics = require('./analytics');
+const { dialog } = require('electron');
 
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -22,12 +22,10 @@ autoUpdater.autoDownload = false;
 autoUpdater.logger = logger;
 autoUpdater.logger.transports.file.level = 'info';
 
-let mainWindow;
-
 function AppEvents() {
   this.setupListeners = () => {
     app.on('ready', this.ready);
-    app.on('open-url', this.openUrl);
+    app.on('open-url', global.servizi.handleOpenUrl);
     app.on('window-all-closed', this.windowAllClosed); // Quit when all windows are closed.
     app.on('activate', this.activate);
     ipcMain.on('startUpdate', () => {
@@ -98,29 +96,29 @@ function AppEvents() {
       };
     }
     // Create the browser window.
-    mainWindow = new BrowserWindow(windowConfig);
+    global.servizi.mainWindow = new BrowserWindow(windowConfig);
 
     // and load the index.html of the app.
-    mainWindow.loadURL(`file://${app.getAppPath()}/index.html`);
+    global.servizi.mainWindow.loadURL(`file://${app.getAppPath()}/index.html`);
 
     // Open the DevTools.
     if (utils.isDev()) {
-      mainWindow.webContents.openDevTools();
+      global.servizi.mainWindow.webContents.openDevTools();
     }
 
     if (!storedSettings.fullPlayerUI) {
-      mainWindow.on('closed', () => {
-        mainWindow = null;
+      global.servizi.mainWindow.on('closed', () => {
+        global.servizi.mainWindow = null;
       });
 
-      mainWindow.on('blur', () => {
-        mainWindow.hide();
+      global.servizi.mainWindow.on('blur', () => {
+        global.servizi.mainWindow.hide();
       });
 
       // setUpStatusBarIcon();
     }
 
-    mainWindow.show();
+    global.servizi.mainWindow.show();
 
     globalShortcut.register('MediaPlayPause', () => {
       if (store.getState().player.playAudio) {
@@ -152,35 +150,9 @@ function AppEvents() {
       });
     });
 
+    app.setAsDefaultProtocolClient('servizi');
+
     setupAppMenu();
-
-    
-  };
-
-  this.openUrl = (ev, url) => {
-    const code = url.split('code=')[1];
-    // let token;
-    const tokenConfig = {
-      code,
-      redirect_uri: 'servizi://oauth/callback',
-    };
-
-    // Callbacks
-    // Save the access token
-    auth.oauthClient.authorizationCode.getToken(tokenConfig, (error, token) => {
-      // let message;
-      if (error) {
-        // message = error.message;
-      } else {
-        // message = auth.oauthClient.accessToken.create(token);
-        mainWindow.webContents.send('didAddAccount', {
-          redirect_uri: tokenConfig.redirect_uri,
-          token,
-        });
-        mainWindow.focus();
-        analytics.recordEvent(config.aws.eventNames.addAccount);
-      }
-    });
   };
 
   this.windowAllClosed = () => {
@@ -194,7 +166,7 @@ function AppEvents() {
   this.activate = () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (mainWindow === null) {
+    if (global.servizi.mainWindow === null) {
       createWindow();
     }
   };
@@ -221,17 +193,17 @@ function setupAppMenu() {
 function setUpStatusBarIcon() {
   const statusBarIcon = new Tray(`${app.getAppPath()}/images/status-bar-icon.png`);
   statusBarIcon.on('click', (err, bounds) => {
-    mainWindow.setBounds({
+    global.servizi.mainWindow.setBounds({
       x: bounds.x,
       y: bounds.y,
-      width: mainWindow.getBounds().width,
-      height: mainWindow.getBounds().height,
+      width: global.servizi.mainWindow.getBounds().width,
+      height: global.servizi.mainWindow.getBounds().height,
     });
 
-    if (mainWindow.isVisible()) {
-      mainWindow.hide();
+    if (global.servizi.mainWindow.isVisible()) {
+      global.servizi.mainWindow.hide();
     } else {
-      mainWindow.show();
+      global.servizi.mainWindow.show();
     }
   });
 
@@ -240,13 +212,13 @@ function setUpStatusBarIcon() {
     menu.append(new MenuItem({ label: 'Quit', click() { app.quit(); } }));
     statusBarIcon.popUpContextMenu(menu);
   });
-  // mainWindow.setBounds({
+  // global.servizi.mainWindow.setBounds({
   //   x: statusBarIcon.getBounds().x,
   //   y: statusBarIcon.getBounds().y,
-  //   width: mainWindow.getBounds().width,
-  //   height: mainWindow.getBounds().height
+  //   width: global.servizi.mainWindow.getBounds().width,
+  //   height: global.servizi.mainWindow.getBounds().height
   // });
-  mainWindow.setBounds({
+  global.servizi.mainWindow.setBounds({
     x: 0,
     y: 0,
     width: 1000,

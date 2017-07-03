@@ -19,6 +19,10 @@ body {
 #app {
   flex: 1;
   display: flex;
+
+  &.windows #side-menu {
+    background: #5DBCE5;
+  }
 }
 
 #full-player-inner {

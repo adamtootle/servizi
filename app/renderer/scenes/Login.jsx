@@ -15,7 +15,6 @@ class Login extends Component {
   };
 
   render() {
-    console.log(this.props);
     return (
       <div id="login">
         <span className="label">To use Servizi, you'll first need to log in<br />using your Planning Center account.</span>
