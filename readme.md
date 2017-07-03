@@ -16,7 +16,6 @@ And finally, launch the actual music player with:
 ```
 npm run run-dev
 ```
-NOTE: Due to how macOS handles custom URL schemes while running dev apps, the OAuth flow with Planning Center will not work while using `npm run run-dev`. Instead, use `npm run build-prod` and then open `dist/mac/Servizi.app` to go through the OAuth flow. Once you've done that you can come back and use `npm run run-dev` to get webpack live reloading for dev purposes. The dev build will use the stored OAuth credentials from the production build.
 
 ## TODO
 
@@ -29,4 +28,4 @@ NOTE: Due to how macOS handles custom URL schemes while running dev apps, the OA
 
 ## Feedback
 
-[File an issue](https://github.com/adamtootle/servizi/issues)
+[Create an issue](https://github.com/adamtootle/servizi/issues)
