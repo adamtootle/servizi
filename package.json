@@ -13,7 +13,7 @@
     "run-dev": "electron .",
     "build-prod-mac": "npm run webpack-build && build --dir --mac",
     "build-prod-win": "npm run webpack-build && build --dir --win",
-    "release-prod": "npm run webpack-build && build --publish=always --win"
+    "release-prod": "npm run webpack-build && build --publish=always --win --mac"
   },
   "build": {
     "appId": "com.adamtootle.servizi",
