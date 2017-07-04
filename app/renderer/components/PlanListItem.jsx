@@ -1,12 +1,22 @@
 import React from 'react';
-import { List, ListItem } from 'material-ui/List';
+import { ListItem } from 'material-ui/List';
 import { shell } from 'electron';
+import analytics from '../../main/analytics';
+import config from '../../../config';
 
 export default class PlanListItem extends React.Component {
+  static propTypes = {
+    primaryText: React.PropTypes.string,
+    secondaryText: React.PropTypes.string,
+    onClick: React.PropTypes.func,
+    style: React.PropTypes.object,
+  };
+
   handleClickViewLink(url, ev) {
     ev.preventDefault();
+    analytics.recordEvent(config.aws.eventNames.viewedPlanOnPlanningCenter);
     shell.openExternal(url);
-  };
+  }
 
   render() {
     return (
